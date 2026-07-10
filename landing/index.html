@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FeastNow — Your city's kitchens, delivered</title>
-  <meta name="description" content="FeastNow is a food-ordering marketplace. Browse nearby restaurants, order in a few taps, and track your delivery live. Cash on delivery.">
+  <title>FeastNow — The whole city, on one menu</title>
+  <meta name="description" content="FeastNow is a food-ordering marketplace. Browse every approved kitchen near you, order in a few taps, and track your delivery live. Cash on delivery.">
   <script>document.documentElement.classList.remove('no-js');</script>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
@@ -15,12 +15,16 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body class="intro-active">
-  <!-- Intro curtain (removed after roll-up; hidden under reduced-motion / no-js) -->
+  <!-- Intro curtain (removed after lift; hidden under reduced-motion / no-js) -->
   <div class="intro" id="intro" aria-hidden="true">
-    <div class="logo-lockup logo-lockup--lg logo-lockup--stack intro__logo">
-      <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
-      <span class="wordmark">FeastNow</span>
+    <div class="intro__inner">
+      <svg class="intro__hat" viewBox="0 0 64 64" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+      <p class="intro__word wordmark" aria-hidden="true"><span>F</span><span>e</span><span>a</span><span>s</span><span>t</span><span>N</span><span>o</span><span>w</span></p>
+      <p class="script intro__script">buon appetito!</p>
     </div>
+    <svg class="intro__curve" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 0 h1440 v10 Q720 90 0 10 Z" fill="var(--navy)"/>
+    </svg>
   </div>
 
   <!-- SVG sprite: chef-hat mark (referenced via <use>) -->
@@ -37,6 +41,27 @@
     </symbol>
   </svg>
 
+  <!-- ============================== TOP TICKER ============================== -->
+  <div class="ticker" id="ticker">
+    <div class="ticker__track">
+      <div class="ticker__set">
+        <span><span class="num">3,000</span>+ restaurants onboard</span><span class="ticker__star" aria-hidden="true">★</span>
+        <span><span class="num">4.6</span> rating on Google</span><span class="ticker__star" aria-hidden="true">★</span>
+        <span><span class="num">480–600</span> meals delivered every hour</span><span class="ticker__star" aria-hidden="true">★</span>
+        <span>cash on delivery — no card needed</span><span class="ticker__star" aria-hidden="true">★</span>
+        <span>the whole city's menu in your pocket</span><span class="ticker__star" aria-hidden="true">★</span>
+      </div>
+      <div class="ticker__set" aria-hidden="true">
+        <span><span class="num">3,000</span>+ restaurants onboard</span><span class="ticker__star">★</span>
+        <span><span class="num">4.6</span> rating on Google</span><span class="ticker__star">★</span>
+        <span><span class="num">480–600</span> meals delivered every hour</span><span class="ticker__star">★</span>
+        <span>cash on delivery — no card needed</span><span class="ticker__star">★</span>
+        <span>the whole city's menu in your pocket</span><span class="ticker__star">★</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================== NAV ============================== -->
   <header class="nav" id="nav">
     <div class="container nav__row">
       <a class="logo-lockup" href="#top" aria-label="FeastNow home">
@@ -44,228 +69,436 @@
         <span class="wordmark">FeastNow</span>
       </a>
       <nav class="nav__links" aria-label="Primary">
+        <a href="#cuisines">Cuisines</a>
         <a href="#how">How it works</a>
         <a href="#partner">For Restaurants</a>
-        <a href="#partner">For Riders</a>
-        <a class="btn btn--primary" href="login.html">Get Started</a>
+        <a href="#riders">For Riders</a>
+        <a class="btn btn--gold" href="login.html"><span class="btn__roll"><span>Get Started</span><span aria-hidden="true">Get Started</span></span></a>
       </nav>
       <button class="nav__burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="nav__drawer" id="nav-drawer" hidden>
+      <a href="#cuisines">Cuisines</a>
       <a href="#how">How it works</a>
       <a href="#partner">For Restaurants</a>
-      <a href="#partner">For Riders</a>
-      <a class="btn btn--primary" href="login.html">Get Started</a>
+      <a href="#riders">For Riders</a>
+      <a class="btn btn--gold" href="login.html"><span class="btn__roll"><span>Get Started</span><span aria-hidden="true">Get Started</span></span></a>
     </div>
   </header>
 
   <main id="top">
     <!-- ============================== HERO ============================== -->
-    <section class="hero section" id="hero">
+    <section class="hero" id="hero">
       <div class="container hero__grid">
         <div class="hero__copy">
-          <p class="script hero__kicker" aria-hidden="true">buon appetito!</p>
-          <h1 class="hero__title">Your city's kitchens, delivered.</h1>
-          <p class="hero__sub">Browse nearby restaurants, build your order in a few taps, and track it live to your door. Cash on delivery — no online payment needed.</p>
+          <p class="script hero__tag">the fastest way to eat in your city</p>
+          <h1 class="hero__title">
+            <span class="w">The</span>
+            <span class="w">wh<span class="glyph-o">o</span>le</span>
+            <span class="w">city,</span>
+            <span class="w">on</span>
+            <span class="w"><span class="glyph-o">o</span>ne</span>
+            <span class="w">menu.</span>
+          </h1>
+          <p class="hero__sub">Browse every approved kitchen near you, build your order in a few taps, and track your rider live to the door. Pay cash when it arrives.</p>
           <div class="hero__cta">
-            <a class="btn btn--gold" href="login.html">Get Started</a>
-            <a class="btn btn--ghost" href="#how">How it works</a>
+            <a class="btn btn--gold btn--lg" href="login.html"><span class="btn__roll"><span>Get Started</span><span aria-hidden="true">Get Started</span></span></a>
+            <a class="btn btn--ghost btn--lg" href="#cuisines"><span class="btn__roll"><span>Explore cuisines</span><span aria-hidden="true">Explore cuisines</span></span></a>
           </div>
         </div>
-        <div class="hero__media">
-          <!-- PLACEHOLDER: swap for brand photo -->
-          <img src="assets/img/hero.jpg" alt="A warm spread of dishes from local restaurants" width="1200" height="800" fetchpriority="high">
+
+        <div class="hero__art">
+          <!-- FeastNow food cart illustration -->
+          <svg class="cart" viewBox="0 0 680 470" role="img" aria-label="Illustration of the FeastNow food cart">
+            <!-- ground shadow -->
+            <ellipse cx="345" cy="442" rx="255" ry="15" fill="rgba(15,44,86,.10)"/>
+            <!-- push handle -->
+            <path d="M118 268 Q76 250 64 214" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
+            <circle cx="64" cy="214" r="9" fill="#4F3C2C"/>
+            <!-- awning poles -->
+            <line x1="152" y1="112" x2="152" y2="240" stroke="#4F3C2C" stroke-width="7"/>
+            <line x1="528" y1="112" x2="528" y2="240" stroke="#4F3C2C" stroke-width="7"/>
+            <!-- roof sign -->
+            <g class="cart__sign">
+              <rect x="206" y="26" width="268" height="48" rx="12" fill="#ECE6E1" stroke="#0F2C56" stroke-width="3"/>
+              <svg x="222" y="36" width="28" height="28" viewBox="0 0 64 64" style="color:#0F2C56"><use href="#feastnow-hat"></use></svg>
+              <text x="352" y="60" text-anchor="middle" font-size="28" fill="#0F2C56" font-weight="640" style="font-family:var(--font-display)">FeastNow</text>
+            </g>
+            <!-- flag -->
+            <line x1="536" y1="58" x2="536" y2="112" stroke="#4F3C2C" stroke-width="5" stroke-linecap="round"/>
+            <path d="M536 58 L584 68 L536 82 Z" fill="#128643"/>
+            <!-- awning: scalloped, striped -->
+            <clipPath id="awn">
+              <path d="M108 88 h464 v26
+                a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0
+                a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 Z"/>
+            </clipPath>
+            <g clip-path="url(#awn)">
+              <rect x="108" y="86" width="464" height="52" fill="#ECE6E1"/>
+              <rect x="108" y="86" width="58" height="52" fill="#C72531"/>
+              <rect x="224" y="86" width="58" height="52" fill="#C72531"/>
+              <rect x="340" y="86" width="58" height="52" fill="#C72531"/>
+              <rect x="456" y="86" width="58" height="52" fill="#C72531"/>
+            </g>
+            <!-- string lights -->
+            <path d="M152 138 Q340 176 528 138" fill="none" stroke="#4F3C2C" stroke-width="2.5"/>
+            <circle class="cart__bulb" cx="230" cy="152" r="5" fill="#E3AF04"/>
+            <circle class="cart__bulb" cx="303" cy="161" r="5" fill="#E3AF04"/>
+            <circle class="cart__bulb" cx="377" cy="161" r="5" fill="#E3AF04"/>
+            <circle class="cart__bulb" cx="450" cy="152" r="5" fill="#E3AF04"/>
+            <!-- steam above the cloches -->
+            <g class="cart__steam" fill="none" stroke="#D4C29A" stroke-width="5" stroke-linecap="round">
+              <path d="M232 158 q-8 -14 0 -26 q8 -12 0 -24"/>
+              <path d="M262 166 q-8 -14 0 -26 q8 -12 0 -24"/>
+            </g>
+            <!-- glass display case with dishes -->
+            <rect x="158" y="168" width="212" height="76" rx="10" fill="#C0DEEE" opacity=".5" stroke="#ECE6E1" stroke-width="4"/>
+            <g>
+              <path d="M198 232 a26 22 0 0 1 52 0 Z" fill="#E3AF04"/>
+              <rect x="190" y="230" width="68" height="7" rx="3.5" fill="#ECE6E1"/>
+              <path d="M282 232 a26 22 0 0 1 52 0 Z" fill="#E3AF04"/>
+              <rect x="274" y="230" width="68" height="7" rx="3.5" fill="#ECE6E1"/>
+            </g>
+            <!-- chalkboard menu -->
+            <g>
+              <rect x="398" y="164" width="118" height="80" rx="9" fill="#2F241A" stroke="#ECE6E1" stroke-width="3"/>
+              <text x="457" y="192" text-anchor="middle" font-size="20" fill="#ECE6E1" style="font-family:var(--font-script)">menu</text>
+              <line x1="414" y1="208" x2="500" y2="208" stroke="#ECE6E1" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+              <line x1="414" y1="222" x2="482" y2="222" stroke="#ECE6E1" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+            </g>
+            <!-- cart body -->
+            <rect x="120" y="248" width="440" height="126" rx="16" fill="#0F2C56"/>
+            <rect x="102" y="248" width="476" height="16" rx="8" fill="#ECE6E1"/>
+            <!-- body details: name + tricolore -->
+            <text x="340" y="322" text-anchor="middle" font-size="30" fill="#FFFCF0" style="font-family:var(--font-script)">fresh &amp; fast</text>
+            <g>
+              <rect x="506" y="288" width="12" height="20" rx="2" fill="#128643"/>
+              <rect x="518" y="288" width="12" height="20" rx="2" fill="#FFFCF0"/>
+              <rect x="530" y="288" width="12" height="20" rx="2" fill="#C72531"/>
+            </g>
+            <!-- wheel fenders -->
+            <path d="M154 374 a52 52 0 0 1 104 0 Z" fill="#1B2F5E"/>
+            <path d="M434 374 a52 52 0 0 1 104 0 Z" fill="#1B2F5E"/>
+            <!-- wheels -->
+            <g class="cart__wheel">
+              <circle cx="206" cy="396" r="44" fill="#2F241A"/>
+              <circle cx="206" cy="396" r="29" fill="#E3AF04"/>
+              <g stroke="#FFFCF0" stroke-width="5" stroke-linecap="round">
+                <line x1="206" y1="372" x2="206" y2="420"/>
+                <line x1="182" y1="396" x2="230" y2="396"/>
+              </g>
+              <circle cx="206" cy="396" r="8" fill="#0F2C56"/>
+            </g>
+            <g class="cart__wheel">
+              <circle cx="486" cy="396" r="44" fill="#2F241A"/>
+              <circle cx="486" cy="396" r="29" fill="#E3AF04"/>
+              <g stroke="#FFFCF0" stroke-width="5" stroke-linecap="round">
+                <line x1="486" y1="372" x2="486" y2="420"/>
+                <line x1="462" y1="396" x2="510" y2="396"/>
+              </g>
+              <circle cx="486" cy="396" r="8" fill="#0F2C56"/>
+            </g>
+          </svg>
+
+          <!-- Reviews sticker (burst seal) -->
+          <a class="sticker" href="#reviews" aria-label="Rated 4.6 stars — read reviews">
+            <svg class="sticker__shape" viewBox="0 0 200 200" aria-hidden="true">
+              <polygon fill="var(--gold)" points="100.0,0.0 111.5,12.8 125.9,3.4 133.7,18.7 150.0,13.4 153.6,30.2 170.7,29.3 169.8,46.4 186.6,50.0 181.3,66.3 196.6,74.1 187.2,88.5 200.0,100.0 187.2,111.5 196.6,125.9 181.3,133.7 186.6,150.0 169.8,153.6 170.7,170.7 153.6,169.8 150.0,186.6 133.7,181.3 125.9,196.6 111.5,187.2 100.0,200.0 88.5,187.2 74.1,196.6 66.3,181.3 50.0,186.6 46.4,169.8 29.3,170.7 30.2,153.6 13.4,150.0 18.7,133.7 3.4,125.9 12.8,111.5 0.0,100.0 12.8,88.5 3.4,74.1 18.7,66.3 13.4,50.0 30.2,46.4 29.3,29.3 46.4,30.2 50.0,13.4 66.3,18.7 74.1,3.4 88.5,12.8"/>
+            </svg>
+            <span class="sticker__body">
+              <span class="script sticker__kicker">reviews</span>
+              <span class="num sticker__num">4.6<span class="sticker__star">★</span></span>
+              <span class="sticker__rule" aria-hidden="true"></span>
+              <span class="sticker__line">the whole city's menu, in your pocket</span>
+            </span>
+          </a>
         </div>
       </div>
-      <a class="hero__scroll" href="#stats" aria-label="Scroll to learn more">
+      <a class="hero__scroll" href="#cuisines" aria-label="Scroll to explore cuisines">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
       </a>
     </section>
 
-    <!-- ============================== TRUST + STATS ============================== -->
-    <section class="stats" id="stats">
-      <div class="marquee" aria-hidden="true">
-        <div class="marquee__track">
-          <span>Fresh from local kitchens</span><span class="marquee__dot">•</span>
-          <span>Live delivery tracking</span><span class="marquee__dot">•</span>
-          <span>Cash on delivery</span><span class="marquee__dot">•</span>
-          <span>Rate every order</span><span class="marquee__dot">•</span>
-          <span>Fresh from local kitchens</span><span class="marquee__dot">•</span>
-          <span>Live delivery tracking</span><span class="marquee__dot">•</span>
-          <span>Cash on delivery</span><span class="marquee__dot">•</span>
-          <span>Rate every order</span><span class="marquee__dot">•</span>
-        </div>
-      </div>
-      <div class="container stats__grid">
-        <!-- PLACEHOLDER numbers: swap for real data at launch -->
-        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="500">500</span><span class="num stat__suffix">+</span></p><p class="stat__label">Restaurants</p></div>
-        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="40">40</span><span class="num stat__suffix">+</span></p><p class="stat__label">Cuisines</p></div>
-        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="20">20</span><span class="num stat__suffix">k+</span></p><p class="stat__label">Orders delivered</p></div>
-        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="4.8" data-decimals="1">4.8</span><span class="stat__star" aria-hidden="true">★</span></p><p class="stat__label">Average rating</p></div>
-      </div>
-    </section>
-
-    <!-- ============================== HOW IT WORKS ============================== -->
-    <section class="how section" id="how">
-      <div class="container">
-        <h2 class="section-title">How FeastNow works</h2>
-        <ol class="how__grid" role="list">
-          <li class="step" data-reveal>
-            <span class="num step__n" aria-hidden="true">01</span>
-            <h3 class="step__h">Browse nearby restaurants</h3>
-            <p>Discover approved kitchens around you — filter by cuisine or search for exactly what you crave.</p>
-          </li>
-          <li class="step" data-reveal>
-            <span class="num step__n" aria-hidden="true">02</span>
-            <h3 class="step__h">Build your order</h3>
-            <p>Add dishes to your cart, customise portions, and leave a note for the kitchen.</p>
-          </li>
-          <li class="step" data-reveal>
-            <span class="num step__n" aria-hidden="true">03</span>
-            <h3 class="step__h">Track it live</h3>
-            <p>Watch your order move from the kitchen to your doorstep with live status and map tracking.</p>
-          </li>
-          <li class="step" data-reveal>
-            <span class="num step__n" aria-hidden="true">04</span>
-            <h3 class="step__h">Pay &amp; enjoy</h3>
-            <p>Pay cash when your food arrives, then rate the restaurant and your rider.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
     <!-- ============================== EXPLORE BY CUISINE ============================== -->
-    <section class="explore section" id="explore">
-      <div class="container explore__head">
+    <section class="cuisines section sec-cap theme-dough" id="cuisines">
+      <div class="container cuisines__head">
+        <p class="script kicker">what are you craving?</p>
         <h2 class="section-title">Explore by cuisine</h2>
-        <p class="explore__sub">From wood-fired pizza to biryani — the best kitchens near you.</p>
+        <p class="section-sub">Seventeen ways to ruin your diet — swipe through and pick a lane.</p>
       </div>
-      <div class="swiper explore__swiper">
+      <div class="swiper cuisines__swiper">
         <div class="swiper-wrapper">
-          <!-- PLACEHOLDER content: swap names/ratings/counts for live marketplace data -->
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-pizza.jpg" alt="Wood-fired pizza with fresh basil" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Italian</h3><p class="card__meta"><span class="num card__rating">4.8</span><span class="card__star" aria-hidden="true">★</span> · 60+ places</p></div>
-          </div>
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-desi.jpg" alt="Fragrant chicken biryani" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Desi</h3><p class="card__meta"><span class="num card__rating">4.7</span><span class="card__star" aria-hidden="true">★</span> · 85+ places</p></div>
-          </div>
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-burgers.jpg" alt="Stacked cheeseburger" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Burgers</h3><p class="card__meta"><span class="num card__rating">4.6</span><span class="card__star" aria-hidden="true">★</span> · 70+ places</p></div>
-          </div>
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-pasta.jpg" alt="Fresh pasta with tomato sauce" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Pasta</h3><p class="card__meta"><span class="num card__rating">4.8</span><span class="card__star" aria-hidden="true">★</span> · 40+ places</p></div>
-          </div>
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-sushi.jpg" alt="Assorted sushi platter" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Sushi</h3><p class="card__meta"><span class="num card__rating">4.9</span><span class="card__star" aria-hidden="true">★</span> · 25+ places</p></div>
-          </div>
-          <div class="swiper-slide card">
-            <img src="assets/img/cuisine-wraps.jpg" alt="Grilled wraps with fillings" width="640" height="480" loading="lazy">
-            <div class="card__body"><h3>Wraps</h3><p class="card__meta"><span class="num card__rating">4.5</span><span class="card__star" aria-hidden="true">★</span> · 45+ places</p></div>
-          </div>
+          <!-- PLACEHOLDER counts: swap for live marketplace data -->
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍛</span><h3 class="ticket__name">Pakistani</h3><p class="ticket__meta"><span class="num">140</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍟</span><h3 class="ticket__name">Fast Food</h3><p class="ticket__meta"><span class="num">120</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍕</span><h3 class="ticket__name">Pizza</h3><p class="ticket__meta"><span class="num">60</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍔</span><h3 class="ticket__name">Burgers</h3><p class="ticket__meta"><span class="num">75</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🌯</span><h3 class="ticket__name">Shawarma</h3><p class="ticket__meta"><span class="num">90</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍢</span><h3 class="ticket__name">BBQ</h3><p class="ticket__meta"><span class="num">85</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍲</span><h3 class="ticket__name">Nihari</h3><p class="ticket__meta"><span class="num">30</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍚</span><h3 class="ticket__name">Pulao</h3><p class="ticket__meta"><span class="num">50</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🫓</span><h3 class="ticket__name">Halwa Puri</h3><p class="ticket__meta"><span class="num">35</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🥞</span><h3 class="ticket__name">Paratha</h3><p class="ticket__meta"><span class="num">40</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🥡</span><h3 class="ticket__name">Chinese</h3><p class="ticket__meta"><span class="num">65</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍝</span><h3 class="ticket__name">Pasta</h3><p class="ticket__meta"><span class="num">40</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍗</span><h3 class="ticket__name">Roast</h3><p class="ticket__meta"><span class="num">30</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🦐</span><h3 class="ticket__name">Seafood</h3><p class="ticket__meta"><span class="num">25</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍰</span><h3 class="ticket__name">Desserts</h3><p class="ticket__meta"><span class="num">80</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍨</span><h3 class="ticket__name">Ice Cream</h3><p class="ticket__meta"><span class="num">45</span>+ spots</p></div>
+          <div class="swiper-slide ticket"><span class="ticket__icon" aria-hidden="true">🍮</span><h3 class="ticket__name">Pudding</h3><p class="ticket__meta"><span class="num">20</span>+ spots</p></div>
         </div>
-        <div class="explore__controls">
-          <button class="explore__btn explore__btn--prev" aria-label="Previous cuisines">
+        <div class="cuisines__controls">
+          <button class="ctrl ctrl--prev" aria-label="Previous cuisines">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <div class="swiper-pagination explore__pagination"></div>
-          <button class="explore__btn explore__btn--next" aria-label="Next cuisines">
+          <div class="swiper-pagination cuisines__pagination"></div>
+          <button class="ctrl ctrl--next" aria-label="Next cuisines">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ============================== TESTIMONIALS ============================== -->
-    <section class="reviews section" id="reviews">
+    <!-- ============================== HOW IT WORKS ============================== -->
+    <section class="how section sec-cap theme-navy" id="how">
       <div class="container">
-        <h2 class="section-title">Loved by hungry people</h2>
-        <div class="reviews__grid">
-          <!-- PLACEHOLDER quotes: swap for real customer reviews at launch -->
-          <figure class="review" data-reveal>
-            <p class="review__stars" aria-label="Rated 5 out of 5 stars">★★★★★</p>
-            <blockquote>Ordered dinner for the whole family and tracked the rider the entire way. The kids loved watching the little map.</blockquote>
-            <figcaption>— Ayesha K.</figcaption>
-          </figure>
-          <figure class="review" data-reveal>
-            <p class="review__stars" aria-label="Rated 5 out of 5 stars">★★★★★</p>
-            <blockquote>Paying cash at the door is exactly what I wanted. No cards, no fuss — just hot biryani twenty minutes later.</blockquote>
-            <figcaption>— Bilal R.</figcaption>
-          </figure>
-          <figure class="review" data-reveal>
-            <p class="review__stars" aria-label="Rated 4 out of 5 stars">★★★★<span class="review__star-off">★</span></p>
-            <blockquote>Found three new favourite spots in my neighbourhood in the first week. Browsing by cuisine is dangerously easy.</blockquote>
-            <figcaption>— Sana M.</figcaption>
-          </figure>
+        <div class="how__head">
+          <p class="script kicker">easy as pie</p>
+          <h2 class="section-title">How FeastNow works</h2>
+        </div>
+        <div class="how__grid">
+          <!-- Live-tracking phone mock -->
+          <div class="how__phone" aria-hidden="true">
+            <div class="phone">
+              <span class="phone__speaker"></span>
+              <div class="phone__screen">
+                <div class="phone__bar">
+                  <svg class="phone__hat" viewBox="0 0 64 64"><use href="#feastnow-hat"></use></svg>
+                  <span class="phone__brand">FeastNow</span>
+                  <span class="num phone__time">8:12</span>
+                </div>
+                <div class="phone__map">
+                  <svg viewBox="0 0 220 130" preserveAspectRatio="none">
+                    <rect width="220" height="130" fill="#C0DEEE"/>
+                    <g stroke="#FFFCF0" stroke-width="7" opacity=".85">
+                      <line x1="0" y1="42" x2="220" y2="42"/>
+                      <line x1="0" y1="96" x2="220" y2="96"/>
+                      <line x1="62" y1="0" x2="62" y2="130"/>
+                      <line x1="152" y1="0" x2="152" y2="130"/>
+                    </g>
+                    <path class="phone__route" d="M28 118 L62 96 L152 96 L152 42 L196 26"
+                          fill="none" stroke="#0F2C56" stroke-width="3.5" stroke-dasharray="7 6" stroke-linecap="round"/>
+                    <circle cx="28" cy="118" r="7" fill="#C72531"/>
+                    <g class="phone__rider"><circle cx="152" cy="72" r="8" fill="#128643"/><circle class="phone__pulse" cx="152" cy="72" r="8" fill="none" stroke="#128643" stroke-width="2"/></g>
+                    <path d="M188 18 l8 -7 8 7 v12 h-16 Z" fill="#0F2C56"/>
+                  </svg>
+                  <span class="num phone__eta">ETA 12 min</span>
+                </div>
+                <ol class="phone__status">
+                  <li class="is-done"><span class="phone__dot" aria-hidden="true">✓</span>Placed</li>
+                  <li class="is-done"><span class="phone__dot" aria-hidden="true">✓</span>Preparing</li>
+                  <li class="is-live"><span class="phone__dot" aria-hidden="true">●</span>Out for delivery</li>
+                  <li class="is-next"><span class="phone__dot" aria-hidden="true">○</span>Delivered</li>
+                </ol>
+                <div class="phone__order">
+                  <span>Chicken Karahi ×1</span>
+                  <span class="num">Rs 1,150</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Steps as sealed envelopes -->
+          <ol class="how__steps" role="list">
+            <li class="env" data-reveal>
+              <span class="env__flap" aria-hidden="true"></span>
+              <span class="env__seal num" aria-hidden="true">1</span>
+              <h3 class="env__h">Open the app &amp; browse</h3>
+              <p>Every approved kitchen near you, in one feed — filter by cuisine or search for exactly what you crave.</p>
+            </li>
+            <li class="env" data-reveal>
+              <span class="env__flap" aria-hidden="true"></span>
+              <span class="env__seal num" aria-hidden="true">2</span>
+              <h3 class="env__h">Fill your cart</h3>
+              <p>Customise dishes, set portions, and leave a note for the chef. Your total is honest — no hidden fees.</p>
+            </li>
+            <li class="env" data-reveal>
+              <span class="env__flap" aria-hidden="true"></span>
+              <span class="env__seal num" aria-hidden="true">3</span>
+              <h3 class="env__h">Track it live</h3>
+              <p>Watch your order move — placed, preparing, out for delivery — on a live map with your rider's ETA.</p>
+            </li>
+            <li class="env" data-reveal>
+              <span class="env__flap" aria-hidden="true"></span>
+              <span class="env__seal num" aria-hidden="true">4</span>
+              <h3 class="env__h">Pay at the door</h3>
+              <p>Cash on delivery, no card needed. Then rate the meal and the rider — the city's kitchens are listening.</p>
+            </li>
+          </ol>
         </div>
       </div>
     </section>
 
-    <!-- ============================== PARTNER CTA ============================== -->
-    <section class="partner section" id="partner">
-      <div class="container">
-        <div class="partner__panel">
-          <div class="partner__col">
-            <h2>List your restaurant</h2>
-            <p>Reach more customers in your city. Manage your menu and incoming orders from one simple app.</p>
-            <a class="btn btn--gold" href="login.html">Partner with us</a>
+    <!-- ============================== REVIEWS BANNER ============================== -->
+    <section class="reviews section sec-cap theme-sky" id="reviews">
+      <div class="container reviews__head">
+        <p class="script kicker">word on the street</p>
+        <h2 class="reviews__score"><span class="num reviews__n" data-count="4.6" data-decimals="1">4.6</span><span class="reviews__stars" aria-hidden="true">★★★★★</span></h2>
+        <p class="reviews__sub">average rating on Google — from people who were very hungry</p>
+      </div>
+      <div class="reviews__marquee" aria-label="Customer reviews">
+        <div class="reviews__track">
+          <div class="reviews__set">
+            <!-- PLACEHOLDER quotes: swap for real customer reviews at launch -->
+            <figure class="quote"><blockquote>Ordered dinner for the whole family and tracked the rider the entire way. The kids loved watching the little map.</blockquote><figcaption>— Ayesha K.</figcaption></figure>
+            <figure class="quote"><blockquote>Paying cash at the door is exactly what I wanted. No cards, no fuss — just hot biryani twenty minutes later.</blockquote><figcaption>— Bilal R.</figcaption></figure>
+            <figure class="quote"><blockquote>Found three new favourite spots in my neighbourhood in the first week. Browsing by cuisine is dangerously easy.</blockquote><figcaption>— Sana M.</figcaption></figure>
+            <figure class="quote"><blockquote>Halwa puri delivered before the family woke up on Sunday. I looked like a hero and did absolutely nothing.</blockquote><figcaption>— Usman T.</figcaption></figure>
+            <figure class="quote"><blockquote>The rider called me "boss" and the karahi was still bubbling. Five stars for both.</blockquote><figcaption>— Hira J.</figcaption></figure>
+            <figure class="quote"><blockquote>Our office orders every Friday now. Seventeen people, four cuisines, one delivery time. How.</blockquote><figcaption>— Adeel S.</figcaption></figure>
           </div>
-          <div class="partner__divider" aria-hidden="true"></div>
-          <div class="partner__col">
-            <h2>Deliver with us</h2>
-            <p>Go online when it suits you, accept nearby orders, and get paid per delivery.</p>
-            <a class="btn btn--gold" href="login.html">Start delivering</a>
+          <div class="reviews__set" aria-hidden="true">
+            <figure class="quote"><blockquote>Ordered dinner for the whole family and tracked the rider the entire way. The kids loved watching the little map.</blockquote><figcaption>— Ayesha K.</figcaption></figure>
+            <figure class="quote"><blockquote>Paying cash at the door is exactly what I wanted. No cards, no fuss — just hot biryani twenty minutes later.</blockquote><figcaption>— Bilal R.</figcaption></figure>
+            <figure class="quote"><blockquote>Found three new favourite spots in my neighbourhood in the first week. Browsing by cuisine is dangerously easy.</blockquote><figcaption>— Sana M.</figcaption></figure>
+            <figure class="quote"><blockquote>Halwa puri delivered before the family woke up on Sunday. I looked like a hero and did absolutely nothing.</blockquote><figcaption>— Usman T.</figcaption></figure>
+            <figure class="quote"><blockquote>The rider called me "boss" and the karahi was still bubbling. Five stars for both.</blockquote><figcaption>— Hira J.</figcaption></figure>
+            <figure class="quote"><blockquote>Our office orders every Friday now. Seventeen people, four cuisines, one delivery time. How.</blockquote><figcaption>— Adeel S.</figcaption></figure>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== FOR RESTAURANTS ============================== -->
+    <section class="partner section sec-cap theme-gold" id="partner">
+      <div class="container partner__grid">
+        <div class="partner__copy" data-reveal>
+          <p class="script kicker">got a kitchen?</p>
+          <h2 class="section-title">Put your restaurant on the map</h2>
+          <p class="partner__sub">Join the city's biggest dinner table. You cook — we bring the customers, the orders, and the rider to carry it all.</p>
+          <ul class="perks" role="list">
+            <li><span class="perks__mark" aria-hidden="true">✓</span>New customers every single day</li>
+            <li><span class="perks__mark" aria-hidden="true">✓</span>One simple screen for incoming orders</li>
+            <li><span class="perks__mark" aria-hidden="true">✓</span>No hardware — your phone is enough</li>
+          </ul>
+          <a class="btn btn--navy btn--lg" href="login.html"><span class="btn__roll"><span>List your restaurant</span><span aria-hidden="true">List your restaurant</span></span></a>
+        </div>
+        <div class="partner__media" data-reveal>
+          <img src="assets/img/hero.jpg" alt="A warm spread of dishes, fresh from a partner kitchen" width="900" height="1050" loading="lazy">
+          <span class="partner__stamp">
+            <span class="num">500</span>+
+            <small>partner kitchens</small>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== FOR RIDERS ============================== -->
+    <section class="riders section sec-cap theme-cream" id="riders">
+      <div class="container riders__grid">
+        <div class="riders__art" data-reveal aria-hidden="true">
+          <svg class="scooter" viewBox="0 0 420 300" role="img" aria-label="Illustration of a FeastNow delivery scooter">
+            <ellipse cx="210" cy="282" rx="170" ry="10" fill="rgba(15,44,86,.10)"/>
+            <!-- delivery box -->
+            <g>
+              <rect x="46" y="108" width="86" height="78" rx="12" fill="#0F2C56"/>
+              <svg x="66" y="122" width="46" height="46" viewBox="0 0 64 64" style="color:#FFFCF0"><use href="#feastnow-hat"></use></svg>
+            </g>
+            <!-- frame -->
+            <path d="M96 216 L150 216 Q186 216 200 184 L232 120" fill="none" stroke="#C72531" stroke-width="14" stroke-linecap="round"/>
+            <path d="M232 120 L300 120" fill="none" stroke="#C72531" stroke-width="12" stroke-linecap="round"/>
+            <path d="M300 120 L330 216" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
+            <!-- handlebar -->
+            <path d="M300 120 L316 84 L340 84" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
+            <!-- seat -->
+            <rect x="196" y="106" width="64" height="16" rx="8" fill="#2F241A"/>
+            <!-- headlight -->
+            <circle cx="344" cy="120" r="9" fill="#E3AF04"/>
+            <!-- wheels -->
+            <g class="cart__wheel">
+              <circle cx="96" cy="230" r="42" fill="#2F241A"/>
+              <circle cx="96" cy="230" r="26" fill="#ECE6E1"/>
+              <g stroke="#0F2C56" stroke-width="4.5" stroke-linecap="round"><line x1="96" y1="209" x2="96" y2="251"/><line x1="75" y1="230" x2="117" y2="230"/></g>
+              <circle cx="96" cy="230" r="7" fill="#0F2C56"/>
+            </g>
+            <g class="cart__wheel">
+              <circle cx="330" cy="230" r="42" fill="#2F241A"/>
+              <circle cx="330" cy="230" r="26" fill="#ECE6E1"/>
+              <g stroke="#0F2C56" stroke-width="4.5" stroke-linecap="round"><line x1="330" y1="209" x2="330" y2="251"/><line x1="309" y1="230" x2="351" y2="230"/></g>
+              <circle cx="330" cy="230" r="7" fill="#0F2C56"/>
+            </g>
+            <!-- motion whooshes -->
+            <g class="scooter__whoosh" stroke="#C0DEEE" stroke-width="6" stroke-linecap="round">
+              <line x1="8" y1="150" x2="60" y2="150"/>
+              <line x1="-6" y1="180" x2="46" y2="180"/>
+              <line x1="18" y1="210" x2="58" y2="210"/>
+            </g>
+          </svg>
+        </div>
+        <div class="riders__copy" data-reveal>
+          <p class="script kicker">ride with us</p>
+          <h2 class="section-title">Earn on every delivery</h2>
+          <p class="riders__sub">Go online when it suits you, take the orders you want, and get paid per drop. The map does the thinking — you do the riding.</p>
+          <ul class="perks" role="list">
+            <li><span class="perks__mark" aria-hidden="true">✓</span>Online / offline with one tap</li>
+            <li><span class="perks__mark" aria-hidden="true">✓</span>Nearby orders, shortest routes</li>
+            <li><span class="perks__mark" aria-hidden="true">✓</span>Paid per delivery, tips are yours</li>
+          </ul>
+          <a class="btn btn--gold btn--lg" href="login.html"><span class="btn__roll"><span>Start riding</span><span aria-hidden="true">Start riding</span></span></a>
         </div>
       </div>
     </section>
   </main>
 
   <!-- ============================== FOOTER ============================== -->
-  <footer class="footer">
-    <div class="container footer__grid">
-      <div class="footer__brand">
-        <a class="logo-lockup" href="#top" aria-label="FeastNow home">
-          <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
-          <span class="wordmark">FeastNow</span>
-        </a>
-        <p class="footer__tag">Your city's kitchens, delivered.</p>
-        <a class="btn btn--gold" href="login.html">Get Started</a>
+  <footer class="footer sec-cap theme-navy">
+    <div class="container">
+      <div class="footer__top">
+        <p class="script footer__script">see you at dinner —</p>
+        <p class="footer__mega" aria-hidden="true">FeastNow</p>
       </div>
-      <nav class="footer__col" aria-label="Company">
-        <h3>Company</h3>
-        <a href="#top">About</a>
-        <a href="#top">Contact</a>
-      </nav>
-      <nav class="footer__col" aria-label="Product">
-        <h3>Product</h3>
-        <a href="#how">How it works</a>
-        <a href="#partner">For Restaurants</a>
-        <a href="#partner">For Riders</a>
-      </nav>
-      <nav class="footer__col" aria-label="Legal">
-        <h3>Legal</h3>
-        <a href="#top">Privacy</a>
-        <a href="#top">Terms</a>
-      </nav>
-    </div>
-    <div class="container footer__bar">
-      <p class="footer__note">Cash on delivery — no online payment (this version).</p>
-      <div class="footer__social">
-        <a href="#top" aria-label="FeastNow on Instagram">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"/></svg>
-        </a>
-        <a href="#top" aria-label="FeastNow on LinkedIn">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-7.9c0-1.88-.03-4.3-2.62-4.3-2.62 0-3.02 2.05-3.02 4.17V23H8V8z"/></svg>
-        </a>
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="logo-lockup" href="#top" aria-label="FeastNow home">
+            <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+            <span class="wordmark">FeastNow</span>
+          </a>
+          <p class="footer__tag">The whole city, on one menu.</p>
+          <a class="btn btn--gold" href="login.html"><span class="btn__roll"><span>Get Started</span><span aria-hidden="true">Get Started</span></span></a>
+        </div>
+        <nav class="footer__col" aria-label="Explore">
+          <h3>Explore</h3>
+          <a href="#cuisines">Cuisines</a>
+          <a href="#how">How it works</a>
+          <a href="#reviews">Reviews</a>
+        </nav>
+        <nav class="footer__col" aria-label="Partners">
+          <h3>Partners</h3>
+          <a href="#partner">For Restaurants</a>
+          <a href="#riders">For Riders</a>
+          <a href="login.html">Get Started</a>
+        </nav>
+        <nav class="footer__col" aria-label="Company">
+          <h3>Company</h3>
+          <a href="#top">About us</a>
+          <a href="#top">Contact</a>
+          <a href="#top">Privacy &amp; Terms</a>
+        </nav>
       </div>
-      <p class="footer__copy">© <span class="num">2026</span> FeastNow</p>
+      <div class="footer__bar">
+        <p class="footer__note">Cash on delivery — no online payment (this version).</p>
+        <div class="footer__social">
+          <a href="#top" aria-label="FeastNow on Instagram">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#top" aria-label="FeastNow on LinkedIn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-7.9c0-1.88-.03-4.3-2.62-4.3-2.62 0-3.02 2.05-3.02 4.17V23H8V8z"/></svg>
+          </a>
+        </div>
+        <p class="footer__copy">© <span class="num">2026</span> FeastNow</p>
+      </div>
     </div>
   </footer>
 
