@@ -15,8 +15,37 @@
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
+  <!-- SVG sprite: chef-hat mark (referenced via <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="feastnow-hat" viewBox="0 0 64 64">
+      <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+            fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+            fill="var(--gold)"/>
+    </symbol>
+  </svg>
+
   <main id="top">
-    <h1 class="container">FeastNow scaffold OK</h1>
+    <div class="container" style="display:flex;flex-direction:column;gap:2rem;padding-block:3rem">
+      <a class="logo-lockup logo-lockup--lg" href="#top" aria-label="FeastNow home">
+        <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+        <span class="wordmark">FeastNow</span>
+      </a>
+      <a class="logo-lockup" href="#top" aria-label="FeastNow home">
+        <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+        <span class="wordmark">FeastNow</span>
+      </a>
+      <div style="background:var(--navy);padding:2rem;border-radius:20px;width:max-content">
+        <div class="logo-lockup logo-lockup--lg logo-lockup--stack" style="color:var(--cream)">
+          <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+          <span class="wordmark" style="color:var(--cream)">FeastNow</span>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- vendor libs (classic scripts run before the module; expose window globals) -->
