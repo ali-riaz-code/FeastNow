@@ -62,12 +62,26 @@
   </header>
 
   <main id="top">
-    <!-- TEMP hero placeholder (replaced by real hero in Task 6) -->
-    <section class="section container">
-      <h1 style="font-size:clamp(2.5rem,6vw,4.5rem)">Your city's kitchens, delivered.</h1>
-      <p style="max-width:52ch;margin-top:1rem;color:var(--brown);font-size:1.125rem">
-        Browse nearby restaurants, build your order in a few taps, and track it live to your door.
-      </p>
+    <!-- ============================== HERO ============================== -->
+    <section class="hero section" id="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="script hero__kicker" aria-hidden="true">buon appetito!</p>
+          <h1 class="hero__title">Your city's kitchens, delivered.</h1>
+          <p class="hero__sub">Browse nearby restaurants, build your order in a few taps, and track it live to your door. Cash on delivery — no online payment needed.</p>
+          <div class="hero__cta">
+            <a class="btn btn--gold" href="login.html">Get Started</a>
+            <a class="btn btn--ghost" href="#how">How it works</a>
+          </div>
+        </div>
+        <div class="hero__media">
+          <!-- PLACEHOLDER: swap for brand photo -->
+          <img src="assets/img/hero.jpg" alt="A warm spread of dishes from local restaurants" width="1200" height="800" fetchpriority="high">
+        </div>
+      </div>
+      <a class="hero__scroll" href="#stats" aria-label="Scroll to learn more">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+      </a>
     </section>
   </main>
 
