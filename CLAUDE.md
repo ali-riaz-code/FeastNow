@@ -54,6 +54,14 @@ Targets Android 10+ and iOS 15+. Cloud-hosted REST API over HTTPS/JSON. **No in-
 
 - **Cross-cutting services (external):** push notifications (FCM/APNs) for order/delivery updates; mapping/geolocation for assignment, routing, and live tracking. Admin is a **separately-authenticated** portal — admin credentials are elevated and distinct from customer/restaurant/partner accounts.
 
+## Git workflow
+
+After completing and verifying a task (code runs, no errors), always commit and push
+to `main` on GitHub without waiting to be asked. Use clear, conventional commit
+messages (e.g. `feat: add order state machine`, `fix: correct price_at_order snapshot`).
+Never push code that hasn't been tested/run locally first. Vercel auto-deploys on every
+push to `main` — no separate deploy step needed.
+
 ## Core data model (from SRS §7)
 
 Central entities and their key relationships — the schema all modules share:
@@ -82,6 +90,17 @@ In-app payments/refunds; multi-order route optimization; multi-language; advance
 - Must run acceptably on low-to-mid-range Android devices (restaurant staff hardware).
 - Design for scale from hundreds to tens of thousands of concurrent users without redesign (NFR-5).
 
+
+## Design context
+
+Frontend design work is governed by two root files — read them before building or changing any UI:
+
+- **`PRODUCT.md`** — strategic: register (`product`), users, purpose, brand personality, anti-references, design principles, accessibility.
+- **`DESIGN.md`** — visual system: palette, typography, elevation, components, do's/don'ts. Currently a SEED (pre-code); re-run `/impeccable document` once UI code exists to capture real tokens.
+
+**Two references, kept separate — "Foodpanda flows, trattoria skin":**
+- **Functionality / UX flows → Foodpanda.** Mirror its marketplace IA and interaction patterns (location gate, restaurant home feed + cuisine tiles + search, sectioned menu, item customization + cart, cash checkout, live tracking timeline + map, history/reorder, post-delivery ratings, separate rider/vendor flows). Adopt the *flows*, not the pink look.
+- **Visual identity → `pizza-amici.nl`.** Warm rustic-Italian trattoria: layered cream canvas, deep-navy structure/ink, brass-gold accent, tricolore (tomato/basil) status pops; serif display + clean sans body + **mono for numerics only**. Order status is always color **+ icon + label** (color-blind safe). Motion is responsive (150–250ms) with reduced-motion fallbacks — never brand-site scroll choreography that stutters on low-end Android.
 
 ## Source of truth
 
