@@ -186,6 +186,32 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
+   Trust marquee + stats
+   ========================================================================== */
+.marquee { overflow: hidden; background: var(--navy); color: var(--cream); padding-block: .8rem; }
+.marquee__track {
+  display: flex; align-items: center; gap: 2.25rem;
+  width: max-content; white-space: nowrap;
+  animation: marquee 28s linear infinite;
+}
+.marquee__track span { font-weight: 500; letter-spacing: .02em; }
+.marquee__dot { color: var(--gold); }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
+
+.stats__grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-lg);
+  padding-block: clamp(2.25rem, 6vw, 4rem); text-align: center;
+}
+.stat__value { display: flex; align-items: baseline; justify-content: center; gap: .1em; }
+.stat__n, .stat__suffix {
+  font-size: clamp(2rem, 4.5vw, 3.25rem); color: var(--navy); font-weight: 500;
+}
+.stat__star { color: var(--gold); font-size: clamp(1.5rem, 3.2vw, 2.4rem); }
+.stat__label { margin-top: .3rem; color: var(--brown); font-size: .95rem; }
+@media (max-width: 560px) { .stats__grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ==========================================================================
    Intro curtain
    ========================================================================== */
 .intro {

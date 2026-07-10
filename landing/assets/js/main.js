@@ -58,8 +58,9 @@ function initNav() {
   }
 }
 
-/* ---- intro curtain ---- */
+/* ---- intro curtain + scroll behavior ---- */
 import { initIntro } from "./intro.js";
-function boot() { initNav(); initIntro(); }
+import { initScroll } from "./scroll.js";
+function boot() { initNav(); initIntro(); initScroll(); }
 if (document.readyState !== "loading") boot();
 else document.addEventListener("DOMContentLoaded", boot);
