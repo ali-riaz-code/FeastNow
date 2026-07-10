@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FeastNow — Your city's kitchens, delivered</title>
+  <meta name="description" content="FeastNow is a food-ordering marketplace. Browse nearby restaurants, order in a few taps, and track your delivery live. Cash on delivery.">
+  <script>document.documentElement.classList.remove('no-js');</script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/fraunces-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/space-grotesk-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/js/vendor/swiper-bundle.min.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body class="intro-active">
+  <!-- Intro curtain (removed after roll-up; hidden under reduced-motion / no-js) -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="logo-lockup logo-lockup--lg logo-lockup--stack intro__logo">
+      <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+      <span class="wordmark">FeastNow</span>
+    </div>
+  </div>
+
+  <!-- SVG sprite: chef-hat mark (referenced via <use>) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="feastnow-hat" viewBox="0 0 64 64">
+      <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+            fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+            fill="var(--gold)"/>
+    </symbol>
+  </svg>
+
+  <header class="nav" id="nav">
+    <div class="container nav__row">
+      <a class="logo-lockup" href="#top" aria-label="FeastNow home">
+        <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+        <span class="wordmark">FeastNow</span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#partner">For Restaurants</a>
+        <a href="#partner">For Riders</a>
+        <a class="btn btn--primary" href="login.html">Get Started</a>
+      </nav>
+      <button class="nav__burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav__drawer" id="nav-drawer" hidden>
+      <a href="#how">How it works</a>
+      <a href="#partner">For Restaurants</a>
+      <a href="#partner">For Riders</a>
+      <a class="btn btn--primary" href="login.html">Get Started</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============================== HERO ============================== -->
+    <section class="hero section" id="hero">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="script hero__kicker" aria-hidden="true">buon appetito!</p>
+          <h1 class="hero__title">Your city's kitchens, delivered.</h1>
+          <p class="hero__sub">Browse nearby restaurants, build your order in a few taps, and track it live to your door. Cash on delivery — no online payment needed.</p>
+          <div class="hero__cta">
+            <a class="btn btn--gold" href="login.html">Get Started</a>
+            <a class="btn btn--ghost" href="#how">How it works</a>
+          </div>
+        </div>
+        <div class="hero__media">
+          <!-- PLACEHOLDER: swap for brand photo -->
+          <img src="assets/img/hero.jpg" alt="A warm spread of dishes from local restaurants" width="1200" height="800" fetchpriority="high">
+        </div>
+      </div>
+      <a class="hero__scroll" href="#stats" aria-label="Scroll to learn more">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+      </a>
+    </section>
+
+    <!-- ============================== TRUST + STATS ============================== -->
+    <section class="stats" id="stats">
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span>Fresh from local kitchens</span><span class="marquee__dot">•</span>
+          <span>Live delivery tracking</span><span class="marquee__dot">•</span>
+          <span>Cash on delivery</span><span class="marquee__dot">•</span>
+          <span>Rate every order</span><span class="marquee__dot">•</span>
+          <span>Fresh from local kitchens</span><span class="marquee__dot">•</span>
+          <span>Live delivery tracking</span><span class="marquee__dot">•</span>
+          <span>Cash on delivery</span><span class="marquee__dot">•</span>
+          <span>Rate every order</span><span class="marquee__dot">•</span>
+        </div>
+      </div>
+      <div class="container stats__grid">
+        <!-- PLACEHOLDER numbers: swap for real data at launch -->
+        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="500">500</span><span class="num stat__suffix">+</span></p><p class="stat__label">Restaurants</p></div>
+        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="40">40</span><span class="num stat__suffix">+</span></p><p class="stat__label">Cuisines</p></div>
+        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="20">20</span><span class="num stat__suffix">k+</span></p><p class="stat__label">Orders delivered</p></div>
+        <div class="stat"><p class="stat__value"><span class="num stat__n" data-count="4.8" data-decimals="1">4.8</span><span class="stat__star" aria-hidden="true">★</span></p><p class="stat__label">Average rating</p></div>
+      </div>
+    </section>
+
+    <!-- ============================== HOW IT WORKS ============================== -->
+    <section class="how section" id="how">
+      <div class="container">
+        <h2 class="section-title">How FeastNow works</h2>
+        <ol class="how__grid" role="list">
+          <li class="step" data-reveal>
+            <span class="num step__n" aria-hidden="true">01</span>
+            <h3 class="step__h">Browse nearby restaurants</h3>
+            <p>Discover approved kitchens around you — filter by cuisine or search for exactly what you crave.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="num step__n" aria-hidden="true">02</span>
+            <h3 class="step__h">Build your order</h3>
+            <p>Add dishes to your cart, customise portions, and leave a note for the kitchen.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="num step__n" aria-hidden="true">03</span>
+            <h3 class="step__h">Track it live</h3>
+            <p>Watch your order move from the kitchen to your doorstep with live status and map tracking.</p>
+          </li>
+          <li class="step" data-reveal>
+            <span class="num step__n" aria-hidden="true">04</span>
+            <h3 class="step__h">Pay &amp; enjoy</h3>
+            <p>Pay cash when your food arrives, then rate the restaurant and your rider.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================== EXPLORE BY CUISINE ============================== -->
+    <section class="explore section" id="explore">
+      <div class="container explore__head">
+        <h2 class="section-title">Explore by cuisine</h2>
+        <p class="explore__sub">From wood-fired pizza to biryani — the best kitchens near you.</p>
+      </div>
+      <div class="swiper explore__swiper">
+        <div class="swiper-wrapper">
+          <!-- PLACEHOLDER content: swap names/ratings/counts for live marketplace data -->
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-pizza.jpg" alt="Wood-fired pizza with fresh basil" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Italian</h3><p class="card__meta"><span class="num card__rating">4.8</span><span class="card__star" aria-hidden="true">★</span> · 60+ places</p></div>
+          </div>
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-desi.jpg" alt="Fragrant chicken biryani" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Desi</h3><p class="card__meta"><span class="num card__rating">4.7</span><span class="card__star" aria-hidden="true">★</span> · 85+ places</p></div>
+          </div>
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-burgers.jpg" alt="Stacked cheeseburger" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Burgers</h3><p class="card__meta"><span class="num card__rating">4.6</span><span class="card__star" aria-hidden="true">★</span> · 70+ places</p></div>
+          </div>
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-pasta.jpg" alt="Fresh pasta with tomato sauce" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Pasta</h3><p class="card__meta"><span class="num card__rating">4.8</span><span class="card__star" aria-hidden="true">★</span> · 40+ places</p></div>
+          </div>
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-sushi.jpg" alt="Assorted sushi platter" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Sushi</h3><p class="card__meta"><span class="num card__rating">4.9</span><span class="card__star" aria-hidden="true">★</span> · 25+ places</p></div>
+          </div>
+          <div class="swiper-slide card">
+            <img src="assets/img/cuisine-wraps.jpg" alt="Grilled wraps with fillings" width="640" height="480" loading="lazy">
+            <div class="card__body"><h3>Wraps</h3><p class="card__meta"><span class="num card__rating">4.5</span><span class="card__star" aria-hidden="true">★</span> · 45+ places</p></div>
+          </div>
+        </div>
+        <div class="explore__controls">
+          <button class="explore__btn explore__btn--prev" aria-label="Previous cuisines">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="swiper-pagination explore__pagination"></div>
+          <button class="explore__btn explore__btn--next" aria-label="Next cuisines">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== TESTIMONIALS ============================== -->
+    <section class="reviews section" id="reviews">
+      <div class="container">
+        <h2 class="section-title">Loved by hungry people</h2>
+        <div class="reviews__grid">
+          <!-- PLACEHOLDER quotes: swap for real customer reviews at launch -->
+          <figure class="review" data-reveal>
+            <p class="review__stars" aria-label="Rated 5 out of 5 stars">★★★★★</p>
+            <blockquote>Ordered dinner for the whole family and tracked the rider the entire way. The kids loved watching the little map.</blockquote>
+            <figcaption>— Ayesha K.</figcaption>
+          </figure>
+          <figure class="review" data-reveal>
+            <p class="review__stars" aria-label="Rated 5 out of 5 stars">★★★★★</p>
+            <blockquote>Paying cash at the door is exactly what I wanted. No cards, no fuss — just hot biryani twenty minutes later.</blockquote>
+            <figcaption>— Bilal R.</figcaption>
+          </figure>
+          <figure class="review" data-reveal>
+            <p class="review__stars" aria-label="Rated 4 out of 5 stars">★★★★<span class="review__star-off">★</span></p>
+            <blockquote>Found three new favourite spots in my neighbourhood in the first week. Browsing by cuisine is dangerously easy.</blockquote>
+            <figcaption>— Sana M.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================== PARTNER CTA ============================== -->
+    <section class="partner section" id="partner">
+      <div class="container">
+        <div class="partner__panel">
+          <div class="partner__col">
+            <h2>List your restaurant</h2>
+            <p>Reach more customers in your city. Manage your menu and incoming orders from one simple app.</p>
+            <a class="btn btn--gold" href="login.html">Partner with us</a>
+          </div>
+          <div class="partner__divider" aria-hidden="true"></div>
+          <div class="partner__col">
+            <h2>Deliver with us</h2>
+            <p>Go online when it suits you, accept nearby orders, and get paid per delivery.</p>
+            <a class="btn btn--gold" href="login.html">Start delivering</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================== FOOTER ============================== -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <a class="logo-lockup" href="#top" aria-label="FeastNow home">
+          <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+          <span class="wordmark">FeastNow</span>
+        </a>
+        <p class="footer__tag">Your city's kitchens, delivered.</p>
+        <a class="btn btn--gold" href="login.html">Get Started</a>
+      </div>
+      <nav class="footer__col" aria-label="Company">
+        <h3>Company</h3>
+        <a href="#top">About</a>
+        <a href="#top">Contact</a>
+      </nav>
+      <nav class="footer__col" aria-label="Product">
+        <h3>Product</h3>
+        <a href="#how">How it works</a>
+        <a href="#partner">For Restaurants</a>
+        <a href="#partner">For Riders</a>
+      </nav>
+      <nav class="footer__col" aria-label="Legal">
+        <h3>Legal</h3>
+        <a href="#top">Privacy</a>
+        <a href="#top">Terms</a>
+      </nav>
+    </div>
+    <div class="container footer__bar">
+      <p class="footer__note">Cash on delivery — no online payment (this version).</p>
+      <div class="footer__social">
+        <a href="#top" aria-label="FeastNow on Instagram">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="#top" aria-label="FeastNow on LinkedIn">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zm7.5 0h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-7.9c0-1.88-.03-4.3-2.62-4.3-2.62 0-3.02 2.05-3.02 4.17V23H8V8z"/></svg>
+        </a>
+      </div>
+      <p class="footer__copy">© <span class="num">2026</span> FeastNow</p>
+    </div>
+  </footer>
+
+  <!-- vendor libs (classic scripts run before the module; expose window globals) -->
+  <script src="assets/js/vendor/gsap.min.js"></script>
+  <script src="assets/js/vendor/ScrollTrigger.min.js"></script>
+  <script src="assets/js/vendor/lenis.min.js"></script>
+  <script src="assets/js/vendor/swiper-bundle.min.js"></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
