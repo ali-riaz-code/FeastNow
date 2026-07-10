@@ -291,6 +291,36 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
+   Footer
+   ========================================================================== */
+.footer { background: var(--navy); color: var(--cream); padding-block: clamp(2.5rem, 6vw, 4rem) 1.75rem; }
+.footer .logo-lockup, .footer .wordmark { color: var(--cream); }
+.footer__grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--s-xl) var(--s-lg); }
+.footer__brand { display: flex; flex-direction: column; align-items: flex-start; }
+.footer__tag { color: rgba(255, 252, 240, .82); margin: .8rem 0 1.4rem; }
+.footer__col { display: flex; flex-direction: column; gap: .55rem; }
+.footer__col h3 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: .3rem; }
+.footer__col a { color: rgba(255, 252, 240, .82); }
+.footer__col a:hover { color: var(--gold); }
+.footer__bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+  margin-top: clamp(2rem, 5vw, 3rem); padding-top: 1.4rem;
+  border-top: 1px solid rgba(255, 252, 240, .18);
+  color: rgba(255, 252, 240, .75); font-size: .95rem;
+}
+.footer__social { display: flex; gap: .5rem; }
+.footer__social a {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 50%; color: var(--cream); border: 1px solid rgba(255, 252, 240, .25);
+  transition: color var(--dur), border-color var(--dur);
+}
+.footer__social a:hover { color: var(--gold); border-color: var(--gold); }
+@media (max-width: 760px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__brand { grid-column: 1 / -1; }
+}
+
+/* ==========================================================================
    Intro curtain
    ========================================================================== */
 .intro {
