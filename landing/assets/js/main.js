@@ -37,7 +37,29 @@ document.addEventListener("click", (e) => {
 
 console.info("FeastNow landing booted. reduced-motion:", prefersReducedMotion);
 
+/* ---- navigation: scrolled state + mobile drawer ---- */
+function initNav() {
+  const nav = document.getElementById("nav");
+  if (nav) {
+    const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+  const burger = document.querySelector(".nav__burger");
+  const drawer = document.getElementById("nav-drawer");
+  if (burger && drawer) {
+    const setOpen = (open) => {
+      drawer.toggleAttribute("hidden", !open);
+      burger.setAttribute("aria-expanded", String(open));
+      burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    };
+    burger.addEventListener("click", () => setOpen(drawer.hasAttribute("hidden")));
+    drawer.addEventListener("click", (e) => { if (e.target.closest("a")) setOpen(false); });
+  }
+}
+
 /* ---- intro curtain ---- */
 import { initIntro } from "./intro.js";
-if (document.readyState !== "loading") initIntro();
-else document.addEventListener("DOMContentLoaded", initIntro);
+function boot() { initNav(); initIntro(); }
+if (document.readyState !== "loading") boot();
+else document.addEventListener("DOMContentLoaded", boot);
