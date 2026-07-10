@@ -33,4 +33,5 @@ export function revealOnScroll(selector) {
 
 export function initScroll() {
   countUp();
+  revealOnScroll("#how [data-reveal]");
 }
