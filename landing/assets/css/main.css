@@ -224,6 +224,40 @@ h1, h2, h3 {
 @media (max-width: 520px) { .how__grid { grid-template-columns: 1fr; } }
 
 /* ==========================================================================
+   Explore by cuisine (Swiper carousel)
+   ========================================================================== */
+.explore { padding-top: 0; }
+.explore__head { margin-bottom: clamp(1.25rem, 3.5vw, 2rem); }
+.explore__head .section-title { margin-bottom: .35rem; }
+.explore__sub { color: var(--brown); }
+.explore__swiper { padding-inline: var(--gutter); }
+.card {
+  background: var(--off-white); border-radius: var(--r-lg); overflow: hidden;
+  box-shadow: var(--sh-raised); width: clamp(240px, 62vw, 320px); height: auto;
+}
+.card img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; }
+.card__body { padding: var(--s-md) var(--s-md) var(--s-lg); }
+.card__body h3 { font-size: 1.25rem; }
+.card__meta { color: var(--brown); font-size: .92rem; margin-top: .3rem; }
+.card__rating { color: var(--brown-deep); font-weight: 600; }
+.card__star { color: var(--gold); }
+
+.explore__controls {
+  display: flex; align-items: center; justify-content: center; gap: 1rem;
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+}
+.explore__btn {
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border: 2px solid var(--navy); border-radius: 50%; color: var(--navy);
+  transition: background var(--dur), color var(--dur), opacity var(--dur);
+}
+.explore__btn:hover { background: var(--navy); color: var(--cream); }
+.explore__btn.is-disabled { opacity: .35; pointer-events: none; }
+.explore__pagination { position: static; width: auto; display: flex; gap: .4rem; }
+.explore__pagination .swiper-pagination-bullet { background: var(--beige); opacity: 1; width: 9px; height: 9px; }
+.explore__pagination .swiper-pagination-bullet-active { background: var(--gold); }
+
+/* ==========================================================================
    Intro curtain
    ========================================================================== */
 .intro {

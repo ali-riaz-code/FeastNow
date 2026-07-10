@@ -31,7 +31,21 @@ export function revealOnScroll(selector) {
   });
 }
 
+/* ---- explore-by-cuisine carousel ---- */
+function initCarousel() {
+  if (!Swiper || !document.querySelector(".explore__swiper")) return;
+  new Swiper(".explore__swiper", {
+    slidesPerView: "auto",
+    spaceBetween: 16,
+    grabCursor: true,
+    navigation: { nextEl: ".explore__btn--next", prevEl: ".explore__btn--prev", disabledClass: "is-disabled" },
+    pagination: { el: ".explore__pagination", clickable: true },
+    a11y: { enabled: true },
+  });
+}
+
 export function initScroll() {
   countUp();
   revealOnScroll("#how [data-reveal]");
+  initCarousel();
 }
