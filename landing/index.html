@@ -14,7 +14,15 @@
   <link rel="stylesheet" href="assets/js/vendor/swiper-bundle.min.css">
   <link rel="stylesheet" href="assets/css/main.css">
 </head>
-<body>
+<body class="intro-active">
+  <!-- Intro curtain (removed after roll-up; hidden under reduced-motion / no-js) -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="logo-lockup logo-lockup--lg logo-lockup--stack intro__logo">
+      <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
+      <span class="wordmark">FeastNow</span>
+    </div>
+  </div>
+
   <!-- SVG sprite: chef-hat mark (referenced via <use>) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="feastnow-hat" viewBox="0 0 64 64">
@@ -30,22 +38,13 @@
   </svg>
 
   <main id="top">
-    <div class="container" style="display:flex;flex-direction:column;gap:2rem;padding-block:3rem">
-      <a class="logo-lockup logo-lockup--lg" href="#top" aria-label="FeastNow home">
-        <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
-        <span class="wordmark">FeastNow</span>
-      </a>
-      <a class="logo-lockup" href="#top" aria-label="FeastNow home">
-        <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
-        <span class="wordmark">FeastNow</span>
-      </a>
-      <div style="background:var(--navy);padding:2rem;border-radius:20px;width:max-content">
-        <div class="logo-lockup logo-lockup--lg logo-lockup--stack" style="color:var(--cream)">
-          <svg class="logo-mark" role="img" aria-hidden="true"><use href="#feastnow-hat"></use></svg>
-          <span class="wordmark" style="color:var(--cream)">FeastNow</span>
-        </div>
-      </div>
-    </div>
+    <!-- TEMP hero placeholder (replaced by real hero in Task 6) -->
+    <section class="section container">
+      <h1 style="font-size:clamp(2.5rem,6vw,4.5rem)">Your city's kitchens, delivered.</h1>
+      <p style="max-width:52ch;margin-top:1rem;color:var(--brown);font-size:1.125rem">
+        Browse nearby restaurants, build your order in a few taps, and track it live to your door.
+      </p>
+    </section>
   </main>
 
   <!-- vendor libs (classic scripts run before the module; expose window globals) -->

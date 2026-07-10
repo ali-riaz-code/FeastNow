@@ -36,3 +36,8 @@ document.addEventListener("click", (e) => {
 });
 
 console.info("FeastNow landing booted. reduced-motion:", prefersReducedMotion);
+
+/* ---- intro curtain ---- */
+import { initIntro } from "./intro.js";
+if (document.readyState !== "loading") initIntro();
+else document.addEventListener("DOMContentLoaded", initIntro);

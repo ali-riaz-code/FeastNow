@@ -96,3 +96,27 @@ h1, h2, h3 {
 .logo-lockup--lg .logo-mark { width: clamp(3.5rem, 11vw, 6rem); height: auto; }
 .logo-lockup--lg .wordmark { font-size: clamp(2.5rem, 10vw, 5rem); }
 .logo-lockup--stack { flex-direction: column; gap: .6rem; text-align: center; }
+
+/* ==========================================================================
+   Intro curtain
+   ========================================================================== */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  background: var(--navy);
+  display: grid;
+  place-items: center;
+  will-change: transform;
+}
+.intro__logo { color: var(--cream); }
+.intro__logo .wordmark { color: var(--cream); }
+body.intro-active { overflow: hidden; }
+
+/* No-JS and reduced-motion: never show the curtain, never lock scroll */
+.no-js .intro { display: none; }
+.no-js.intro-active, .no-js body.intro-active { overflow: visible; }
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none; }
+  body.intro-active { overflow: visible; }
+}
