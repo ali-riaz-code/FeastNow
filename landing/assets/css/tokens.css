@@ -10,6 +10,7 @@
   --brown: #4F3C2C;
   --brown-deep: #2F241A;
   --gold: #E3AF04;
+  --gold-deep: #7A5E00; /* gold-family for TEXT on light surfaces (AA ≥4.5:1) */
   --tomato: #C72531;
   --basil: #128643;
   --sky: #C0DEEE;
