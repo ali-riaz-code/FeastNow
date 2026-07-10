@@ -47,5 +47,6 @@ function initCarousel() {
 export function initScroll() {
   countUp();
   revealOnScroll("#how [data-reveal]");
+  revealOnScroll("#reviews [data-reveal]");
   initCarousel();
 }
