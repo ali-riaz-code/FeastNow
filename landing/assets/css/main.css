@@ -321,6 +321,15 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
+   Login "coming soon" stub page
+   ========================================================================== */
+.stub {
+  min-height: 100dvh; display: grid; place-content: center; justify-items: center;
+  gap: 1.4rem; text-align: center; padding: var(--gutter); background: var(--cream);
+}
+.stub__msg { color: var(--brown); font-size: 1.125rem; max-width: 34ch; }
+
+/* ==========================================================================
    Intro curtain
    ========================================================================== */
 .intro {
