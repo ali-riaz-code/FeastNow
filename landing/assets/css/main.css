@@ -286,11 +286,14 @@ h1, h2, h3 {
 /* ==========================================================================
    Hero — centered copy over a full-width cart stage with badge + side cards
    ========================================================================== */
-.hero { padding-block: clamp(24px, 4vw, 48px) clamp(88px, 11vw, 150px); }
-.hero__copy { text-align: center; max-width: 780px; margin-inline: auto; }
-.hero__tag { font-size: clamp(1.4rem, 2.5vw, 1.8rem); margin-bottom: .6rem; }
+/* Everything — copy, cart, hexagon badge, flanking cards — must land inside the
+   first viewport (reference: pizza-amici's hero card is visible with zero scroll).
+   The cart height is budgeted against 100svh; the copy stays compact above it. */
+.hero { padding-block: clamp(12px, 1.6vw, 26px) clamp(88px, 11vw, 150px); }
+.hero__copy { text-align: center; max-width: 900px; margin-inline: auto; }
+.hero__tag { font-size: clamp(1.25rem, 2.1vw, 1.6rem); margin-bottom: .4rem; }
 .hero__title {
-  font-size: clamp(2.75rem, 6.2vw, 5rem);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
   font-weight: 750;
   line-height: .98;
   letter-spacing: -0.03em;
@@ -303,12 +306,18 @@ h1, h2, h3 {
   transition: transform .6s var(--ease-out-expo);
 }
 .hero__title:hover .glyph-o { transform: rotate(352deg); }
-.hero__sub { max-width: 50ch; margin: 1.2rem auto 0; color: var(--brown); font-size: 1.125rem; }
-.hero__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1.8rem; }
+.hero__sub { max-width: 56ch; margin: .9rem auto 0; color: var(--brown); font-size: 1.0625rem; }
+.hero__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1.3rem; }
 
 /* the stage: big cart with overlapping hexagon + side cards */
-.hero__stage { position: relative; margin-top: clamp(1.5rem, 4vw, 3rem); }
-.hero__stage .cart { width: min(100%, 960px); height: auto; display: block; margin-inline: auto; }
+.hero__stage { position: relative; margin-top: clamp(1rem, 2.5vw, 1.75rem); }
+.hero__stage .cart {
+  display: block; margin-inline: auto;
+  width: auto; max-width: 100%;
+  /* fill whatever fold height remains after ticker + nav + copy */
+  height: clamp(280px, calc(100svh - 470px), 620px);
+  aspect-ratio: 680 / 470;
+}
 .cart__wheel { transform-box: fill-box; transform-origin: center; }
 .cart__bulb { animation: bulb 2.4s ease-in-out infinite; }
 .cart__bulb:nth-of-type(2) { animation-delay: .6s; }
@@ -330,8 +339,11 @@ h1, h2, h3 {
 
 /* hexagon reviews ticket — layered clip-paths fake the navy border line */
 .hex {
-  position: absolute; left: 50%; bottom: -7%;
-  translate: -50% 0; /* CSS translate, not transform — GSAP scale/rotate tweens won't clobber it */
+  /* centered via auto margins, NOT translate/transform: GSAP (3.13+) folds the
+     CSS translate property into its own transform when it tweens scale/rotate,
+     which double-applied the -50% and left the badge off-center */
+  position: absolute; left: 0; right: 0; bottom: -7%;
+  margin-inline: auto;
   width: clamp(280px, 42vw, 440px);
   filter: drop-shadow(0 12px 26px rgba(15, 44, 86, .22));
   z-index: 3;
@@ -398,7 +410,7 @@ h1, h2, h3 {
 
 .hero__scroll {
   display: grid; place-items: center;
-  width: 48px; height: 48px; margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+  width: 48px; height: 48px; margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
   color: var(--navy); border: 2px solid var(--beige); border-radius: 50%;
   transition: border-color var(--dur), transform var(--dur);
   animation: nudge 2.6s ease-in-out infinite;
@@ -409,6 +421,8 @@ h1, h2, h3 {
 @media (max-width: 640px) {
   .hero__card { display: none; } /* keep the small-screen stage uncluttered */
   .hex { bottom: -9%; }
+  /* width-constrained anyway; the svh budget would only add letterbox gutters */
+  .hero__stage .cart { height: auto; width: 100%; aspect-ratio: auto; }
 }
 
 /* ==========================================================================
