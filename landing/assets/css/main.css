@@ -187,12 +187,18 @@ h1, h2, h3 {
    Navigation
    ========================================================================== */
 .nav {
-  position: sticky; top: 0; z-index: var(--z-nav);
-  background: transparent;
-  transition: background var(--dur), box-shadow var(--dur);
+  position: sticky; top: 10px; z-index: var(--z-nav);
+  padding-inline: clamp(10px, 2vw, 24px); /* inset: page bg shows around the pill */
 }
-.nav.is-scrolled { background: var(--cream); box-shadow: var(--sh-raised); }
-.nav__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 72px; }
+.nav__row {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 72px;
+  background: var(--cream);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-raised);
+  padding-inline: clamp(1.1rem, 2.5vw, 1.9rem);
+  transition: box-shadow var(--dur);
+}
+.nav.is-scrolled .nav__row { box-shadow: var(--sh-overlay); }
 .nav__links { display: flex; align-items: center; gap: clamp(1rem, 2.4vw, 2rem); }
 .nav__links > a:not(.btn) {
   position: relative; font-weight: 500; color: var(--navy); padding-block: .3rem;
@@ -215,8 +221,31 @@ h1, h2, h3 {
 .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-.nav__drawer { display: flex; flex-direction: column; gap: .5rem; padding: .5rem var(--gutter) 1.5rem; background: var(--cream); box-shadow: var(--sh-overlay); }
+.nav__drawer {
+  display: flex; flex-direction: column; gap: .5rem;
+  margin: 8px clamp(10px, 2vw, 24px) 0;
+  padding: 1rem 1.25rem 1.5rem;
+  background: var(--cream);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-overlay);
+}
 .nav__drawer[hidden] { display: none; }
+
+/* dash separator before the nav CTA — echoes the reference's notch-dash */
+.nav__dash { width: 20px; height: 3px; border-radius: 2px; background: var(--navy); flex: none; }
+
+/* ticket-shaped CTA: straight corners + punched semicircle notches.
+   Notches are bg-colored dots (same trick as .ticket perforations) so they
+   only read correctly on the cream nav pill — nav-only modifier by design. */
+.btn--ticket { border-radius: 10px; }
+.btn--ticket:hover { box-shadow: none; } /* punched notches would expose a rectangular shadow */
+.btn--ticket::before, .btn--ticket::after {
+  content: ""; position: absolute; top: 50%; translate: 0 -50%;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--cream);
+}
+.btn--ticket::before { left: -7px; }
+.btn--ticket::after { right: -7px; }
 .nav__drawer > a:not(.btn) { font-weight: 500; padding-block: .6rem; color: var(--navy); }
 .nav__drawer > .btn { margin-top: .5rem; align-self: flex-start; }
 
