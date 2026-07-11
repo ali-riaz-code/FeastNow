@@ -355,7 +355,6 @@ h1, h2, h3 {
   width: 100%; max-width: 1100px;
   height: clamp(360px, calc(100vh - 460px), 760px);
   aspect-ratio: 680 / 470;
-  filter: drop-shadow(0 12px 40px rgba(15, 44, 86, .18));
 }
 .cart__wheel { transform-box: fill-box; transform-origin: center; }
 .cart__bulb { animation: bulb 2.4s ease-in-out infinite; }

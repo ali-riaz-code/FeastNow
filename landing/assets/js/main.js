@@ -18,14 +18,18 @@ export let lenis = null;
 if (!prefersReducedMotion && window.Lenis && gsap) {
   document.documentElement.classList.add("lenis-on");
   lenis = new window.Lenis({
-    duration: 0.8,                               // was 1.15 — page felt laggy behind the wheel
-    easing: (t) => 1 - Math.pow(1 - t, 4),       // ease-out-quart: settles sooner than expo
+    duration: 1.0,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    wheelMultiplier: 1.3,                        // more page-travel per wheel notch
+    wheelMultiplier: 1.0,
+    infiniteLerp: false,
   });
-  if (ScrollTrigger) lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
+  if (ScrollTrigger) {
+    ScrollTrigger.config({ limitFrequency: 80 });
+    lenis.on("scroll", ScrollTrigger.update);
+  }
+  gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(33, 16);
 }
 
 /* ---- smooth in-page anchor scrolling (works with or without Lenis) ---- */

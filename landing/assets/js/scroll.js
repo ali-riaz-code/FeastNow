@@ -148,7 +148,7 @@ function scrubChoreography(wide) {
   if (document.querySelector(".partner__stamp")) {
     gsap.fromTo(".partner__stamp", { rotation: 14 }, {
       rotation: -9, ease: "none",
-      scrollTrigger: { trigger: "#partner", start: "top bottom", end: "bottom top", scrub: true },
+      scrollTrigger: { trigger: "#partner", start: "top bottom", end: "bottom top", scrub: 1.5 },
     });
   }
 
@@ -156,7 +156,7 @@ function scrubChoreography(wide) {
   if (document.querySelector(".scooter")) {
     gsap.fromTo(".scooter", { x: -72 }, {
       x: 0, ease: "power1.out",
-      scrollTrigger: { trigger: "#riders", start: "top 92%", end: "top 35%", scrub: 1 },
+      scrollTrigger: { trigger: "#riders", start: "top 92%", end: "top 35%", scrub: 1.2 },
     });
   }
 
@@ -197,11 +197,9 @@ function heroDepthParallax() {
   const hex = document.querySelector(".hex");
   if (!hero || !stage) return;
 
-  // quick setters — one rAF-friendly function per target property
   const tiltX = gsap.quickSetter(stage, "rotateX", "deg");
   const tiltY = gsap.quickSetter(stage, "rotateY", "deg");
   const lift = gsap.quickSetter(stage, "y", "px");
-
   const cartX = gsap.quickSetter(cart, "x", "px");
   const leftX = gsap.quickSetter(left, "x", "px");
   const leftY = gsap.quickSetter(left, "y", "px");
@@ -210,54 +208,61 @@ function heroDepthParallax() {
   const hexY = gsap.quickSetter(hex, "y", "px");
   const hexR = gsap.quickSetter(hex, "rotate", "deg");
 
-  const bounds = { w: 0, h: 0, cx: 0.5, cy: 0.5 };
-  const state = { x: 0.5, y: 0.5, toX: 0.5, toY: 0.5 };
+  const bounds = { w: 0, h: 0 };
+  const state = { x: 0.5, y: 0.5, toX: 0.5, toY: 0.5, active: false };
+  let ticker = null;
+
+  const reset = () => { state.toX = 0.5; state.toY = 0.5; };
 
   const onResize = () => {
     const r = hero.getBoundingClientRect();
-    bounds.w = r.width;
-    bounds.h = r.height;
+    bounds.w = r.width; bounds.h = r.height;
   };
 
   const onMove = (e) => {
-    state.toX = (e.clientX - hero.getBoundingClientRect().left) / bounds.w;
-    state.toY = (e.clientY - hero.getBoundingClientRect().top) / bounds.h;
+    const r = hero.getBoundingClientRect();
+    state.toX = (e.clientX - r.left) / bounds.w;
+    state.toY = (e.clientY - r.top) / bounds.h;
+    if (!state.active) {
+      state.active = true;
+      state.x = state.toX;
+      state.y = state.toY;
+      ticker = gsap.ticker.add(tick);
+    }
   };
 
-  const onLeave = () => { state.toX = 0.5; state.toY = 0.5; };
+  const onLeave = () => {
+    reset();
+    if (!state.active) return;
+    // let lerp settle then stop
+    setTimeout(() => { if (state.x === 0.5 && state.y === 0.5) stop(); }, 120);
+  };
+
+  const tick = () => {
+    state.x += (state.toX - state.x) * 0.1;
+    state.y += (state.toY - state.y) * 0.1;
+    const nx = state.x - 0.5;
+    const ny = state.y - 0.5;
+    tiltY(nx * 5);
+    tiltX(-ny * 4);
+    lift(-Math.abs(nx * ny) * 4);
+    if (cart) cartX(nx * -6);
+    if (left) { leftX(nx * -14); leftY(ny * -8); leftR(nx * -3); }
+    if (right) rightX(nx * 12);
+    if (hex) { hexY(ny * 3); hexR(nx * 1.5); }
+  };
+
+  const stop = () => {
+    if (ticker) gsap.ticker.remove(tick);
+    ticker = null;
+    state.active = false;
+    state.x = 0.5; state.y = 0.5;
+  };
 
   onResize();
   window.addEventListener("resize", onResize, { passive: true });
   hero.addEventListener("pointermove", onMove, { passive: true });
   hero.addEventListener("pointerleave", onLeave, { passive: true });
-
-  // lerp loop — spring-like follow instead of snap
-  gsap.ticker.add(() => {
-    state.x += (state.toX - state.x) * 0.08;
-    state.y += (state.toY - state.y) * 0.08;
-
-    const nx = state.x - 0.5; // -0.5 .. 0.5
-    const ny = state.y - 0.5;
-
-    // stage tilt: gentle 3D rotation
-    tiltY(nx * 5);
-    tiltX(-ny * 4);
-    lift(-Math.abs(nx * ny) * 4);
-
-    // cart shifts slightly opposite the stage tilt (parallax depth)
-    if (cart) cartX(nx * -6);
-
-    // left card drifts more — it's in the "foreground"
-    if (left) {
-      leftX(nx * -14);
-      leftY(ny * -8);
-      leftR(nx * -3);
-    }
-    // right card also in foreground, opposite drift
-    if (right) rightX(nx * 12);
-    // hex badge lags behind (background)
-    if (hex) { hexY(ny * 3); hexR(nx * 1.5); }
-  });
 }
 
 export function initScroll() {
