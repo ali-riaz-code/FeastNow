@@ -563,12 +563,15 @@ h1, h2, h3 {
 @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
 @media (max-width: 640px) {
-  .hero__awning { display: none; } /* save vertical space on mobile */
-  .hero__card { display: none; } /* keep the small-screen stage uncluttered */
+  .hero { perspective: none; }
+  .hero__awning { display: none; }
+  .hero__card { display: none; }
   .hero__receipt { display: none; }
   .hex { bottom: 12%; right: auto; left: 50%; transform: translateX(-50%); }
-  /* width-constrained anyway; the svh budget would only add letterbox gutters */
   .hero__stage .cart { height: auto; width: 100%; aspect-ratio: auto; }
+  .cart__cat { display: none; }
+  .cart__garlic { display: none; }
+  .cart__cloth { animation: none; }
 }
 
 /* ==========================================================================
@@ -954,9 +957,11 @@ h1, h2, h3 {
   background: var(--navy);
   display: grid;
   place-items: center;
-  will-change: transform;
 }
-.intro__inner { display: grid; justify-items: center; gap: .4rem; color: var(--cream); }
+.intro__inner {
+  display: grid; justify-items: center; gap: .4rem; color: var(--cream);
+  text-align: center; width: 100%; padding-inline: 1rem;
+}
 .intro__hat { width: clamp(64px, 12vw, 96px); height: auto; color: var(--cream); }
 .intro__word {
   font-size: clamp(3rem, 11vw, 5.5rem);

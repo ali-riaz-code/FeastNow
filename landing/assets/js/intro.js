@@ -4,9 +4,10 @@
 // sides — then the steam billow starts).
 import { gsap, ScrollTrigger, prefersReducedMotion, lenis } from "./main.js";
 
-/** Start the cart steam billow — called after the hero assembly finishes. */
+/** Start the cart steam billow — called after the hero assembly finishes.
+    Skipped on mobile/touch devices — the repeated GSAP ticker fights mobile GPU. */
 export function startSteam() {
-  if (!gsap) return;
+  if (!gsap || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   const paths = document.querySelectorAll(".cart__steam path");
   if (!paths.length) return;
   paths.forEach((p, i) => {
