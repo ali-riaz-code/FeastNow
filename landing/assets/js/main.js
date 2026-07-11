@@ -18,9 +18,10 @@ export let lenis = null;
 if (!prefersReducedMotion && window.Lenis && gsap) {
   document.documentElement.classList.add("lenis-on");
   lenis = new window.Lenis({
-    duration: 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    duration: 0.8,                               // was 1.15 — page felt laggy behind the wheel
+    easing: (t) => 1 - Math.pow(1 - t, 4),       // ease-out-quart: settles sooner than expo
     smoothWheel: true,
+    wheelMultiplier: 1.3,                        // more page-travel per wheel notch
   });
   if (ScrollTrigger) lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((time) => lenis.raf(time * 1000));
