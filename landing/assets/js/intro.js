@@ -70,5 +70,7 @@ export function initIntro() {
     // flanking cards fly in from their respective sides
     tl.from(".hero__card--left", { x: -60, opacity: 0, duration: 0.5, ease: "power3.out", clearProps: "all" }, "-=0.3");
     tl.from(".hero__card--right", { x: 60, opacity: 0, duration: 0.5, ease: "power3.out", clearProps: "all" }, "-=0.2");
+    // receipt dangle drops in
+    tl.from(".hero__receipt", { y: -30, opacity: 0, duration: 0.45, ease: "back.out(1.2)", clearProps: "all" }, "-=0.25");
   }
 }

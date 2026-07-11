@@ -313,7 +313,7 @@ h1, h2, h3 {
   /* sits behind the nav but above the hero background */
 }
 
-.hero__copy { text-align: center; max-width: 900px; margin-inline: auto; }
+.hero__copy { max-width: 960px; margin-inline: clamp(20px, 3vw, 60px) auto; }
 .hero__tag { font-size: clamp(1.25rem, 2.1vw, 1.6rem); margin-bottom: .4rem; }
 .hero__title {
   font-size: clamp(2.4rem, 4vw, 3.6rem);
@@ -321,6 +321,8 @@ h1, h2, h3 {
   line-height: .98;
   letter-spacing: -0.03em;
   font-variation-settings: "SOFT" 90, "WONK" 1;
+  text-align: left;
+  max-width: 720px;
 }
 .hero__title .w { display: inline-block; }
 .glyph-o {
@@ -329,7 +331,7 @@ h1, h2, h3 {
   transition: transform .6s var(--ease-out-expo);
 }
 .hero__title:hover .glyph-o { transform: rotate(352deg); }
-.hero__sub { max-width: 56ch; margin: .9rem auto 0; color: var(--brown); font-size: 1.0625rem; }
+.hero__sub { max-width: 56ch; margin: .9rem 0 0; color: var(--brown); font-size: 1.0625rem; }
 .hero__cta {
   display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem;
   margin-top: clamp(.6rem, 1.5vw, 1rem);
@@ -345,8 +347,8 @@ h1, h2, h3 {
 }
 .hero__stage .cart {
   display: block; margin-inline: auto;
-  width: 100%; max-width: 960px;
-  height: clamp(280px, calc(100vh - 500px), 680px);
+  width: 100%; max-width: 1100px;
+  height: clamp(360px, calc(100vh - 460px), 760px);
   aspect-ratio: 680 / 470;
   filter: drop-shadow(0 12px 40px rgba(15, 44, 86, .18));
 }
@@ -365,12 +367,9 @@ h1, h2, h3 {
 
 /* hexagon reviews ticket — layered clip-paths fake the navy border line */
 .hex {
-  /* centered via auto margins, NOT translate/transform: GSAP (3.13+) folds the
-     CSS translate property into its own transform when it tweens scale/rotate,
-     which double-applied the -50% and left the badge off-center */
-  position: absolute; left: 0; right: 0; bottom: -7%;
-  margin-inline: auto;
-  width: clamp(280px, 42vw, 440px);
+  position: absolute; right: clamp(10px, 3vw, 50px); left: auto;
+  bottom: -16%;
+  width: clamp(200px, 26vw, 320px);
   filter: drop-shadow(0 12px 26px rgba(15, 44, 86, .22));
   z-index: 3;
   transition: scale .35s var(--ease-out-expo);
@@ -407,15 +406,15 @@ h1, h2, h3 {
 
 /* ---- left card: torn-paper envelope (matches "env" from How It Works) ---- */
 .hero__card--left {
-  left: 0; bottom: 18%;
+  left: -2%; bottom: 16%;
   background: var(--cream);
   border-radius: 14px;
   padding: 1.2rem 1.1rem 1.5rem;
   text-align: center;
-  transform: rotate(-6deg);
+  transform: rotate(-10deg);
   box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15,44,86,.06);
 }
-.hero__card--left:hover { rotate: 3deg; translate: 0 -8px; }
+.hero__card--left:hover { rotate: 2deg; translate: 0 -8px; }
 .hero__card-flap {
   position: absolute; top: 0; left: 0; right: 0; height: 10px;
   background: var(--navy);
@@ -438,15 +437,15 @@ h1, h2, h3 {
 
 /* ---- right card: recipe note-card with paper clip and ruled lines ---- */
 .hero__card--right {
-  right: 0; bottom: 14%;
+  right: -2%; bottom: 38%;
   background: #FFFCF7; /* slightly warmer than cream for note-paper feel */
   border-radius: var(--r-md);
-  padding: 1.4rem 1.2rem 2.2rem;
-  transform: rotate(3deg);
+  padding: 1.1rem 1rem 1.8rem;
+  transform: rotate(8deg);
   box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15,44,86,.06);
-  max-width: 250px;
+  max-width: 220px;
 }
-.hero__card--right:hover { rotate: -2deg; translate: 0 -8px; }
+.hero__card--right:hover { rotate: 3deg; translate: 0 -8px; }
 .hero__card-clip {
   position: absolute; top: -4px; right: 16px;
   width: 14px; height: 28px;
@@ -484,6 +483,61 @@ h1, h2, h3 {
 }
 .hero__card-btn:hover { transform: translateX(-50%) rotate(0deg) translateY(-2px); }
 
+/* ---- receipt dangle: torn order ticket hooked on the cart's right edge ---- */
+.hero__receipt {
+  position: absolute;
+  left: calc(50% + clamp(280px, 34vw, 460px));
+  bottom: 20%;
+  z-index: 3;
+  max-width: 140px;
+  background: #FFFCF7;
+  padding: .6rem .7rem .9rem;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 6px 18px rgba(15,44,86,.14);
+  transform: rotate(6deg);
+  transition: translate .35s var(--ease-out-expo), rotate .35s var(--ease-out-expo);
+  line-height: 1.3;
+}
+.hero__receipt::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 6px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent, transparent 4px,
+      rgba(15,44,86,.12) 4px, rgba(15,44,86,.12) 5px
+    );
+  pointer-events: none;
+}
+.hero__receipt::after {
+  content: "";
+  position: absolute; bottom: -6px; left: 0; right: 0;
+  height: 6px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #FFFCF7, #FFFCF7 5px,
+      transparent 5px, transparent 7px
+    );
+  pointer-events: none;
+}
+.hero__receipt:hover { rotate: -2deg; translate: 0 -8px; }
+.hero__receipt-total {
+  font-size: .7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--gold-deep);
+  margin-bottom: .1rem;
+}
+.hero__receipt-amt {
+  font-family: var(--font-mono);
+  font-size: 1rem; font-weight: 700; color: var(--navy);
+}
+.hero__receipt-eta {
+  font-size: .65rem; color: var(--brown);
+  margin-top: .15rem; padding-top: .15rem;
+  border-top: 1px dashed rgba(15,44,86,.15);
+}
+
 .hero__scroll {
   display: grid; place-items: center;
   width: 48px; height: 48px; margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
@@ -497,7 +551,8 @@ h1, h2, h3 {
 @media (max-width: 640px) {
   .hero__awning { display: none; } /* save vertical space on mobile */
   .hero__card { display: none; } /* keep the small-screen stage uncluttered */
-  .hex { bottom: -9%; }
+  .hero__receipt { display: none; }
+  .hex { bottom: -12%; right: auto; left: 50%; transform: translateX(-50%); }
   /* width-constrained anyway; the svh budget would only add letterbox gutters */
   .hero__stage .cart { height: auto; width: 100%; aspect-ratio: auto; }
 }
