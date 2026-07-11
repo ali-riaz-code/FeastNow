@@ -104,6 +104,30 @@ h1, h2, h3 {
   margin-top: calc(-1 * clamp(28px, 6vw, 64px));
 }
 
+/* seam ribbon: two offset rows of dashes on a colored band, one per section
+   boundary (reference: pizza-amici's navy/cream brick divider). Static, cheap. */
+.sec-cap::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 18px;
+  border-radius: inherit;
+  background-color: var(--seam-base, var(--navy));
+  background-image:
+    repeating-linear-gradient(90deg, var(--seam-dash, var(--cream)) 0 42px, transparent 42px 100px),
+    repeating-linear-gradient(90deg, var(--seam-dash, var(--cream)) 0 42px, transparent 42px 100px);
+  background-size: 100% 5px, 100% 5px;
+  background-position: 0 3px, 50px 10px;
+  background-repeat: repeat-x, repeat-x;
+  pointer-events: none;
+}
+
+/* per-boundary colors — every partition gets its own pair */
+#cuisines { --seam-base: var(--navy);       --seam-dash: var(--cream); }
+#how      { --seam-base: var(--gold);       --seam-dash: var(--navy); }
+#reviews  { --seam-base: var(--brown);      --seam-dash: var(--cream); } /* the requested brown crevice */
+#partner  { --seam-base: var(--tomato);     --seam-dash: var(--cream); }
+#riders   { --seam-base: var(--brown-deep); --seam-dash: var(--gold); }
+.footer.sec-cap { --seam-base: var(--cream); --seam-dash: var(--navy); }
+
 .kicker { font-size: clamp(1.3rem, 2.2vw, 1.7rem); margin-bottom: .5rem; display: block; }
 .section-title {
   font-size: clamp(2.25rem, 5vw, 3.5rem);
