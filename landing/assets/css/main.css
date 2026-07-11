@@ -195,7 +195,7 @@ h1, h2, h3 {
 .btn--gold:hover { background: var(--navy); color: var(--gold); }
 .btn--navy { background: var(--navy); color: var(--cream); }
 .btn--navy:hover { background: var(--cream); color: var(--navy); }
-.btn--ghost { background: transparent; color: var(--ink); border-color: currentColor; }
+.btn--ghost { background: transparent; color: var(--ink); border-color: transparent; }
 .btn--ghost:hover { background: var(--navy); color: var(--cream); border-color: var(--navy); }
 
 /* ==========================================================================
@@ -300,6 +300,9 @@ h1, h2, h3 {
   position: relative;
   padding-block: clamp(10px, 1.2vw, 20px) clamp(40px, 6vw, 90px);
   margin-top: 0;
+  /* 3D depth stage for mouse-tracked parallax (Direction 2) */
+  perspective: 900px;
+  perspective-origin: 50% 40%;
 }
 
 /* decorative scalloped awning at the hero crown — reference food-truck canopy */
@@ -342,8 +345,8 @@ h1, h2, h3 {
 }
 .hero__stage .cart {
   display: block; margin-inline: auto;
-  width: 100%; max-width: 860px;
-  height: clamp(240px, calc(100vh - 520px), 600px);
+  width: 100%; max-width: 960px;
+  height: clamp(280px, calc(100vh - 500px), 680px);
   aspect-ratio: 680 / 470;
   filter: drop-shadow(0 12px 40px rgba(15, 44, 86, .18));
 }

@@ -1,13 +1,30 @@
 // FeastNow landing — intro curtain: letters rise, curtain lifts with a curved
-// edge, then the hero assembles (ticker drops, headline words rise, the food
-// cart rolls in on spinning wheels).
+// edge, then the hero assembles (awning drops, ticker falls, headline rises,
+// the food cart rolls in from the right, flanking cards fly in from their
+// sides — then the steam billow starts).
 import { gsap, ScrollTrigger, prefersReducedMotion, lenis } from "./main.js";
+
+/** Start the cart steam billow — called after the hero assembly finishes. */
+export function startSteam() {
+  if (!gsap) return;
+  const paths = document.querySelectorAll(".cart__steam path");
+  if (!paths.length) return;
+  paths.forEach((p, i) => {
+    gsap.to(p, {
+      y: -16, scale: 1.7, opacity: 0,
+      duration: 2.6 + i * 0.4, ease: "power1.out", repeat: -1,
+      delay: i * 1.3,
+      transformOrigin: "50% 100%",
+    });
+  });
+}
 
 export function initIntro() {
   const intro = document.getElementById("intro");
   const done = () => {
     intro?.remove();
     document.body.classList.remove("intro-active");
+    startSteam();
     lenis?.start();
     if (ScrollTrigger) ScrollTrigger.refresh();
   };
@@ -33,7 +50,9 @@ export function initIntro() {
 
   // --- hero assembles under it (guard: only on pages that have a hero) ---
   if (q("#hero")) {
-    tl.from("#ticker", { yPercent: -100, duration: 0.45 }, "-=0.45")
+    // awning canopy drops in from above
+    tl.from(".hero__awning", { y: -80, opacity: 0, duration: 0.5 }, "-=0.4")
+      .from("#ticker", { yPercent: -100, duration: 0.45 }, "-=0.45")
       .from("#nav .nav__row", { y: -18, opacity: 0, duration: 0.45 }, "<0.05")
       .from(".hero__tag", { opacity: 0, y: 14, duration: 0.4 }, "<0.1")
       .from(".hero__title .w", { y: 46, opacity: 0, duration: 0.55, stagger: 0.06 }, "<")
@@ -41,14 +60,15 @@ export function initIntro() {
       .from(".hero__cta .btn", { y: 16, opacity: 0, duration: 0.4, stagger: 0.08, clearProps: "all" }, "-=0.3");
 
     const wheels = qa(".hero__stage .cart__wheel");
-    tl.from(".cart", { x: 110, opacity: 0, duration: 0.8, ease: "expo.out", clearProps: "all" }, "-=0.75");
+    // cart rolls in from right with a slight settle
+    tl.from(".cart", { x: 130, opacity: 0, duration: 0.85, ease: "expo.out", clearProps: "all" }, "-=0.75");
     if (wheels.length) tl.from(wheels, { rotation: -420, duration: 0.9, ease: "expo.out", clearProps: "all" }, "<");
-    // fromTo + clearProps: these carry CSS hover transitions, so the tween
-    // must own the inline transform and then remove it. .hex is positioned
-    // with the CSS `translate` property, which GSAP transforms leave alone.
+    // hex badge scales in with a pop
     tl.fromTo(".hex",
       { scale: 0, rotation: -8, opacity: 0 },
       { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(1.4)", clearProps: "all" }, "-=0.35");
-    tl.from(".hero__card", { y: 34, opacity: 0, duration: 0.45, stagger: 0.12, clearProps: "all" }, "-=0.3");
+    // flanking cards fly in from their respective sides
+    tl.from(".hero__card--left", { x: -60, opacity: 0, duration: 0.5, ease: "power3.out", clearProps: "all" }, "-=0.3");
+    tl.from(".hero__card--right", { x: 60, opacity: 0, duration: 0.5, ease: "power3.out", clearProps: "all" }, "-=0.2");
   }
 }

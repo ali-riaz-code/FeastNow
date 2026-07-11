@@ -183,26 +183,87 @@ function initCarousel() {
   });
 }
 
-/* ---- hero cart: steam billow (GSAP) ---- */
-function heroCartMotion() {
-  if (prefersReducedMotion || !gsap) return;
-  const steamPaths = document.querySelectorAll(".cart__steam path");
-  if (steamPaths.length) {
-    steamPaths.forEach((p, i) => {
-      gsap.to(p, {
-        y: -16, scale: 1.7, opacity: 0,
-        duration: 2.6 + i * 0.4, ease: "power1.out", repeat: -1,
-        delay: i * 1.3,
-        transformOrigin: "50% 100%",
-      });
-    });
-  }
+/* ---- hero depth parallax: mouse-tracked 3D tilt (Direction 2) ----
+   The hero stage and its children tilt subtly in response to cursor position,
+   creating a diorama depth effect. The cart stays the anchor while cards and
+   hex badge drift at different rates. Desktop only; touch/mobile skip. */
+function heroDepthParallax() {
+  if (prefersReducedMotion || !gsap || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const hero = document.querySelector(".hero");
+  const stage = document.querySelector(".hero__stage");
+  const cart = document.querySelector(".hero__stage .cart");
+  const left = document.querySelector(".hero__card--left");
+  const right = document.querySelector(".hero__card--right");
+  const hex = document.querySelector(".hex");
+  if (!hero || !stage) return;
+
+  // quick setters — one rAF-friendly function per target property
+  const tiltX = gsap.quickSetter(stage, "rotateX", "deg");
+  const tiltY = gsap.quickSetter(stage, "rotateY", "deg");
+  const lift = gsap.quickSetter(stage, "y", "px");
+
+  const cartX = gsap.quickSetter(cart, "x", "px");
+  const leftX = gsap.quickSetter(left, "x", "px");
+  const leftY = gsap.quickSetter(left, "y", "px");
+  const leftR = gsap.quickSetter(left, "rotate", "deg");
+  const rightX = gsap.quickSetter(right, "x", "px");
+  const hexY = gsap.quickSetter(hex, "y", "px");
+  const hexR = gsap.quickSetter(hex, "rotate", "deg");
+
+  const bounds = { w: 0, h: 0, cx: 0.5, cy: 0.5 };
+  const state = { x: 0.5, y: 0.5, toX: 0.5, toY: 0.5 };
+
+  const onResize = () => {
+    const r = hero.getBoundingClientRect();
+    bounds.w = r.width;
+    bounds.h = r.height;
+  };
+
+  const onMove = (e) => {
+    state.toX = (e.clientX - hero.getBoundingClientRect().left) / bounds.w;
+    state.toY = (e.clientY - hero.getBoundingClientRect().top) / bounds.h;
+  };
+
+  const onLeave = () => { state.toX = 0.5; state.toY = 0.5; };
+
+  onResize();
+  window.addEventListener("resize", onResize, { passive: true });
+  hero.addEventListener("pointermove", onMove, { passive: true });
+  hero.addEventListener("pointerleave", onLeave, { passive: true });
+
+  // lerp loop — spring-like follow instead of snap
+  gsap.ticker.add(() => {
+    state.x += (state.toX - state.x) * 0.08;
+    state.y += (state.toY - state.y) * 0.08;
+
+    const nx = state.x - 0.5; // -0.5 .. 0.5
+    const ny = state.y - 0.5;
+
+    // stage tilt: gentle 3D rotation
+    tiltY(nx * 5);
+    tiltX(-ny * 4);
+    lift(-Math.abs(nx * ny) * 4);
+
+    // cart shifts slightly opposite the stage tilt (parallax depth)
+    if (cart) cartX(nx * -6);
+
+    // left card drifts more — it's in the "foreground"
+    if (left) {
+      leftX(nx * -14);
+      leftY(ny * -8);
+      leftR(nx * -3);
+    }
+    // right card also in foreground, opposite drift
+    if (right) rightX(nx * 12);
+    // hex badge lags behind (background)
+    if (hex) { hexY(ny * 3); hexR(nx * 1.5); }
+  });
 }
 
 export function initScroll() {
   countUp();
   initCarousel();
-  heroCartMotion();
+  heroDepthParallax();
   if (prefersReducedMotion || !gsap || !ScrollTrigger) return;
 
   const wide = window.matchMedia("(min-width: 992px)").matches;
