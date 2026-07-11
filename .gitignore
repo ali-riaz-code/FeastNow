@@ -37,3 +37,6 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# stray local tool dir (literal tilde folder)
+~/
