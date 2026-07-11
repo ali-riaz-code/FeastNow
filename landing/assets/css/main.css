@@ -258,16 +258,13 @@ h1, h2, h3 {
 }
 
 /* ==========================================================================
-   Hero — copy left, food cart + reviews sticker right
+   Hero — centered copy over a full-width cart stage with badge + side cards
    ========================================================================== */
-.hero { padding-block: clamp(28px, 4.5vw, 56px) clamp(72px, 10vw, 140px); }
-.hero__grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center;
-}
+.hero { padding-block: clamp(24px, 4vw, 48px) clamp(88px, 11vw, 150px); }
+.hero__copy { text-align: center; max-width: 780px; margin-inline: auto; }
 .hero__tag { font-size: clamp(1.4rem, 2.5vw, 1.8rem); margin-bottom: .6rem; }
 .hero__title {
-  font-size: clamp(2.75rem, 6.2vw, 5.25rem);
+  font-size: clamp(2.75rem, 6.2vw, 5rem);
   font-weight: 750;
   line-height: .98;
   letter-spacing: -0.03em;
@@ -280,11 +277,12 @@ h1, h2, h3 {
   transition: transform .6s var(--ease-out-expo);
 }
 .hero__title:hover .glyph-o { transform: rotate(352deg); }
-.hero__sub { max-width: 50ch; margin-top: 1.2rem; color: var(--brown); font-size: 1.125rem; }
-.hero__cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+.hero__sub { max-width: 50ch; margin: 1.2rem auto 0; color: var(--brown); font-size: 1.125rem; }
+.hero__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1.8rem; }
 
-.hero__art { position: relative; }
-.cart { width: 100%; height: auto; display: block; }
+/* the stage: big cart with overlapping hexagon + side cards */
+.hero__stage { position: relative; margin-top: clamp(1.5rem, 4vw, 3rem); }
+.hero__stage .cart { width: min(100%, 960px); height: auto; display: block; margin-inline: auto; }
 .cart__wheel { transform-box: fill-box; transform-origin: center; }
 .cart__bulb { animation: bulb 2.4s ease-in-out infinite; }
 .cart__bulb:nth-of-type(2) { animation-delay: .6s; }
@@ -298,36 +296,83 @@ h1, h2, h3 {
   35% { opacity: .9; }
   100% { opacity: 0; transform: translateY(-10px); }
 }
+.cart__cloth {
+  transform-box: fill-box; transform-origin: 50% 8%;
+  animation: cloth-sway 4s ease-in-out infinite alternate;
+}
+@keyframes cloth-sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
 
-/* Reviews sticker — burst shape spins behind static text */
-.sticker {
-  position: absolute; left: max(-24px, -3vw); bottom: -8%;
-  width: clamp(150px, 17vw, 205px); aspect-ratio: 1;
-  display: grid; place-items: center; text-align: center;
-  color: var(--navy);
-  filter: drop-shadow(0 6px 18px rgba(15, 44, 86, .18));
+/* hexagon reviews ticket — layered clip-paths fake the navy border line */
+.hex {
+  position: absolute; left: 50%; bottom: -7%;
+  translate: -50% 0; /* CSS translate, not transform — GSAP scale/rotate tweens won't clobber it */
+  width: clamp(280px, 42vw, 440px);
+  filter: drop-shadow(0 12px 26px rgba(15, 44, 86, .22));
+  z-index: 3;
+  transition: scale .35s var(--ease-out-expo);
 }
-.sticker__shape {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  animation: sticker-spin 30s linear infinite;
-  transition: transform .4s var(--ease-out-expo);
+.hex:hover { scale: 1.04; }
+.hex__body {
+  display: block;
+  background: var(--navy);
+  clip-path: polygon(0 50%, 9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%);
+  padding: 5px;
 }
-.sticker:hover .sticker__shape { animation-duration: 6s; transform: scale(1.09); }
-.sticker__body {
-  position: relative; display: grid; gap: .15rem; justify-items: center; width: 72%;
-  transition: transform .4s var(--ease-out-expo);
+.hex__inner {
+  display: grid; gap: .3rem; justify-items: center; text-align: center;
+  background: var(--cream); color: var(--navy);
+  clip-path: polygon(0 50%, 9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%);
+  padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(2rem, 5vw, 3rem);
 }
-.sticker:hover .sticker__body { transform: scale(1.06) rotate(-5deg); }
-.sticker__kicker { font-size: 1.25rem; color: var(--navy); }
-.sticker__num { font-size: 1.9rem; font-weight: 600; line-height: 1; }
-.sticker__star { font-size: .65em; vertical-align: .25em; color: var(--tomato); }
-.sticker__rule { width: 58%; height: 2px; background: var(--navy); opacity: .35; margin-block: .2rem; }
-.sticker__line { font-size: .72rem; font-weight: 600; line-height: 1.25; }
-@keyframes sticker-spin { to { transform: rotate(360deg); } }
+.hex__reviews { font-size: .82rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.hex__stars { color: var(--gold-deep); letter-spacing: .12em; }
+.hex__line {
+  font-family: var(--font-display);
+  font-weight: 800; font-variation-settings: "SOFT" 60, "WONK" 1;
+  font-size: clamp(1.05rem, 2.1vw, 1.45rem);
+  line-height: 1.1; text-transform: uppercase; letter-spacing: .01em;
+}
+
+/* flanking cards */
+.hero__card {
+  position: absolute; z-index: 2;
+  width: clamp(150px, 17vw, 215px);
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 1.1rem 1rem 1.3rem;
+  box-shadow: var(--sh-overlay);
+  text-align: center;
+  transition: transform .35s var(--ease-out-expo);
+}
+.hero__card--left {
+  left: 0; bottom: 16%;
+  border: 6px solid #fff; /* polaroid frame */
+  transform: rotate(-7deg);
+}
+.hero__card--left:hover { transform: rotate(-4deg) translateY(-6px); }
+.hero__card-art { width: 44px; height: 44px; margin-bottom: .3rem; }
+.hero__card-big { font-size: 1.7rem; font-weight: 600; line-height: 1.1; }
+.hero__card-label { font-size: .82rem; font-weight: 600; color: var(--brown); }
+.hero__card-script { font-size: 1.15rem; margin-top: .35rem; }
+.hero__card--right {
+  right: 0; bottom: 12%;
+  background: var(--sky); color: var(--navy);
+  transform: rotate(3deg);
+  font-size: .85rem; font-weight: 500; line-height: 1.45;
+  text-align: left;
+  padding-bottom: 2rem; /* room for the peeking button */
+}
+.hero__card--right:hover { transform: rotate(1deg) translateY(-6px); }
+.hero__card-btn {
+  position: absolute; left: 50%; bottom: -20px;
+  transform: translateX(-50%) rotate(-2deg);
+  min-height: 40px; padding: 0 1.2rem; font-size: .88rem;
+}
+.hero__card-btn:hover { transform: translateX(-50%) rotate(0deg) translateY(-2px); }
 
 .hero__scroll {
   display: grid; place-items: center;
-  width: 48px; height: 48px; margin: clamp(2rem, 5vw, 3rem) auto 0;
+  width: 48px; height: 48px; margin: clamp(2.5rem, 6vw, 4rem) auto 0;
   color: var(--navy); border: 2px solid var(--beige); border-radius: 50%;
   transition: border-color var(--dur), transform var(--dur);
   animation: nudge 2.6s ease-in-out infinite;
@@ -335,10 +380,9 @@ h1, h2, h3 {
 .hero__scroll:hover { border-color: var(--gold); }
 @keyframes nudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
 
-@media (max-width: 900px) {
-  .hero__grid { grid-template-columns: 1fr; }
-  .hero__art { order: 2; max-width: 560px; margin-inline: auto; width: 100%; }
-  .sticker { left: auto; right: 4px; bottom: -10%; }
+@media (max-width: 640px) {
+  .hero__card { display: none; } /* keep the small-screen stage uncluttered */
+  .hex { bottom: -9%; }
 }
 
 /* ==========================================================================
@@ -712,14 +756,14 @@ body.intro-active { overflow: hidden; }
   .ticker__set[aria-hidden="true"], .reviews__set[aria-hidden="true"] { display: none; }
   .ticker__set, .reviews__set { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
 
-  .cart__bulb, .cart__steam path, .scooter__whoosh line,
+  .cart__bulb, .cart__steam path, .scooter__whoosh line, .cart__cloth,
   .phone__route, .phone__pulse, .is-live .phone__dot,
-  .sticker__shape, .hero__scroll { animation: none; }
+  .hero__scroll { animation: none; }
 
   .btn__roll > span { transition: none; }
   .btn__roll > span + span { display: none; }
   .btn:hover .btn__roll > span:first-child { transform: none; }
 
   .glyph-o, .ticket, .ticket__icon, .env, .env__seal, .quote,
-  .sticker, .btn, .footer__col a, .footer__social a { transition: none; }
+  .hex, .hero__card, .btn, .footer__col a, .footer__social a { transition: none; }
 }

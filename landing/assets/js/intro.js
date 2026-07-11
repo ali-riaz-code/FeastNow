@@ -40,13 +40,15 @@ export function initIntro() {
       .from(".hero__sub", { y: 20, opacity: 0, duration: 0.45 }, "-=0.3")
       .from(".hero__cta .btn", { y: 16, opacity: 0, duration: 0.4, stagger: 0.08, clearProps: "all" }, "-=0.3");
 
-    const wheels = qa(".hero__art .cart__wheel");
+    const wheels = qa(".hero__stage .cart__wheel");
     tl.from(".cart", { x: 110, opacity: 0, duration: 0.8, ease: "expo.out", clearProps: "all" }, "-=0.75");
     if (wheels.length) tl.from(wheels, { rotation: -420, duration: 0.9, ease: "expo.out", clearProps: "all" }, "<");
-    // fromTo + clearProps: the sticker's children carry CSS hover transitions,
-    // so the tween must own the element's inline transform and then remove it.
-    tl.fromTo(".sticker",
-      { scale: 0, rotation: -30, opacity: 0 },
+    // fromTo + clearProps: these carry CSS hover transitions, so the tween
+    // must own the inline transform and then remove it. .hex is positioned
+    // with the CSS `translate` property, which GSAP transforms leave alone.
+    tl.fromTo(".hex",
+      { scale: 0, rotation: -8, opacity: 0 },
       { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(1.4)", clearProps: "all" }, "-=0.35");
+    tl.from(".hero__card", { y: 34, opacity: 0, duration: 0.45, stagger: 0.12, clearProps: "all" }, "-=0.3");
   }
 }

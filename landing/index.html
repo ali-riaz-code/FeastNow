@@ -92,7 +92,7 @@
   <main id="top">
     <!-- ============================== HERO ============================== -->
     <section class="hero" id="hero">
-      <div class="container hero__grid">
+      <div class="container">
         <div class="hero__copy">
           <p class="script hero__tag">the fastest way to eat in your city</p>
           <h1 class="hero__title">
@@ -110,9 +110,16 @@
           </div>
         </div>
 
-        <div class="hero__art">
+        <div class="hero__stage">
           <!-- FeastNow food cart illustration -->
           <svg class="cart" viewBox="0 0 680 470" role="img" aria-label="Illustration of the FeastNow food cart">
+            <defs>
+              <pattern id="checker" width="14" height="14" patternUnits="userSpaceOnUse">
+                <rect width="14" height="14" fill="#FFFCF0"/>
+                <rect width="7" height="7" fill="#33507E"/>
+                <rect x="7" y="7" width="7" height="7" fill="#33507E"/>
+              </pattern>
+            </defs>
             <!-- ground shadow -->
             <ellipse cx="345" cy="442" rx="255" ry="15" fill="rgba(15,44,86,.10)"/>
             <!-- push handle -->
@@ -121,6 +128,8 @@
             <!-- awning poles -->
             <line x1="152" y1="112" x2="152" y2="240" stroke="#4F3C2C" stroke-width="7"/>
             <line x1="528" y1="112" x2="528" y2="240" stroke="#4F3C2C" stroke-width="7"/>
+            <!-- brass center pole (drawn before the glass case so it shows through the glass) -->
+            <line x1="340" y1="128" x2="340" y2="248" stroke="#D9A82E" stroke-width="6"/>
             <!-- roof sign -->
             <g class="cart__sign">
               <rect x="206" y="26" width="268" height="48" rx="12" fill="#ECE6E1" stroke="#0F2C56" stroke-width="3"/>
@@ -138,10 +147,10 @@
             </clipPath>
             <g clip-path="url(#awn)">
               <rect x="108" y="86" width="464" height="52" fill="#ECE6E1"/>
-              <rect x="108" y="86" width="58" height="52" fill="#C72531"/>
-              <rect x="224" y="86" width="58" height="52" fill="#C72531"/>
-              <rect x="340" y="86" width="58" height="52" fill="#C72531"/>
-              <rect x="456" y="86" width="58" height="52" fill="#C72531"/>
+              <rect x="108" y="86" width="58" height="52" fill="#0F2C56"/>
+              <rect x="224" y="86" width="58" height="52" fill="#0F2C56"/>
+              <rect x="340" y="86" width="58" height="52" fill="#0F2C56"/>
+              <rect x="456" y="86" width="58" height="52" fill="#0F2C56"/>
             </g>
             <!-- string lights -->
             <path d="M152 138 Q340 176 528 138" fill="none" stroke="#4F3C2C" stroke-width="2.5"/>
@@ -149,6 +158,15 @@
             <circle class="cart__bulb" cx="303" cy="161" r="5" fill="#E3AF04"/>
             <circle class="cart__bulb" cx="377" cy="161" r="5" fill="#E3AF04"/>
             <circle class="cart__bulb" cx="450" cy="152" r="5" fill="#E3AF04"/>
+            <!-- ORDER HERE placard on the brass pole (in front of the lights) -->
+            <g class="cart__placard">
+              <rect x="279" y="132" width="122" height="27" rx="7" fill="#0F2C56" stroke="#E3AF04" stroke-width="2"/>
+              <text x="340" y="150.5" text-anchor="middle" font-size="13" font-weight="700" fill="#E3AF04" letter-spacing="2.5" style="font-family:var(--font-sans)">ORDER HERE</text>
+            </g>
+            <!-- checkered cloth draped on the right pole -->
+            <g class="cart__cloth">
+              <path d="M504 150 q24 -12 48 0 l8 62 q-32 16 -64 0 Z" fill="url(#checker)" stroke="#0F2C56" stroke-width="2" stroke-opacity=".3"/>
+            </g>
             <!-- steam above the cloches -->
             <g class="cart__steam" fill="none" stroke="#D4C29A" stroke-width="5" stroke-linecap="round">
               <path d="M232 158 q-8 -14 0 -26 q8 -12 0 -24"/>
@@ -203,18 +221,27 @@
             </g>
           </svg>
 
-          <!-- Reviews sticker (burst seal) -->
-          <a class="sticker" href="#reviews" aria-label="Rated 4.6 stars — read reviews">
-            <svg class="sticker__shape" viewBox="0 0 200 200" aria-hidden="true">
-              <polygon fill="var(--gold)" points="100.0,0.0 111.5,12.8 125.9,3.4 133.7,18.7 150.0,13.4 153.6,30.2 170.7,29.3 169.8,46.4 186.6,50.0 181.3,66.3 196.6,74.1 187.2,88.5 200.0,100.0 187.2,111.5 196.6,125.9 181.3,133.7 186.6,150.0 169.8,153.6 170.7,170.7 153.6,169.8 150.0,186.6 133.7,181.3 125.9,196.6 111.5,187.2 100.0,200.0 88.5,187.2 74.1,196.6 66.3,181.3 50.0,186.6 46.4,169.8 29.3,170.7 30.2,153.6 13.4,150.0 18.7,133.7 3.4,125.9 12.8,111.5 0.0,100.0 12.8,88.5 3.4,74.1 18.7,66.3 13.4,50.0 30.2,46.4 29.3,29.3 46.4,30.2 50.0,13.4 66.3,18.7 74.1,3.4 88.5,12.8"/>
-            </svg>
-            <span class="sticker__body">
-              <span class="script sticker__kicker">reviews</span>
-              <span class="num sticker__num">4.6<span class="sticker__star">★</span></span>
-              <span class="sticker__rule" aria-hidden="true"></span>
-              <span class="sticker__line">the whole city's menu, in your pocket</span>
+          <!-- hexagon reviews ticket, overlapping the stage bottom -->
+          <a class="hex" href="#reviews" aria-label="Rated 4.6 stars — read reviews">
+            <span class="hex__body">
+              <span class="hex__inner">
+                <span class="hex__reviews">Reviews <span class="hex__stars" aria-hidden="true">★★★★★</span> <span class="num">4.6</span></span>
+                <span class="hex__line">The whole city&rsquo;s menu, in your pocket</span>
+              </span>
             </span>
           </a>
+
+          <!-- flanking cards (decorative duplicates of ticker/CTA content) -->
+          <aside class="hero__card hero__card--left" aria-hidden="true">
+            <svg class="hero__card-art" viewBox="0 0 64 64" style="color:var(--tomato)"><use href="#feastnow-hat"></use></svg>
+            <p class="num hero__card-big">3,000+</p>
+            <p class="hero__card-label">restaurants onboard</p>
+            <p class="script hero__card-script">join the feast —</p>
+          </aside>
+          <aside class="hero__card hero__card--right">
+            <p class="hero__card-copy">Every approved kitchen near you, one feed. Hot food, live rider tracking, cash at the door.</p>
+            <a class="btn btn--gold hero__card-btn" href="login.html">Get Started</a>
+          </aside>
         </div>
       </div>
       <a class="hero__scroll" href="#cuisines" aria-label="Scroll to explore cuisines">
