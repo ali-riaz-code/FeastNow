@@ -367,9 +367,9 @@ h1, h2, h3 {
 
 /* hexagon reviews ticket — layered clip-paths fake the navy border line */
 .hex {
-  position: absolute; right: clamp(10px, 3vw, 50px); left: auto;
-  bottom: -16%;
-  width: clamp(200px, 26vw, 320px);
+  position: absolute; left: 0; right: 0; margin-inline: auto;
+  bottom: 22%;
+  width: clamp(180px, 22vw, 280px);
   filter: drop-shadow(0 12px 26px rgba(15, 44, 86, .22));
   z-index: 3;
   transition: scale .35s var(--ease-out-expo);
@@ -552,7 +552,7 @@ h1, h2, h3 {
   .hero__awning { display: none; } /* save vertical space on mobile */
   .hero__card { display: none; } /* keep the small-screen stage uncluttered */
   .hero__receipt { display: none; }
-  .hex { bottom: -12%; right: auto; left: 50%; transform: translateX(-50%); }
+  .hex { bottom: 12%; right: auto; left: 50%; transform: translateX(-50%); }
   /* width-constrained anyway; the svh budget would only add letterbox gutters */
   .hero__stage .cart { height: auto; width: 100%; aspect-ratio: auto; }
 }
