@@ -122,13 +122,20 @@ h1, h2, h3 {
   pointer-events: none;
 }
 
-/* per-boundary colors — every partition gets its own pair */
+/* per-boundary colors — every partition gets its own pair.
+   Only the first (cuisines) and last (footer) seams are kept per request. */
 #cuisines { --seam-base: var(--navy);       --seam-dash: var(--cream); }
 #how      { --seam-base: var(--gold);       --seam-dash: var(--navy); }
 #reviews  { --seam-base: var(--brown);      --seam-dash: var(--cream); } /* the requested brown crevice */
 #partner  { --seam-base: var(--tomato);     --seam-dash: var(--cream); }
 #riders   { --seam-base: var(--brown-deep); --seam-dash: var(--gold); }
 .footer.sec-cap { --seam-base: var(--cream); --seam-dash: var(--navy); }
+
+/* suppress middle partitions — keep only first (hero→cuisines) and last (riders→footer) */
+#how::before,
+#reviews::before,
+#partner::before,
+#riders::before { display: none; }
 
 .kicker { font-size: clamp(1.3rem, 2.2vw, 1.7rem); margin-bottom: .5rem; display: block; }
 .section-title {
@@ -380,14 +387,15 @@ h1, h2, h3 {
   padding: 1.1rem 1rem 1.3rem;
   box-shadow: var(--sh-overlay);
   text-align: center;
-  transition: transform .35s var(--ease-out-expo);
+  /* hover lives on translate/rotate props: GSAP scrubs own the transform */
+  transition: translate .35s var(--ease-out-expo), rotate .35s var(--ease-out-expo);
 }
 .hero__card--left {
   left: 0; bottom: 16%;
   border: 6px solid #fff; /* polaroid frame */
   transform: rotate(-7deg);
 }
-.hero__card--left:hover { transform: rotate(-4deg) translateY(-6px); }
+.hero__card--left:hover { rotate: 3deg; translate: 0 -6px; }
 .hero__card-art { width: 44px; height: 44px; margin-bottom: .3rem; }
 .hero__card-big { font-size: 1.7rem; font-weight: 600; line-height: 1.1; }
 .hero__card-label { font-size: .82rem; font-weight: 600; color: var(--brown); }
@@ -400,7 +408,7 @@ h1, h2, h3 {
   text-align: left;
   padding-bottom: 2rem; /* room for the peeking button */
 }
-.hero__card--right:hover { transform: rotate(1deg) translateY(-6px); }
+.hero__card--right:hover { rotate: -2deg; translate: 0 -6px; }
 .hero__card-btn {
   position: absolute; left: 50%; bottom: -20px;
   transform: translateX(-50%) rotate(-2deg);
@@ -584,9 +592,10 @@ h1, h2, h3 {
   border-radius: 14px;
   padding: 4.1rem 1.5rem 1.6rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
-  transition: transform .35s var(--ease-out-expo), box-shadow .35s;
+  /* hover lives on translate/rotate props: GSAP scrubs own the transform */
+  transition: translate .35s var(--ease-out-expo), rotate .35s var(--ease-out-expo), box-shadow .35s;
 }
-.env:hover { transform: translateY(-7px) rotate(-.5deg); box-shadow: 0 18px 44px rgba(0, 0, 0, .3); }
+.env:hover { translate: 0 -7px; rotate: -.5deg; box-shadow: 0 18px 44px rgba(0, 0, 0, .3); }
 .env__flap {
   position: absolute; inset: 0 0 auto 0; height: 60px;
   background: var(--dough);
@@ -718,6 +727,14 @@ h1, h2, h3 {
 }
 .riders__sub { color: var(--muted); font-size: 1.1rem; max-width: 46ch; }
 .scooter { width: 100%; max-width: 440px; height: auto; display: block; margin-inline: auto; }
+/* the ride: wheels spin, chassis bobs on its suspension, whooshes stream past */
+.scooter__wheel { animation: wheel-spin 1.9s linear infinite; }
+@keyframes wheel-spin { to { transform: rotate(360deg); } }
+.scooter__chassis {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: chassis-bob 1.3s ease-in-out infinite alternate;
+}
+@keyframes chassis-bob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
 .scooter__whoosh line { animation: whoosh 1.6s ease-in-out infinite; }
 .scooter__whoosh line:nth-child(2) { animation-delay: .35s; }
 .scooter__whoosh line:nth-child(3) { animation-delay: .7s; }
@@ -836,6 +853,7 @@ body.intro-active { overflow: hidden; }
   .ticker__set, .reviews__set { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
 
   .cart__bulb, .cart__steam path, .scooter__whoosh line, .cart__cloth,
+  .scooter__wheel, .scooter__chassis,
   .kitchen__flame, .kitchen__pot,
   .phone__route, .phone__pulse, .is-live .phone__dot,
   .hero__scroll { animation: none; }
