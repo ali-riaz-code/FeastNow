@@ -90,6 +90,7 @@ h1, h2, h3 {
    ========================================================================== */
 .theme-cream  { --bg: var(--cream);  --ink: var(--navy); --muted: var(--brown); --script-ink: var(--gold-deep); }
 .theme-dough  { --bg: var(--dough);  --ink: var(--navy); --muted: var(--brown); --script-ink: var(--tomato); }
+.theme-butter { --bg: var(--butter); --ink: var(--navy); --muted: var(--brown); --script-ink: var(--tomato); }
 .theme-navy   { --bg: var(--navy);   --ink: var(--cream); --muted: var(--sky);  --script-ink: var(--gold); }
 .theme-sky    { --bg: var(--sky);    --ink: var(--navy); --muted: rgba(15, 44, 86, .78); --script-ink: var(--tomato); }
 .theme-gold   { --bg: var(--gold);   --ink: var(--navy); --muted: rgba(15, 44, 86, .8);  --script-ink: var(--navy); }
@@ -419,44 +420,63 @@ h1, h2, h3 {
 .ticket {
   --t-bg: var(--cream);
   position: relative;
-  width: clamp(160px, 40vw, 200px);
+  width: clamp(168px, 42vw, 210px);
   background: var(--t-bg);
-  border-radius: 14px;
-  padding: 1.5rem 1.1rem 0;
+  border-radius: 14px 14px 0 0;
+  padding: .7rem .7rem 0;
   text-align: center;
   height: auto;
   box-shadow: var(--sh-raised);
-  transform: rotate(var(--tilt, 0deg));
+  transform: rotate(var(--tilt, 0deg)) translateY(var(--drop, 0px));
   transition: transform .35s var(--ease-out-expo), box-shadow .35s;
   cursor: grab;
 }
-.ticket:nth-child(odd) { --tilt: -1.6deg; }
-.ticket:nth-child(even) { --tilt: 1.7deg; }
-.ticket:nth-child(4n+1) { --t-bg: var(--beige); }
-.ticket:nth-child(4n+2) { --t-bg: var(--cream); }
-.ticket:nth-child(4n+3) { --t-bg: var(--sky); }
-.ticket:nth-child(4n)   { --t-bg: var(--off-white); }
-.ticket:hover { transform: rotate(0deg) translateY(-10px) scale(1.03); box-shadow: var(--sh-overlay); }
+/* scattered, not planned: 5-step tilt cycle + 3-step vertical drift */
+.ticket:nth-child(5n+1) { --tilt: -2.2deg; }
+.ticket:nth-child(5n+2) { --tilt: 1.4deg; }
+.ticket:nth-child(5n+3) { --tilt: -0.8deg; }
+.ticket:nth-child(5n+4) { --tilt: 2.4deg; }
+.ticket:nth-child(5n)   { --tilt: -1.5deg; }
+.ticket:nth-child(3n)   { --drop: 8px; }
+.ticket:nth-child(3n+2) { --drop: -4px; }
+/* tricolore-tinted paper cycle */
+.ticket:nth-child(6n+1) { --t-bg: #F6E3B4; } /* gold tint */
+.ticket:nth-child(6n+2) { --t-bg: var(--cream); }
+.ticket:nth-child(6n+3) { --t-bg: #F5D8D8; } /* tomato tint */
+.ticket:nth-child(6n+4) { --t-bg: var(--sky); }
+.ticket:nth-child(6n+5) { --t-bg: #DCEBD6; } /* basil tint */
+.ticket:nth-child(6n)   { --t-bg: var(--beige); }
+.ticket:hover { transform: rotate(0deg) translateY(calc(var(--drop, 0px) - 10px)) scale(1.04); box-shadow: var(--sh-overlay); }
 
-.ticket__icon {
-  display: block; font-size: 3rem; line-height: 1.15;
-  transition: transform .35s var(--ease-out-expo);
+.ticket__imgwrap {
+  overflow: hidden; border-radius: 10px;
+  aspect-ratio: 4 / 3; margin: 0;
 }
-.ticket:hover .ticket__icon { transform: rotate(-10deg) scale(1.18); }
-.ticket__name { font-size: 1.22rem; margin-top: .6rem; color: var(--navy); }
+.ticket__img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .45s var(--ease-out-expo);
+}
+.ticket:hover .ticket__img { transform: scale(1.09) rotate(1deg); }
+.ticket__name { font-size: 1.18rem; margin-top: .65rem; color: var(--navy); }
 .ticket__meta {
-  margin-top: .9rem; padding-block: .7rem;
+  margin-top: .7rem; padding-block: .65rem 1rem;
   border-top: 2px dashed rgba(79, 60, 44, .35);
   color: var(--brown); font-size: .88rem;
 }
 /* perforation notches where the dashed tear line meets the edges */
 .ticket::before, .ticket::after {
-  content: ""; position: absolute; bottom: 2.55rem;
+  content: ""; position: absolute; bottom: 2.7rem;
   width: 18px; height: 18px; border-radius: 50%;
   background: var(--bg);
 }
 .ticket::before { left: -9px; }
 .ticket::after { right: -9px; }
+/* torn scalloped bottom edge — punched dots in the section background color */
+.ticket__tear {
+  position: absolute; left: 0; right: 0; bottom: -5px; height: 10px;
+  background: radial-gradient(circle at 50% 100%, var(--bg) 5px, transparent 5.5px) 0 0 / 20px 10px repeat-x;
+  pointer-events: none;
+}
 
 .cuisines__controls {
   display: flex; align-items: center; justify-content: center; gap: 1rem;
@@ -810,6 +830,6 @@ body.intro-active { overflow: hidden; }
   .btn__roll > span + span { display: none; }
   .btn:hover .btn__roll > span:first-child { transform: none; }
 
-  .glyph-o, .ticket, .ticket__icon, .env, .env__seal, .quote,
+  .glyph-o, .ticket, .ticket__img, .env, .env__seal, .quote,
   .hex, .hero__card, .btn, .footer__col a, .footer__social a { transition: none; }
 }
