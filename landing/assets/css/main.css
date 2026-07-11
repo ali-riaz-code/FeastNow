@@ -303,6 +303,11 @@ h1, h2, h3 {
   /* 3D depth stage for mouse-tracked parallax (Direction 2) */
   perspective: 900px;
   perspective-origin: 50% 40%;
+  /* warm ambient glow behind the cart — golden-hour trattoria light */
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 80%, rgba(227,175,4,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 60% at 50% 0%, rgba(15,44,86,.02) 0%, transparent 60%),
+    var(--cream);
 }
 
 /* decorative scalloped awning at the hero crown — reference food-truck canopy */
@@ -364,35 +369,45 @@ h1, h2, h3 {
   animation: cloth-sway 4s ease-in-out infinite alternate;
 }
 @keyframes cloth-sway { from { transform: rotate(-2.5deg); } to { transform: rotate(2.5deg); } }
+/* cat breathing / tail twitch (subtlest diorama life) */
+.cart__cat { transform-box: fill-box; transform-origin: 50% 100%; }
+.cart__cat ellipse:first-child { animation: cat-breathe 3.2s ease-in-out infinite; }
+@keyframes cat-breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03); } }
+.cart__cat path:last-of-type { animation: tail-twitch 2.8s ease-in-out infinite; transform-origin: 100% 100%; }
+@keyframes tail-twitch { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(2deg); } }
+/* garlic braid gentle sway */
+.cart__garlic { transform-box: fill-box; transform-origin: 50% 0; animation: garlic-sway 5s ease-in-out infinite alternate; }
+@keyframes garlic-sway { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
 
-/* hexagon reviews ticket — layered clip-paths fake the navy border line */
+/* hexagon reviews ticket — now a brass medallion badge pinned to the cart
+   side panel. Gold rim, cream face, navy ink. Reads as a physical quality seal. */
 .hex {
-  position: absolute; left: 0; right: 0; margin-inline: auto;
-  bottom: 22%;
-  width: clamp(180px, 22vw, 280px);
-  filter: drop-shadow(0 12px 26px rgba(15, 44, 86, .22));
+  position: absolute; right: clamp(8px, 1.5vw, 24px); left: auto;
+  bottom: 32%;
+  width: clamp(100px, 12vw, 150px);
+  filter: drop-shadow(0 6px 18px rgba(15,44,86,.35));
   z-index: 3;
-  transition: scale .35s var(--ease-out-expo);
+  transition: scale .35s var(--ease-out-expo), filter .35s var(--ease-out-expo);
 }
-.hex:hover { scale: 1.04; }
+.hex:hover { scale: 1.06; filter: drop-shadow(0 8px 22px rgba(15,44,86,.42)); }
 .hex__body {
   display: block;
-  background: var(--navy);
+  background: linear-gradient(145deg, var(--gold) 0%, #C59506 100%);
   clip-path: polygon(0 50%, 9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%);
-  padding: 5px;
+  padding: 4px;
 }
 .hex__inner {
-  display: grid; gap: .3rem; justify-items: center; text-align: center;
+  display: grid; gap: .1rem; justify-items: center; text-align: center;
   background: var(--cream); color: var(--navy);
   clip-path: polygon(0 50%, 9% 0, 91% 0, 100% 50%, 91% 100%, 9% 100%);
-  padding: clamp(1.1rem, 2.5vw, 1.5rem) clamp(2rem, 5vw, 3rem);
+  padding: clamp(.5rem, 1vw, .8rem) clamp(.6rem, 1.5vw, 1.2rem);
 }
-.hex__reviews { font-size: .82rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-.hex__stars { color: var(--gold-deep); letter-spacing: .12em; }
+.hex__reviews { font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.hex__stars { color: var(--gold); letter-spacing: .1em; font-size: .72rem; }
 .hex__line {
   font-family: var(--font-display);
   font-weight: 800; font-variation-settings: "SOFT" 60, "WONK" 1;
-  font-size: clamp(1.05rem, 2.1vw, 1.45rem);
+  font-size: clamp(.6rem, 1.1vw, .85rem);
   line-height: 1.1; text-transform: uppercase; letter-spacing: .01em;
 }
 
@@ -977,6 +992,7 @@ body.intro-active { overflow: hidden; }
   .ticker__set, .reviews__set { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
 
   .cart__bulb, .cart__steam path, .scooter__whoosh line, .cart__cloth,
+  .cart__cat ellipse:first-child, .cart__cat path:last-of-type, .cart__garlic,
   .scooter__wheel, .scooter__chassis,
   .kitchen__flame, .kitchen__pot,
   .phone__route, .phone__pulse, .is-live .phone__dot,
