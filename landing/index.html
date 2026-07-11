@@ -92,6 +92,20 @@
   <main id="top">
     <!-- ============================== HERO ============================== -->
     <section class="hero" id="hero">
+      <!-- Decorative scalloped awning banner — navy/cream stripes, marks the
+           page entry like the reference food-truck canopy (pizza-amici.nl) -->
+      <svg class="hero__awning" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <pattern id="aw-stripe" width="96" height="80" patternUnits="userSpaceOnUse">
+            <rect width="48" height="80" fill="#0F2C56"/>
+            <rect x="48" width="48" height="80" fill="#FFFCF0"/>
+          </pattern>
+          <clipPath id="aw-edge">
+            <path d="M0 0 h1440 v48 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0 a24 14 0 0 1 48 0"/>
+          </clipPath>
+        </defs>
+        <rect width="1440" height="80" fill="url(#aw-stripe)" clip-path="url(#aw-edge)"/>
+      </svg>
       <div class="container">
         <div class="hero__copy">
           <p class="script hero__tag">the fastest way to eat in your city</p>
@@ -231,15 +245,23 @@
             </span>
           </a>
 
-          <!-- flanking cards (decorative duplicates of ticker/CTA content) -->
+          <!-- flanking cards — envelope/torn-paper left, note-card right (reference: pizza-amici) -->
           <aside class="hero__card hero__card--left" aria-hidden="true">
+            <span class="hero__card-flap" aria-hidden="true"></span>
+            <span class="hero__card-seal num" aria-hidden="true">FN</span>
             <svg class="hero__card-art" viewBox="0 0 64 64" style="color:var(--tomato)"><use href="#feastnow-hat"></use></svg>
             <p class="num hero__card-big">3,000+</p>
-            <p class="hero__card-label">restaurants onboard</p>
-            <p class="script hero__card-script">join the feast —</p>
+            <p class="hero__card-label">restaurants</p>
+            <p class="hero__card-sub">onboarded &amp; approved</p>
+            <p class="script hero__card-script">join the feast</p>
           </aside>
           <aside class="hero__card hero__card--right">
-            <p class="hero__card-copy">Every approved kitchen near you, one feed. Hot food, live rider tracking, cash at the door.</p>
+            <span class="hero__card-clip" aria-hidden="true"></span>
+            <div class="hero__card-ruled">
+              <p class="hero__card-order"><span class="num">#1</span> most-ordered</p>
+              <p class="hero__card-copy">Browse every approved kitchen near you, order in a few taps, and track your rider live. Cash on delivery.</p>
+              <p class="script hero__card-sign">buon appetito</p>
+            </div>
             <a class="btn btn--gold hero__card-btn" href="login.html">Get Started</a>
           </aside>
         </div>
@@ -495,41 +517,45 @@
     <section class="riders section sec-cap theme-brown" id="riders">
       <div class="container riders__grid">
         <div class="riders__art" data-reveal aria-hidden="true">
+          <!-- Drawn for the brown stage: structural strokes are cream (brown
+               strokes vanish into the theme-brown background). Whooshes sit
+               under the chassis and clear of the delivery box. -->
           <svg class="scooter" viewBox="0 0 420 300" role="img" aria-label="Illustration of a FeastNow delivery scooter">
-            <ellipse cx="210" cy="282" rx="170" ry="10" fill="rgba(15,44,86,.10)"/>
-            <!-- delivery box -->
-            <g>
+            <ellipse cx="210" cy="282" rx="170" ry="10" fill="rgba(0,0,0,.22)"/>
+            <!-- motion whooshes (behind everything, trailing the rear wheel) -->
+            <g class="scooter__whoosh" stroke="#C0DEEE" stroke-width="6" stroke-linecap="round">
+              <line x1="2" y1="150" x2="38" y2="150"/>
+              <line x1="0" y1="178" x2="28" y2="178"/>
+              <line x1="12" y1="212" x2="56" y2="212"/>
+            </g>
+            <!-- chassis: everything sprung above the wheels bobs as one -->
+            <g class="scooter__chassis">
+              <!-- delivery box -->
               <rect x="46" y="108" width="86" height="78" rx="12" fill="#0F2C56"/>
               <svg x="66" y="122" width="46" height="46" viewBox="0 0 64 64" style="color:#FFFCF0"><use href="#feastnow-hat"></use></svg>
+              <!-- frame -->
+              <path d="M96 216 L150 216 Q186 216 200 184 L232 120" fill="none" stroke="#C72531" stroke-width="14" stroke-linecap="round"/>
+              <path d="M232 120 L300 120" fill="none" stroke="#C72531" stroke-width="12" stroke-linecap="round"/>
+              <!-- front fork + steering stem (cream: must read on the brown stage) -->
+              <path d="M300 120 L330 230" fill="none" stroke="#ECE6E1" stroke-width="9" stroke-linecap="round"/>
+              <path d="M300 120 L316 84 L340 84" fill="none" stroke="#ECE6E1" stroke-width="9" stroke-linecap="round"/>
+              <!-- seat -->
+              <rect x="196" y="106" width="64" height="16" rx="8" fill="#ECE6E1"/>
+              <!-- headlight at the bar end -->
+              <circle cx="348" cy="84" r="8" fill="#E3AF04"/>
             </g>
-            <!-- frame -->
-            <path d="M96 216 L150 216 Q186 216 200 184 L232 120" fill="none" stroke="#C72531" stroke-width="14" stroke-linecap="round"/>
-            <path d="M232 120 L300 120" fill="none" stroke="#C72531" stroke-width="12" stroke-linecap="round"/>
-            <path d="M300 120 L330 216" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
-            <!-- handlebar -->
-            <path d="M300 120 L316 84 L340 84" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
-            <!-- seat -->
-            <rect x="196" y="106" width="64" height="16" rx="8" fill="#2F241A"/>
-            <!-- headlight -->
-            <circle cx="344" cy="120" r="9" fill="#E3AF04"/>
-            <!-- wheels -->
-            <g class="cart__wheel">
+            <!-- wheels (spin continuously) -->
+            <g class="cart__wheel scooter__wheel">
               <circle cx="96" cy="230" r="42" fill="#2F241A"/>
               <circle cx="96" cy="230" r="26" fill="#ECE6E1"/>
               <g stroke="#0F2C56" stroke-width="4.5" stroke-linecap="round"><line x1="96" y1="209" x2="96" y2="251"/><line x1="75" y1="230" x2="117" y2="230"/></g>
               <circle cx="96" cy="230" r="7" fill="#0F2C56"/>
             </g>
-            <g class="cart__wheel">
+            <g class="cart__wheel scooter__wheel">
               <circle cx="330" cy="230" r="42" fill="#2F241A"/>
               <circle cx="330" cy="230" r="26" fill="#ECE6E1"/>
               <g stroke="#0F2C56" stroke-width="4.5" stroke-linecap="round"><line x1="330" y1="209" x2="330" y2="251"/><line x1="309" y1="230" x2="351" y2="230"/></g>
               <circle cx="330" cy="230" r="7" fill="#0F2C56"/>
-            </g>
-            <!-- motion whooshes -->
-            <g class="scooter__whoosh" stroke="#C0DEEE" stroke-width="6" stroke-linecap="round">
-              <line x1="8" y1="150" x2="60" y2="150"/>
-              <line x1="-6" y1="180" x2="46" y2="180"/>
-              <line x1="18" y1="210" x2="58" y2="210"/>
             </g>
           </svg>
         </div>
