@@ -93,6 +93,7 @@ h1, h2, h3 {
 .theme-navy   { --bg: var(--navy);   --ink: var(--cream); --muted: var(--sky);  --script-ink: var(--gold); }
 .theme-sky    { --bg: var(--sky);    --ink: var(--navy); --muted: rgba(15, 44, 86, .78); --script-ink: var(--tomato); }
 .theme-gold   { --bg: var(--gold);   --ink: var(--navy); --muted: rgba(15, 44, 86, .8);  --script-ink: var(--navy); }
+.theme-brown  { --bg: var(--brown);  --ink: var(--cream); --muted: rgba(255, 252, 240, .85); --script-ink: var(--gold); }
 
 [class*="theme-"] { background: var(--bg); color: var(--ink); }
 [class*="theme-"] .script { color: var(--script-ink); }
@@ -660,6 +661,14 @@ h1, h2, h3 {
 .riders__grid {
   display: grid; grid-template-columns: .95fr 1.05fr;
   gap: clamp(2rem, 6vw, 5rem); align-items: center;
+}
+/* maroon fish-scale wallpaper, echoing the reference's back wall */
+.riders.theme-brown {
+  background-image:
+    radial-gradient(circle at 50% 0, transparent 23px, rgba(47, 36, 26, .3) 24px 26px, transparent 27px),
+    radial-gradient(circle at 50% 0, transparent 23px, rgba(47, 36, 26, .3) 24px 26px, transparent 27px);
+  background-size: 56px 28px, 56px 28px;
+  background-position: 0 14px, 28px 0;
 }
 .riders__sub { color: var(--muted); font-size: 1.1rem; max-width: 46ch; }
 .scooter { width: 100%; max-width: 440px; height: auto; display: block; margin-inline: auto; }
