@@ -632,12 +632,24 @@ h1, h2, h3 {
 .theme-cream .perks__mark { color: var(--cream); }
 
 .partner__media { position: relative; }
-.partner__media img {
-  width: 100%; height: auto; aspect-ratio: 5 / 6; object-fit: cover;
+.kitchen-frame {
+  aspect-ratio: 5 / 6;
   border-radius: 46% 46% 16px 16px / 34% 34% 16px 16px; /* trattoria arch */
   border: 7px solid var(--cream);
   box-shadow: var(--sh-overlay);
+  overflow: hidden;
 }
+.kitchen { width: 100%; height: 100%; display: block; }
+.kitchen__flame {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: flame .55s ease-in-out infinite alternate;
+}
+@keyframes flame { from { transform: scaleY(.82); } to { transform: scaleY(1.12); } }
+.kitchen__pot {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: pot-jiggle 2.8s ease-in-out infinite;
+}
+@keyframes pot-jiggle { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(.9deg) translateY(-1.5px); } }
 .partner__stamp {
   position: absolute; left: -16px; bottom: 26px;
   width: 116px; height: 116px; border-radius: 50%;
@@ -790,6 +802,7 @@ body.intro-active { overflow: hidden; }
   .ticker__set, .reviews__set { flex-wrap: wrap; justify-content: center; row-gap: .5rem; }
 
   .cart__bulb, .cart__steam path, .scooter__whoosh line, .cart__cloth,
+  .kitchen__flame, .kitchen__pot,
   .phone__route, .phone__pulse, .is-live .phone__dot,
   .hero__scroll { animation: none; }
 

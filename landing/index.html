@@ -414,7 +414,74 @@
           <a class="btn btn--navy btn--lg" href="login.html"><span class="btn__roll"><span>List your restaurant</span><span aria-hidden="true">List your restaurant</span></span></a>
         </div>
         <div class="partner__media" data-reveal>
-          <img src="assets/img/hero.jpg" alt="A warm spread of dishes, fresh from a partner kitchen" width="900" height="1050" loading="lazy">
+          <div class="kitchen-frame">
+            <svg class="kitchen" viewBox="0 0 500 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a partner kitchen — pots steaming on a busy stove">
+              <!-- tiled wall -->
+              <rect width="500" height="600" fill="#F6F0E8"/>
+              <g stroke="#E5DACC" stroke-width="2.5">
+                <path d="M0 90 H500 M0 160 H500 M0 230 H500 M0 300 H500"/>
+                <path d="M60 20 V300 M170 20 V300 M280 20 V300 M390 20 V300" opacity=".55"/>
+              </g>
+              <!-- extractor hood -->
+              <rect x="150" y="0" width="200" height="34" fill="#2F241A"/>
+              <path d="M120 118 L150 30 H350 L380 118 Z" fill="#0F2C56"/>
+              <rect x="120" y="118" width="260" height="14" rx="7" fill="#E3AF04"/>
+              <!-- shelf with jars and plates -->
+              <rect x="60" y="208" width="380" height="10" rx="5" fill="#4F3C2C"/>
+              <rect x="84" y="170" width="34" height="38" rx="6" fill="#C0DEEE"/>
+              <rect x="84" y="162" width="34" height="10" rx="4" fill="#4F3C2C"/>
+              <rect x="132" y="178" width="30" height="30" rx="5" fill="#E3AF04"/>
+              <circle cx="392" cy="188" r="20" fill="#FFFCF0" stroke="#C72531" stroke-width="4"/>
+              <circle cx="350" cy="193" r="15" fill="#FFFCF0" stroke="#128643" stroke-width="4"/>
+              <!-- hanging utensils -->
+              <g stroke="#2F241A" stroke-width="5" stroke-linecap="round">
+                <line x1="210" y1="218" x2="210" y2="250"/>
+                <line x1="250" y1="218" x2="250" y2="256"/>
+                <line x1="290" y1="218" x2="290" y2="248"/>
+              </g>
+              <circle cx="210" cy="260" r="11" fill="none" stroke="#2F241A" stroke-width="5"/>
+              <path d="M244 256 h12 l-2 20 h-8 Z" fill="#2F241A"/>
+              <path d="M282 248 a8 10 0 1 0 16 0 Z" fill="#2F241A"/>
+              <!-- steam (reuses the cart steam loop) -->
+              <g class="cart__steam" fill="none" stroke="#D4C29A" stroke-width="6" stroke-linecap="round">
+                <path d="M180 350 q-10 -18 0 -34 q10 -16 0 -32"/>
+                <path d="M220 344 q-10 -18 0 -34 q10 -16 0 -32"/>
+                <path d="M352 356 q-8 -16 0 -30 q8 -14 0 -28"/>
+              </g>
+              <!-- big pot -->
+              <g class="kitchen__pot">
+                <path d="M150 356 q52 -20 104 0 Z" fill="#A31F2A"/>
+                <circle cx="202" cy="342" r="8" fill="#E3AF04"/>
+                <rect x="142" y="356" width="120" height="13" rx="6.5" fill="#8E1B24"/>
+                <rect x="150" y="366" width="104" height="70" rx="12" fill="#C72531"/>
+              </g>
+              <!-- pan -->
+              <g class="kitchen__pan">
+                <ellipse cx="352" cy="392" rx="52" ry="14" fill="#2F241A"/>
+                <ellipse cx="352" cy="386" rx="52" ry="13" fill="#4F3C2C"/>
+                <ellipse cx="352" cy="386" rx="38" ry="8" fill="#E3AF04"/>
+                <line x1="404" y1="386" x2="452" y2="376" stroke="#2F241A" stroke-width="9" stroke-linecap="round"/>
+              </g>
+              <!-- stove top + flames peeking under the pot -->
+              <g class="kitchen__flame">
+                <path d="M182 430 q-8 -16 6 -24 q-2 12 10 14 q10 2 5 10 Z" fill="#E3AF04"/>
+                <path d="M206 430 q-6 -12 5 -18 q0 10 8 12 q5 2 1 6 Z" fill="#C72531"/>
+                <path d="M336 430 q-8 -14 5 -21 q-1 11 9 13 q8 2 4 8 Z" fill="#E3AF04"/>
+              </g>
+              <rect x="90" y="430" width="320" height="26" rx="10" fill="#2F241A"/>
+              <!-- oven -->
+              <rect x="90" y="456" width="320" height="120" rx="14" fill="#0F2C56"/>
+              <rect x="126" y="478" width="180" height="76" rx="10" fill="#1B2F5E" stroke="#FFFCF0" stroke-width="4"/>
+              <circle cx="348" cy="492" r="9" fill="#E3AF04"/>
+              <circle cx="376" cy="492" r="9" fill="#E3AF04"/>
+              <circle cx="348" cy="520" r="9" fill="#E3AF04"/>
+              <circle cx="376" cy="520" r="9" fill="#E3AF04"/>
+              <!-- pizza visible through the oven window -->
+              <circle cx="216" cy="516" r="26" fill="#E3AF04"/>
+              <circle cx="216" cy="516" r="20" fill="#C72531" opacity=".85"/>
+              <circle cx="208" cy="510" r="4.5" fill="#FFFCF0"/><circle cx="224" cy="520" r="4.5" fill="#FFFCF0"/><circle cx="214" cy="526" r="4.5" fill="#128643"/>
+            </svg>
+          </div>
           <span class="partner__stamp">
             <span class="num">500</span>+
             <small>partner kitchens</small>
