@@ -44,7 +44,7 @@ export function revealOnScroll(selector, vars = {}) {
       gsap.fromTo(entry.target, { ...from },
         { y: 0, x: 0, opacity: 1, rotation: 0, duration: 0.65, ease: "expo.out", delay: (i % 4) * 0.09, clearProps: "all" });
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
   document.querySelectorAll(selector).forEach((el) => io.observe(el));
 }
 
@@ -61,7 +61,7 @@ function revealTickets() {
         { y: 40, opacity: 0, rotation: 4 },
         { y: 0, opacity: 1, rotation: 0, duration: 0.6, ease: "expo.out", stagger: 0.05, clearProps: "transform,opacity" });
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0, rootMargin: "0px 0px -10% 0px" });
   io.observe(wrap);
 }
 
@@ -82,8 +82,13 @@ function initCarousel() {
 export function initScroll() {
   countUp();
   revealTickets();
+  revealOnScroll(".cuisines__head", { y: 30 });
+  revealOnScroll(".how__head, .how__phone", { y: 34 });
   revealOnScroll("#how [data-reveal]", { y: 44, rotation: -2 });
+  revealOnScroll(".reviews__head", { y: 30 });
+  revealOnScroll(".reviews__marquee", { y: 20 });
   revealOnScroll("#partner [data-reveal]", { y: 34 });
   revealOnScroll("#riders [data-reveal]", { y: 34 });
+  revealOnScroll(".footer__top", { y: 26 });
   initCarousel();
 }
