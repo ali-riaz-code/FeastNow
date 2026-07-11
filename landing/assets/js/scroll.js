@@ -183,17 +183,9 @@ function initCarousel() {
   });
 }
 
-/* ---- hero cart: continuous wheel spin + steam billow (GSAP, smoother
-       than CSS animation, and pauses when scrolled past) ---- */
+/* ---- hero cart: steam billow (GSAP) ---- */
 function heroCartMotion() {
   if (prefersReducedMotion || !gsap) return;
-  const wheels = document.querySelectorAll(".cart__wheel");
-  if (wheels.length) {
-    gsap.to(wheels, {
-      rotation: 360, duration: 4, ease: "none", repeat: -1,
-      transformOrigin: "50% 50%",
-    });
-  }
   const steamPaths = document.querySelectorAll(".cart__steam path");
   if (steamPaths.length) {
     steamPaths.forEach((p, i) => {
