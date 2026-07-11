@@ -298,8 +298,7 @@ h1, h2, h3 {
    The cart height is budgeted against 100svh; the copy stays compact above it. */
 .hero {
   position: relative;
-  padding-block: clamp(12px, 1.6vw, 26px) clamp(60px, 8vw, 120px);
-  /* room for the decorative awning banner */
+  padding-block: clamp(10px, 1.2vw, 20px) clamp(40px, 6vw, 90px);
   margin-top: 0;
 }
 
@@ -328,7 +327,11 @@ h1, h2, h3 {
 }
 .hero__title:hover .glyph-o { transform: rotate(352deg); }
 .hero__sub { max-width: 56ch; margin: .9rem auto 0; color: var(--brown); font-size: 1.0625rem; }
-.hero__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; margin-top: 1.3rem; }
+.hero__cta {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem;
+  margin-top: clamp(.6rem, 1.5vw, 1rem);
+  position: relative; z-index: 4;
+}
 
 /* the stage: dominant cart centerpiece with overlapping hexagon + side cards */
 .hero__stage {
@@ -339,10 +342,8 @@ h1, h2, h3 {
 }
 .hero__stage .cart {
   display: block; margin-inline: auto;
-  width: 100%; max-width: 1100px;
-  /* dominant: cart fills most of the fold.  The 380px accounts for
-     ticker (36) + nav (72) + copy (~200) + awning offset + breathing room. */
-  height: clamp(340px, calc(100svh - 360px), 920px);
+  width: 100%; max-width: 860px;
+  height: clamp(240px, calc(100vh - 520px), 600px);
   aspect-ratio: 680 / 470;
   filter: drop-shadow(0 12px 40px rgba(15, 44, 86, .18));
 }
