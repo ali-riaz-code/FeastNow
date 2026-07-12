@@ -8,10 +8,10 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const JWT_SECRET = process.env.JWT_SECRET;
 const GMAIL_USER = process.env.GMAIL_USER;
 const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? "";
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-if (!JWT_SECRET || !GMAIL_USER || !GMAIL_APP_PASSWORD) {
-  throw new Error("Missing required environment variables: JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD.");
+if (!JWT_SECRET || !GMAIL_USER || !GMAIL_APP_PASSWORD || !FRONTEND_ORIGIN) {
+  throw new Error("Missing required environment variables: JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD, FRONTEND_ORIGIN.");
 }
 
 const transporter = nodemailer.createTransport({

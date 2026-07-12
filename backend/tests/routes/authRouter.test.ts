@@ -6,6 +6,7 @@ import { createFakeUserRepository } from "../test-helpers/fakeUserRepository";
 import { createFakeOtpRepository } from "../test-helpers/fakeOtpRepository";
 import { hashOtp } from "../../src/lib/otp";
 import { hashPassword } from "../../src/lib/password";
+import { errorHandler } from "../../src/middleware/errorHandler";
 
 const JWT_SECRET = "test-secret";
 
@@ -21,6 +22,10 @@ function buildApp(overrides: {
   const app = express();
   app.use(express.json());
   app.use("/api/auth", createAuthRouter({ userRepo, otpRepo, sendOtpEmail, jwtSecret: JWT_SECRET }));
+  // Mirrors the terminal error middleware registered in createApp (app.ts),
+  // so these tests can exercise the asyncHandler + error-handler safety net
+  // without needing a real Prisma-backed createApp.
+  app.use(errorHandler);
   return { app, userRepo, otpRepo, sendOtpEmail };
 }
 
@@ -54,6 +59,18 @@ describe("POST /api/auth/signup/request-otp", () => {
     const { app } = buildApp();
     const res = await request(app).post("/api/auth/signup/request-otp").send({ email: "not-an-email" });
     expect(res.status).toBe(400);
+  });
+
+  it("returns 500 (and does not crash) when sendOtpEmail rejects", async () => {
+    const sendOtpEmail = vi.fn().mockRejectedValue(new Error("smtp down"));
+    const { app } = buildApp({ sendOtpEmail });
+
+    const res = await request(app)
+      .post("/api/auth/signup/request-otp")
+      .send({ email: "new@example.com" });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: "Something went wrong." });
   });
 });
 
@@ -138,6 +155,80 @@ describe("POST /api/auth/signup/verify-otp", () => {
     });
 
     expect(res.status).toBe(400);
+  });
+
+  it("returns 409 when userRepo.create throws a Prisma P2002 duplicate-key error (e.g. duplicate phone)", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "new@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const baseUserRepo = createFakeUserRepository();
+    const userRepo = {
+      ...baseUserRepo,
+      create: vi.fn().mockRejectedValue({ code: "P2002" }),
+    };
+    const { app } = buildApp({ userRepo, otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "new@example.com",
+      phone: "555-0100",
+      password: "correct horse battery staple",
+      otp: "123456",
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body).toEqual({ error: "An account with this email or phone already exists." });
+  });
+
+  it("matches the email case-insensitively between request-otp and verify-otp", async () => {
+    const sendOtpEmail = vi.fn().mockResolvedValue(undefined);
+    const { app, userRepo } = buildApp({ sendOtpEmail });
+
+    const requestRes = await request(app)
+      .post("/api/auth/signup/request-otp")
+      .send({ email: "Ada@Example.com" });
+    expect(requestRes.status).toBe(200);
+    expect(sendOtpEmail).toHaveBeenCalledWith("ada@example.com", expect.stringMatching(/^\d{6}$/));
+    const sentOtp = sendOtpEmail.mock.calls[0][1];
+
+    const verifyRes = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+      phone: "555-0200",
+      password: "correct horse battery staple",
+      otp: sentOtp,
+    });
+
+    expect(verifyRes.status).toBe(200);
+    expect(userRepo.users).toHaveLength(1);
+    expect(userRepo.users[0].email).toBe("ada@example.com");
+  });
+
+  it("consumes the otp challenge when returning 409 for an already-registered email", async () => {
+    const userRepo = createFakeUserRepository();
+    await userRepo.create({ name: "Existing", email: "taken@example.com", phone: "555-0999", passwordHash: "x" });
+    const otpRepo = createFakeOtpRepository();
+    const challenge = await otpRepo.create({
+      email: "taken@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app } = buildApp({ userRepo, otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Someone Else",
+      email: "taken@example.com",
+      phone: "555-0111",
+      password: "correct horse battery staple",
+      otp: "123456",
+    });
+
+    expect(res.status).toBe(409);
+    expect(challenge.consumedAt).not.toBeNull();
+    expect(await otpRepo.findActiveForEmail("taken@example.com")).toBeNull();
   });
 });
 
