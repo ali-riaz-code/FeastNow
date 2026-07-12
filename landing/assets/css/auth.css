@@ -1,0 +1,35 @@
+/* FeastNow auth flow — shared styles for role-select, login, signup,
+   forgot-password, welcome, and the coming-soon stub. Consumes tokens.css
+   and reuses main.css's .btn/.logo-lockup/.num/.script/.stub primitives. */
+
+@view-transition { navigation: auto; }
+
+/* ---- outbound fade fallback (browsers without View Transitions) ---- */
+body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) forwards; }
+@keyframes pageFadeOut { to { opacity: 0; } }
+
+/* ---- shared full-viewport centered shell ---- */
+.authpage {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  background: var(--cream);
+}
+.authpage__home {
+  position: absolute; top: var(--s-lg); left: var(--gutter);
+  z-index: 2;
+}
+
+/* ---- generic pop-up entrance for a centered card ---- */
+@keyframes authPop {
+  from { opacity: 0; scale: .92; }
+  to   { opacity: 1; scale: 1; }
+}
+[data-entrance] { animation: authPop var(--dur-slow) var(--ease-out-expo) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-fade-out { animation: none; }
+  [data-entrance] { animation: none; }
+}
