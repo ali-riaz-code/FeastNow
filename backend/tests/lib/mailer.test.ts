@@ -34,4 +34,8 @@ describe("parseSender", () => {
   it("parses a bare email address", () => {
     expect(parseSender("no-reply@feastnow.app")).toEqual({ name: "FeastNow", email: "no-reply@feastnow.app" });
   });
+
+  it("parses a 'Name <email>' sender", () => {
+    expect(parseSender("FeastNow <no-reply@feastnow.app>")).toEqual({ name: "FeastNow", email: "no-reply@feastnow.app" });
+  });
 });
