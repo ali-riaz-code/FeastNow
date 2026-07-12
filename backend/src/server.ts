@@ -1,31 +1,27 @@
 import "dotenv/config";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { PrismaClient } from "@prisma/client";
 import { createApp } from "./app";
 import { sendOtpEmail as sendOtpEmailRaw } from "./lib/mailer";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 const JWT_SECRET = process.env.JWT_SECRET;
-const GMAIL_USER = process.env.GMAIL_USER;
-const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const EMAIL_FROM = process.env.EMAIL_FROM;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN;
 
-if (!JWT_SECRET || !GMAIL_USER || !GMAIL_APP_PASSWORD || !FRONTEND_ORIGIN) {
-  throw new Error("Missing required environment variables: JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD, FRONTEND_ORIGIN.");
+if (!JWT_SECRET || !RESEND_API_KEY || !EMAIL_FROM || !FRONTEND_ORIGIN) {
+  throw new Error("Missing required environment variables: JWT_SECRET, RESEND_API_KEY, EMAIL_FROM, FRONTEND_ORIGIN.");
 }
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: GMAIL_USER, pass: GMAIL_APP_PASSWORD },
-});
-
+const resend = new Resend(RESEND_API_KEY);
 const prisma = new PrismaClient();
 
 const app = createApp({
   prisma,
   jwtSecret: JWT_SECRET,
   frontendOrigins: FRONTEND_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean),
-  sendOtpEmail: (to, otp) => sendOtpEmailRaw(transporter, to, otp),
+  sendOtpEmail: (to, otp) => sendOtpEmailRaw(resend, EMAIL_FROM, to, otp),
 });
 
 app.listen(PORT, () => {
