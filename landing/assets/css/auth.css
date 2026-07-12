@@ -32,4 +32,8 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 @media (prefers-reduced-motion: reduce) {
   body.page-fade-out { animation: none; }
   [data-entrance] { animation: none; }
+  ::view-transition-group(*),
+  ::view-transition-image-pair(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
 }
