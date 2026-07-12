@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { UserRepository } from "../repositories/userRepository";
 import type { OtpRepository } from "../repositories/otpRepository";
 import { generateOtp, hashOtp, compareOtp } from "../lib/otp";
-import { hashPassword } from "../lib/password";
+import { hashPassword, comparePassword } from "../lib/password";
 import { signToken } from "../lib/jwt";
 import { createOtpRequestLimiter, createLoginLimiter } from "../middleware/rateLimit";
 
@@ -85,6 +85,30 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
     await deps.otpRepo.consume(challenge.id);
     const token = signToken({ userId: user.id }, deps.jwtSecret);
 
+    return res.status(200).json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
+    });
+  });
+
+  router.post("/login", createLoginLimiter(), async (req, res) => {
+    const { identifier, password } = req.body ?? {};
+    if (typeof identifier !== "string" || typeof password !== "string") {
+      return res.status(400).json({ error: "Identifier and password are required." });
+    }
+
+    const genericError = { error: "Incorrect email/phone or password." };
+    const user = await deps.userRepo.findByEmailOrPhone(identifier);
+    if (!user) {
+      return res.status(401).json(genericError);
+    }
+
+    const matches = await comparePassword(password, user.passwordHash);
+    if (!matches) {
+      return res.status(401).json(genericError);
+    }
+
+    const token = signToken({ userId: user.id }, deps.jwtSecret);
     return res.status(200).json({
       token,
       user: { id: user.id, name: user.name, email: user.email, phone: user.phone },

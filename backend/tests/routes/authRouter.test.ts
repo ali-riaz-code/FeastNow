@@ -5,6 +5,7 @@ import { createAuthRouter } from "../../src/routes/authRouter";
 import { createFakeUserRepository } from "../test-helpers/fakeUserRepository";
 import { createFakeOtpRepository } from "../test-helpers/fakeOtpRepository";
 import { hashOtp } from "../../src/lib/otp";
+import { hashPassword } from "../../src/lib/password";
 
 const JWT_SECRET = "test-secret";
 
@@ -137,5 +138,53 @@ describe("POST /api/auth/signup/verify-otp", () => {
     });
 
     expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/auth/login", () => {
+  it("returns a token for correct credentials", async () => {
+    const userRepo = createFakeUserRepository();
+    await userRepo.create({
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+      phone: "555-0100",
+      passwordHash: await hashPassword("correct horse battery staple"),
+    });
+    const { app } = buildApp({ userRepo });
+
+    const res = await request(app).post("/api/auth/login").send({
+      identifier: "ada@example.com",
+      password: "correct horse battery staple",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeTypeOf("string");
+  });
+
+  it("returns 401 for a wrong password", async () => {
+    const userRepo = createFakeUserRepository();
+    await userRepo.create({
+      name: "Ada Lovelace",
+      email: "ada@example.com",
+      phone: "555-0100",
+      passwordHash: await hashPassword("correct horse battery staple"),
+    });
+    const { app } = buildApp({ userRepo });
+
+    const res = await request(app).post("/api/auth/login").send({
+      identifier: "ada@example.com",
+      password: "wrong password",
+    });
+
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 401 for an unknown identifier", async () => {
+    const { app } = buildApp();
+    const res = await request(app).post("/api/auth/login").send({
+      identifier: "nobody@example.com",
+      password: "whatever",
+    });
+    expect(res.status).toBe(401);
   });
 });
