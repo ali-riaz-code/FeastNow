@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from "vitest";
 import { createAuthRouter } from "../../src/routes/authRouter";
 import { createFakeUserRepository } from "../test-helpers/fakeUserRepository";
 import { createFakeOtpRepository } from "../test-helpers/fakeOtpRepository";
+import { hashOtp } from "../../src/lib/otp";
 
 const JWT_SECRET = "test-secret";
 
@@ -51,6 +52,90 @@ describe("POST /api/auth/signup/request-otp", () => {
   it("returns 400 for an invalid email", async () => {
     const { app } = buildApp();
     const res = await request(app).post("/api/auth/signup/request-otp").send({ email: "not-an-email" });
+    expect(res.status).toBe(400);
+  });
+});
+
+describe("POST /api/auth/signup/verify-otp", () => {
+  it("creates the account and returns a token for the correct code", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "new@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app, userRepo } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "new@example.com",
+      phone: "555-0100",
+      password: "correct horse battery staple",
+      otp: "123456",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.token).toBeTypeOf("string");
+    expect(res.body.user).toMatchObject({ name: "Ada Lovelace", email: "new@example.com" });
+    expect(userRepo.users).toHaveLength(1);
+  });
+
+  it("returns 400 and does not create an account for the wrong code", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "new@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app, userRepo } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "new@example.com",
+      phone: "555-0100",
+      password: "correct horse battery staple",
+      otp: "000000",
+    });
+
+    expect(res.status).toBe(400);
+    expect(userRepo.users).toHaveLength(0);
+    expect(otpRepo.challenges[0].attempts).toBe(1);
+  });
+
+  it("returns 400 when there is no active challenge for the email", async () => {
+    const { app } = buildApp();
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "nobody@example.com",
+      phone: "555-0100",
+      password: "correct horse battery staple",
+      otp: "123456",
+    });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 after 5 incorrect attempts even with the right code afterward", async () => {
+    const otpRepo = createFakeOtpRepository();
+    const challenge = await otpRepo.create({
+      email: "new@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    for (let i = 0; i < 5; i++) {
+      await otpRepo.incrementAttempts(challenge.id);
+    }
+    const { app } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Ada Lovelace",
+      email: "new@example.com",
+      phone: "555-0100",
+      password: "correct horse battery staple",
+      otp: "123456",
+    });
+
     expect(res.status).toBe(400);
   });
 });
