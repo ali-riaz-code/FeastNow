@@ -7,8 +7,13 @@ async function init() {
     return;
   }
 
-  const { ok, data } = await apiGet("/api/me", token);
+  const { ok, status, data } = await apiGet("/api/me", token);
   if (!ok) {
+    if (status === 0) {
+      document.getElementById("welcome-message").textContent =
+        data.error || "Network error — check your connection and try again.";
+      return;
+    }
     clearToken();
     window.location.href = "login.html";
     return;
