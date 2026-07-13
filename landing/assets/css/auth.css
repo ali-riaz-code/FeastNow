@@ -37,3 +37,56 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   ::view-transition-old(*),
   ::view-transition-new(*) { animation: none !important; }
 }
+
+/* ---- role-select ---- */
+.roleselect__card {
+  width: min(560px, 100%);
+  background: var(--off-white);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-overlay);
+  padding: clamp(1.75rem, 5vw, 3rem);
+  text-align: center;
+}
+.roleselect__title { font-size: clamp(1.5rem, 4vw, 2.25rem); margin-bottom: .5rem; }
+.roleselect__sub { color: var(--brown); margin-bottom: 2rem; }
+
+.roleselect__tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-md);
+}
+@media (max-width: 560px) {
+  .roleselect__tiles { grid-template-columns: 1fr; }
+}
+
+.roleselect__tile {
+  display: grid; justify-items: center; gap: .5rem;
+  padding: 1.75rem 1rem;
+  border-radius: var(--r-md);
+  background: var(--dough);
+  color: var(--navy);
+  text-decoration: none;
+  transition: translate var(--dur) var(--ease-out-quart),
+              rotate var(--dur) var(--ease-out-quart),
+              box-shadow var(--dur) var(--ease-out-quart),
+              background var(--dur);
+}
+.roleselect__tile-icon { width: 40px; height: 40px; }
+.roleselect__tile-icon svg { width: 100%; height: 100%; }
+.roleselect__tile-label { font-weight: 700; font-size: 1.05rem; }
+.roleselect__tile-sub { font-size: .82rem; color: var(--brown); }
+
+.roleselect__tile--customer:hover {
+  translate: 0 -6px; rotate: -1deg;
+  box-shadow: var(--sh-raised), 0 0 0 3px var(--gold);
+  background: var(--cream);
+}
+.roleselect__tile--restaurant:hover {
+  translate: 0 -6px; rotate: 1deg;
+  box-shadow: var(--sh-raised), 0 0 0 3px var(--navy);
+  background: var(--cream);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleselect__tile:hover { translate: none; rotate: none; }
+}

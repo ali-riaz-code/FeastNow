@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FeastNow — Are you a Restaurant or a Customer?</title>
+  <meta name="description" content="Choose how you'd like to use FeastNow.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="theme-cream">
+  <main class="authpage">
+    <a class="authpage__home logo-lockup" href="index.html" data-transition-link>
+      <svg class="logo-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+        <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+              fill="var(--gold)"/>
+      </svg>
+      <span class="wordmark">FeastNow</span>
+    </a>
+
+    <div class="roleselect__card" data-entrance>
+      <h1 class="roleselect__title">Are you a Restaurant or a Customer?</h1>
+      <p class="roleselect__sub">Pick how you'd like to use FeastNow.</p>
+
+      <div class="roleselect__tiles">
+        <a class="roleselect__tile roleselect__tile--customer" href="login.html" data-transition-link>
+          <span class="roleselect__tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><circle cx="36" cy="32" r="16" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 14 V30 M10 14 V22 Q10 26 14 26 Q18 26 18 22 V14 M14 26 V50" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="roleselect__tile-label">I am a Customer</span>
+          <span class="roleselect__tile-sub">Browse, order, track delivery</span>
+        </a>
+        <a class="roleselect__tile roleselect__tile--restaurant" href="coming-soon.html?for=restaurant" data-transition-link>
+          <span class="roleselect__tile-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64"><path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="roleselect__tile-label">Are you a Restaurant?</span>
+          <span class="roleselect__tile-sub">List your kitchen on FeastNow</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/transitions.js"></script>
+</body>
+</html>
