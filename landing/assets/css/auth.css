@@ -90,3 +90,95 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 @media (prefers-reduced-motion: reduce) {
   .roleselect__tile:hover { translate: none; rotate: none; }
 }
+
+/* ---- split-screen: envelope form (left) + cart art (right) ---- */
+.authsplit {
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) minmax(280px, 420px);
+  gap: var(--s-xl);
+  align-items: center;
+  width: min(1000px, 100%);
+}
+@media (max-width: 860px) {
+  .authsplit { grid-template-columns: 1fr; gap: var(--s-lg); }
+  .authsplit__art { order: -1; max-width: 220px; margin-inline: auto; }
+}
+
+.authsplit__form {
+  position: relative;
+  background: var(--cream);
+  border-radius: var(--r-lg);
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.25rem) 2.25rem;
+  box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15,44,86,.06);
+  animation: authFormIn var(--dur-slow) var(--ease-out-expo) both;
+}
+.authsplit__flap {
+  position: absolute; top: 0; left: 0; right: 0; height: 12px;
+  background: var(--navy);
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.authsplit__seal {
+  position: absolute; top: -14px; left: 50%; translate: -50% 0;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  background: var(--gold); color: var(--navy);
+  border-radius: 50%;
+  font-size: .7rem; font-weight: 700; letter-spacing: .04em;
+  box-shadow: 0 2px 6px rgba(15,44,86,.18);
+}
+.authsplit__title { margin-top: 1rem; font-size: clamp(1.35rem, 3vw, 1.75rem); text-align: center; }
+.authsplit__sub { color: var(--brown); text-align: center; margin-bottom: 1.5rem; font-size: .92rem; }
+.authsplit__submit { width: 100%; margin-top: .5rem; }
+.authsplit__links { display: flex; justify-content: space-between; margin-top: 1.25rem; font-size: .88rem; }
+.authsplit__links a { color: var(--navy); font-weight: 600; }
+
+.authsplit__art {
+  display: grid; place-items: center;
+  animation: authArtIn var(--dur-slow) var(--ease-out-expo) both;
+}
+.authsplit__art svg { width: 100%; height: auto; max-width: 340px; }
+
+@keyframes authFormIn {
+  from { opacity: 0; translate: -24px 0; rotate: -3deg; }
+  to   { opacity: 1; translate: 0 0; rotate: 0deg; }
+}
+@keyframes authArtIn {
+  from { opacity: 0; translate: 24px 0; rotate: 2deg; }
+  to   { opacity: 1; translate: 0 0; rotate: 0deg; }
+}
+
+/* ---- form fields (shared by login, signup, forgot-password) ---- */
+.field { margin-bottom: 1.1rem; text-align: left; }
+.field__label {
+  display: block; font-size: .8125rem; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--navy);
+  margin-bottom: .35rem;
+}
+.field__input {
+  width: 100%; min-height: 48px; padding: 0 1rem;
+  border-radius: var(--r-sm); border: 2px solid transparent;
+  background: var(--dough); color: var(--navy);
+  font-family: var(--font-sans); font-size: 1rem;
+  transition: border-color var(--dur), box-shadow var(--dur);
+}
+.field__input:focus-visible {
+  outline: none; border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold);
+}
+.field__error {
+  display: block; min-height: 1.1em; margin-top: .35rem;
+  font-size: .8rem; color: var(--tomato);
+}
+.field--error .field__input {
+  border-color: var(--tomato);
+  animation: fieldShake var(--dur) var(--ease-out-quart);
+}
+@keyframes fieldShake {
+  25% { translate: -4px 0; }
+  75% { translate: 4px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .authsplit__form, .authsplit__art { animation: none; }
+  .field--error .field__input { animation: none; }
+}

@@ -3,32 +3,64 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FeastNow — Login coming soon</title>
-  <meta name="description" content="FeastNow login is coming soon.">
-  <meta name="robots" content="noindex">
+  <title>FeastNow — Customer Login</title>
+  <meta name="description" content="Log in to your FeastNow customer account.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
 </head>
-<body>
-  <!-- NOTE: placeholder stub only — the real login page is a separate task. -->
-  <main class="stub">
-    <div class="logo-lockup logo-lockup--lg logo-lockup--stack">
+<body class="theme-cream">
+  <main class="authpage">
+    <a class="authpage__home logo-lockup" href="index.html" data-transition-link>
       <svg class="logo-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
         <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
               fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
-              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
-        <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
-              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-        <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
-              fill="var(--gold)"/>
       </svg>
       <span class="wordmark">FeastNow</span>
+    </a>
+
+    <div class="authsplit">
+      <div class="authsplit__form">
+        <span class="authsplit__flap" aria-hidden="true"></span>
+        <span class="authsplit__seal num" aria-hidden="true">FN</span>
+        <h1 class="authsplit__title">Welcome back</h1>
+        <p class="authsplit__sub">Log in to order from your favorite kitchens.</p>
+
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label class="field__label" for="login-identifier">Email or phone</label>
+            <input class="field__input" type="text" id="login-identifier" name="identifier" autocomplete="username" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="login-password">Password</label>
+            <input class="field__input" type="password" id="login-password" name="password" autocomplete="current-password" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+
+          <button class="btn btn--gold authsplit__submit" type="submit">
+            <span class="btn__roll"><span>Log in</span><span aria-hidden="true">Log in</span></span>
+          </button>
+        </form>
+
+        <div class="authsplit__links">
+          <a href="signup.html" data-transition-link>New Sign Up</a>
+          <a href="forgot-password.html" data-transition-link>Forgot Password</a>
+        </div>
+      </div>
+
+      <div class="authsplit__art" aria-hidden="true" data-cart-mount></div>
     </div>
-    <p class="stub__msg">Login is coming soon — we're still setting the table.</p>
-    <a class="btn btn--navy" href="index.html"><span class="btn__roll"><span>&#8592; Back to home</span><span aria-hidden="true">&#8592; Back to home</span></span></a>
   </main>
+
+  <script>
+    fetch("assets/svg/cart.svg").then((r) => r.text()).then((svg) => {
+      document.querySelector("[data-cart-mount]").innerHTML = svg;
+    });
+  </script>
+  <script type="module" src="assets/js/login.js"></script>
+  <script type="module" src="assets/js/transitions.js"></script>
 </body>
 </html>

@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="cart" viewBox="0 0 680 470" role="img" aria-label="Illustration of the FeastNow food cart">
+  <defs>
+    <pattern id="checker" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#FFFCF0"/>
+      <rect width="7" height="7" fill="#33507E"/>
+      <rect x="7" y="7" width="7" height="7" fill="#33507E"/>
+    </pattern>
+    <symbol id="feastnow-hat" viewBox="0 0 64 64">
+      <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+            fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+            fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+            fill="var(--gold)"/>
+    </symbol>
+  </defs>
+  <ellipse cx="345" cy="442" rx="280" ry="20" fill="rgba(15,44,86,.12)"/>
+  <ellipse cx="345" cy="442" rx="400" ry="12" fill="rgba(15,44,86,.06)"/>
+  <path d="M118 268 Q76 250 64 214" fill="none" stroke="#4F3C2C" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="64" cy="214" r="9" fill="#4F3C2C"/>
+  <line x1="152" y1="112" x2="152" y2="240" stroke="#4F3C2C" stroke-width="7"/>
+  <line x1="528" y1="112" x2="528" y2="240" stroke="#4F3C2C" stroke-width="7"/>
+  <line x1="340" y1="128" x2="340" y2="248" stroke="#D9A82E" stroke-width="6"/>
+  <g class="cart__sign">
+    <rect x="206" y="26" width="268" height="48" rx="12" fill="#ECE6E1" stroke="#0F2C56" stroke-width="3"/>
+    <svg x="222" y="36" width="28" height="28" viewBox="0 0 64 64" style="color:#0F2C56"><use href="#feastnow-hat"></use></svg>
+    <text x="352" y="60" text-anchor="middle" font-size="28" fill="#0F2C56" font-weight="640" style="font-family:var(--font-display)">FeastNow</text>
+  </g>
+  <line x1="536" y1="58" x2="536" y2="112" stroke="#4F3C2C" stroke-width="5" stroke-linecap="round"/>
+  <path d="M536 58 L584 68 L536 82 Z" fill="#128643"/>
+  <clipPath id="awn">
+    <path d="M108 88 h464 v26
+      a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0
+      a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 a29 16 0 0 1 -58 0 Z"/>
+  </clipPath>
+  <g clip-path="url(#awn)">
+    <rect x="108" y="86" width="464" height="52" fill="#ECE6E1"/>
+    <rect x="108" y="86" width="58" height="52" fill="#0F2C56"/>
+    <rect x="224" y="86" width="58" height="52" fill="#0F2C56"/>
+    <rect x="340" y="86" width="58" height="52" fill="#0F2C56"/>
+    <rect x="456" y="86" width="58" height="52" fill="#0F2C56"/>
+  </g>
+  <path d="M152 138 Q340 176 528 138" fill="none" stroke="#4F3C2C" stroke-width="2.5"/>
+  <circle class="cart__bulb" cx="230" cy="152" r="5" fill="#E3AF04"/>
+  <circle class="cart__bulb" cx="303" cy="161" r="5" fill="#E3AF04"/>
+  <circle class="cart__bulb" cx="377" cy="161" r="5" fill="#E3AF04"/>
+  <circle class="cart__bulb" cx="450" cy="152" r="5" fill="#E3AF04"/>
+  <g class="cart__placard">
+    <rect x="279" y="132" width="122" height="27" rx="7" fill="#0F2C56" stroke="#E3AF04" stroke-width="2"/>
+    <text x="340" y="150.5" text-anchor="middle" font-size="13" font-weight="700" fill="#E3AF04" letter-spacing="2.5" style="font-family:var(--font-sans)">ORDER HERE</text>
+  </g>
+  <g class="cart__cloth">
+    <path d="M504 150 q24 -12 48 0 l8 62 q-32 16 -64 0 Z" fill="url(#checker)" stroke="#0F2C56" stroke-width="2" stroke-opacity=".3"/>
+  </g>
+  <g class="cart__garlic">
+    <path d="M282 114 q2 8 0 16 q-2 8 0 16" fill="none" stroke="#4F3C2C" stroke-width="1.5"/>
+    <g stroke="#4F3C2C" stroke-width="1">
+      <ellipse cx="274" cy="132" rx="6" ry="9" fill="#F2EDE9"/>
+      <ellipse cx="282" cy="136" rx="6" ry="9" fill="#F2EDE9"/>
+      <ellipse cx="290" cy="132" rx="6" ry="9" fill="#F2EDE9"/>
+      <ellipse cx="278" cy="148" rx="5" ry="8" fill="#F2EDE9"/>
+      <ellipse cx="286" cy="146" rx="5" ry="8" fill="#F2EDE9"/>
+      <ellipse cx="282" cy="158" rx="5" ry="7" fill="#F2EDE9"/>
+    </g>
+    <g fill="none" stroke="#4F3C2C" stroke-width=".8">
+      <path d="M270 130 q-3 -4 -1 -8"/>
+      <path d="M294 130 q3 -4 1 -8"/>
+    </g>
+  </g>
+  <g class="cart__steam" fill="none" stroke="#D4C29A" stroke-width="5" stroke-linecap="round">
+    <path d="M232 158 q-8 -14 0 -26 q8 -12 0 -24"/>
+    <path d="M262 166 q-8 -14 0 -26 q8 -12 0 -24"/>
+  </g>
+  <rect x="158" y="168" width="212" height="76" rx="10" fill="#C0DEEE" opacity=".5" stroke="#ECE6E1" stroke-width="4"/>
+  <g>
+    <path d="M228 192 l4 -24 l8 0 l4 24 Z" fill="#2F241A"/>
+    <rect x="232" y="170" width="8" height="14" rx="3" fill="#128643"/>
+    <rect x="233" y="170" width="6" height="6" rx="2" fill="#FFFCF0" opacity=".6"/>
+    <text x="236" y="196" font-size="6" fill="#FFFCF0" text-anchor="middle" font-weight="700" style="font-family:var(--font-sans)">vino</text>
+    <ellipse cx="196" cy="208" rx="14" ry="10" fill="#ECE6E1" stroke="#4F3C2C" stroke-width="1.5"/>
+    <circle cx="196" cy="207" r="5" fill="#C72531"/>
+    <ellipse cx="310" cy="208" rx="14" ry="10" fill="#ECE6E1" stroke="#4F3C2C" stroke-width="1.5"/>
+    <circle cx="310" cy="207" r="5" fill="#128643"/>
+    <path d="M198 232 a26 22 0 0 1 52 0 Z" fill="#E3AF04"/>
+    <rect x="190" y="230" width="68" height="7" rx="3.5" fill="#ECE6E1"/>
+    <path d="M282 232 a26 22 0 0 1 52 0 Z" fill="#E3AF04"/>
+    <rect x="274" y="230" width="68" height="7" rx="3.5" fill="#ECE6E1"/>
+  </g>
+  <g>
+    <rect x="398" y="164" width="118" height="80" rx="9" fill="#2F241A" stroke="#ECE6E1" stroke-width="3"/>
+    <text x="457" y="192" text-anchor="middle" font-size="20" fill="#ECE6E1" style="font-family:var(--font-script)">menu</text>
+    <line x1="414" y1="208" x2="500" y2="208" stroke="#ECE6E1" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
+    <line x1="414" y1="222" x2="482" y2="222" stroke="#ECE6E1" stroke-width="2.5" stroke-linecap="round" opacity=".45"/>
+  </g>
+  <rect x="120" y="248" width="440" height="126" rx="16" fill="#0F2C56"/>
+  <rect x="102" y="248" width="476" height="16" rx="8" fill="#ECE6E1"/>
+  <text x="340" y="322" text-anchor="middle" font-size="30" fill="#FFFCF0" style="font-family:var(--font-script)">fresh &amp; fast</text>
+  <g>
+    <rect x="506" y="288" width="12" height="20" rx="2" fill="#128643"/>
+    <rect x="518" y="288" width="12" height="20" rx="2" fill="#FFFCF0"/>
+    <rect x="530" y="288" width="12" height="20" rx="2" fill="#C72531"/>
+  </g>
+  <path d="M154 374 a52 52 0 0 1 104 0 Z" fill="#1B2F5E"/>
+  <path d="M434 374 a52 52 0 0 1 104 0 Z" fill="#1B2F5E"/>
+  <g class="cart__wheel">
+    <circle cx="206" cy="396" r="44" fill="#2F241A"/>
+    <circle cx="206" cy="396" r="29" fill="#E3AF04"/>
+    <g stroke="#FFFCF0" stroke-width="5" stroke-linecap="round">
+      <line x1="206" y1="372" x2="206" y2="420"/>
+      <line x1="182" y1="396" x2="230" y2="396"/>
+    </g>
+    <circle cx="206" cy="396" r="8" fill="#0F2C56"/>
+  </g>
+  <g class="cart__wheel">
+    <circle cx="486" cy="396" r="44" fill="#2F241A"/>
+    <circle cx="486" cy="396" r="29" fill="#E3AF04"/>
+    <g stroke="#FFFCF0" stroke-width="5" stroke-linecap="round">
+      <line x1="486" y1="372" x2="486" y2="420"/>
+      <line x1="462" y1="396" x2="510" y2="396"/>
+    </g>
+    <circle cx="486" cy="396" r="8" fill="#0F2C56"/>
+  </g>
+  <g class="cart__cat">
+    <ellipse cx="340" cy="434" rx="20" ry="10" fill="#2F241A"/>
+    <circle cx="354" cy="427" r="8" fill="#2F241A"/>
+    <path d="M360 422 l3 -5 M360 425.5 l4 -3.5" fill="none" stroke="#2F241A" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="356" cy="425" rx="2.5" ry="2" fill="#E3AF04"/>
+    <circle cx="356" cy="426.5" r="1" fill="#0F2C56"/>
+    <path d="M322 434 q-14 0 -20 -6" fill="none" stroke="#2F241A" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>
