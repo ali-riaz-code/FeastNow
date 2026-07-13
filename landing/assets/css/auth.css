@@ -26,7 +26,16 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   z-index: 2;
 }
 @media (max-width: 860px) {
-  .authpage { padding-top: 5.5rem; } /* clear the absolute logo lockup */
+  .authpage { padding-top: 5rem; }
+  .authpage__home {
+    top: var(--s-sm);
+    left: 50%; translate: -50% 0;
+    background: var(--cream);
+    padding: .3rem .9rem .3rem .6rem;
+    border-radius: var(--r-pill);
+    box-shadow: var(--sh-raised);
+    white-space: nowrap;
+  }
 }
 .authpage__watermark {
   position: absolute; right: 3%; bottom: 3%; z-index: -1;
@@ -182,15 +191,22 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 /* ---- split-screen: envelope form (left) + cart art (right) ---- */
 .authsplit {
   display: grid;
-  grid-template-columns: minmax(320px, 440px) minmax(320px, 500px);
-  gap: clamp(var(--s-lg), 4vw, var(--s-xl));
+  grid-template-columns: minmax(320px, 460px) minmax(320px, 520px);
+  gap: clamp(var(--s-lg), 5vw, var(--s-2xl));
   align-items: center;
   justify-content: center;
-  width: min(1040px, 100%);
+  width: min(1120px, 100%);
 }
 @media (max-width: 860px) {
   .authsplit { grid-template-columns: minmax(0, 480px); gap: var(--s-lg); }
-  .authsplit__art { order: -1; max-width: 320px; margin-inline: auto; }
+  .authsplit__art {
+    order: -1; max-width: 100%; padding: clamp(1.5rem, 4vw, 2rem);
+  }
+  .authsplit__art .statchip--gold,
+  .authsplit__art .statchip--navy { display: none; }
+  .authsplit__art .statchip--basil {
+    top: auto; bottom: 6%; left: 6%; rotate: 0deg;
+  }
 }
 
 .authsplit__form {
@@ -199,7 +215,6 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   border-radius: var(--r-lg);
   padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.25rem) 2.25rem;
   box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15, 44, 86, .06);
-  animation: authFormIn var(--dur-slow) var(--ease-out-expo) both;
 }
 .authsplit__flap {
   position: absolute; top: 0; left: 0; right: 0; height: 12px;
@@ -218,6 +233,19 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 .authsplit__title { margin-top: 1.1rem; font-size: clamp(1.35rem, 3vw, 1.75rem); text-align: center; }
 .authsplit__sub { color: var(--brown); text-align: center; margin-bottom: 1.5rem; font-size: .92rem; }
 .authsplit__submit { width: 100%; margin-top: .5rem; }
+
+/* field entrance stagger — each field rises in after the form card lands */
+@keyframes fieldIn {
+  from { opacity: 0; translate: 0 12px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+.field { animation: fieldIn .5s var(--ease-out-expo) backwards; }
+.field:nth-child(1) { animation-delay: .12s; }
+.field:nth-child(2) { animation-delay: .20s; }
+.field:nth-child(3) { animation-delay: .28s; }
+.field:nth-child(4) { animation-delay: .36s; }
+.authsplit__submit { animation: fieldIn .5s var(--ease-out-expo) .44s backwards; }
+.authsplit__links { animation: fieldIn .5s var(--ease-out-expo) .52s backwards; }
 
 .authsplit__links {
   display: flex; justify-content: space-between; align-items: center;
@@ -267,10 +295,6 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 .authsplit__art .statchip--gold  { top: 46%; right: -1.3rem; rotate: 2deg; animation-delay: .54s; }
 .authsplit__art .statchip--navy  { bottom: 8%; left: 8%; rotate: -2deg; animation-delay: .66s; }
 
-@keyframes authFormIn {
-  from { opacity: 0; translate: 0 22px; }
-  to   { opacity: 1; translate: 0 0; }
-}
 @keyframes authArtIn {
   from { opacity: 0; translate: 0 26px; scale: .96; }
   to   { opacity: 1; translate: 0 0; scale: 1; }
@@ -311,7 +335,9 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .authsplit__form, .authsplit__art { animation: none; }
+  .authsplit__art { animation: none; }
+  .field { animation: none; }
+  .authsplit__submit, .authsplit__links { animation: none; }
   .field--error .field__input { animation: none; }
   .field__label, .authlink, .authlink-pill { transition: none; }
   .authlink-pill:hover { translate: none; }
