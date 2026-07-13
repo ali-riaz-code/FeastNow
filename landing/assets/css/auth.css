@@ -208,3 +208,25 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   .otp-boxes--shake { animation: none; }
   .authsplit__form--sealed .authsplit__seal { animation: none; }
 }
+
+/* ---- forgot-password (centered card, not split-screen) ---- */
+.fpcard {
+  width: min(420px, 100%);
+  background: var(--off-white);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-overlay);
+  padding: clamp(1.75rem, 5vw, 2.5rem);
+  text-align: center;
+}
+.fpcard__title { font-size: clamp(1.35rem, 3vw, 1.75rem); margin-bottom: .5rem; }
+.fpcard__sub { color: var(--brown); margin-bottom: 1.5rem; font-size: .92rem; }
+.fpcard__confirm { color: var(--navy); font-weight: 500; margin-bottom: 1.5rem; }
+.fpcard__back { display: inline-block; margin-top: 1.25rem; color: var(--navy); font-weight: 600; font-size: .9rem; }
+
+.fpcard__confirm, .fpcard form {
+  animation: authPop var(--dur) var(--ease-out-expo) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fpcard__confirm, .fpcard form { animation: none; }
+}
