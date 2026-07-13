@@ -17,9 +17,11 @@ Phase 1 exists because every later phase depends on restaurants and menus existi
 
 Current ground truth: frontend is vanilla HTML/CSS/JS in `landing/` (Vercel); backend is Node/TS + Prisma on Render with Supabase Postgres; the Prisma schema contains only `User` and `OtpChallenge`; routes are auth + `/me`. After login the user currently lands on `welcome.html`.
 
-## 2. Decisions made during brainstorming
+## 2. Decisions made during brainstorming and spec review
 
-- **Frontend tech:** React + Vite SPA, mobile-first web app (not React Native). Chosen because the customer shell is app-like (persistent tabs, shared components, cart state later) and must stay continuous with the deployed web auth flow.
+- **Frontend tech — deliberate architecture reversal (2026-07-13):** React + Vite SPA, mobile-first web app. This **reverses CLAUDE.md's original React Native stack**; CLAUDE.md has been updated to record the new direction. Chosen because the customer shell is app-like (persistent tabs, shared components, cart state later) and must stay continuous with the deployed web auth flow.
+- **Platform strategy (FR-27, push, app stores):** web SPA now; **Capacitor wrap planned before the Delivery Partner role**. Rationale: FR-27's continuous background location sharing is a Delivery Partner requirement — the Customer role only *views* partner location on a foreground map (polling/SSE), which web handles. True push and background geolocation are impossible on mobile web (iOS Web Push needs 16.4+ plus an installed PWA; SRS targets iOS 15+), so the native-capability deadline is the Delivery Partner phase, at which point the React code ports into Capacitor with FCM/APNs and background-geolocation plugins — which also provides Play Store / App Store distribution. Until then: Phase 1 ships PWA installability (manifest + minimal service worker), and customer notifications are in-app live status, with web push only where supported. Confirmed by the user 2026-07-13.
+- **Build order — deliberate reversal, explicitly confirmed (2026-07-13):** the previously agreed dependency order was Auth → Admin → Restaurant → Customer → Delivery Partner with no seed data. This spec reverses that: Customer is built first on flagged, disposable demo seed data (lifecycle in §3). Trade-off accepted for speed-to-visible-product: the SRS's High-priority flows are overwhelmingly customer-side, and the strict order would ship two operator shells before anything customer-visible. Known risk: seeds may paper over schema assumptions that real restaurant-entered data would expose. The user confirmed this reversal explicitly.
 - **Slicing:** browse-first (this phase), not a thin vertical slice and not backend-complete-first.
 - **Seed data:** required — no real restaurants exist. Feed rows can only render against seeded demo data.
 - **Menu items are display-only in Phase 1.** The Add button and cart pill ship together in Phase 2; no dead buttons.
@@ -39,6 +41,7 @@ Three new models, forward-compatible with SRS §7:
 - `orderCount` (int, synthetic for now) — basis for "Most Popular"
 - `approvedAt` (DateTime) — basis for "New on FeastNow"; staggered in seed
 - `heroImageUrl`, `isActive`
+- `isDemo` (boolean, default false) — marks seeded demo rows; see seed lifecycle below
 
 ### `MenuItem`
 - `id`, `restaurantId` (FK), `category` (string, e.g. "Starters"), `name`, `description`
@@ -57,6 +60,11 @@ Included in Phase 1 because ratings **visibility** is High priority (FR-32) and 
 - Staggered `approvedAt`, varied `estDeliveryMin` (some ≤30, some above), varied `orderCount`, varied hours (so some restaurants read "Closed now" depending on time of day).
 - Idempotent: re-running the seed resets marketplace demo data without touching `User`/`OtpChallenge`.
 
+### Seed data lifecycle
+- Every seeded restaurant is `isDemo: true`; its `MenuItem` and `Rating` rows are tied to it by FK. The seed script only ever creates/updates/deletes `isDemo` rows — it can never touch real data.
+- When real restaurants onboard (Restaurant role phase), demo restaurants are **retired via `isActive: false`** (hidden from every browse query) rather than hard-deleted, preserving referential integrity if test orders from Phases 2–3 reference them.
+- A hard-purge script (delete `isDemo` restaurants + dependents) is provided for pre-launch cleanup, to be run once no orders reference demo rows.
+
 ## 4. Backend — endpoints
 
 All JWT-protected with the same middleware as `/me`. All responses JSON over HTTPS.
@@ -72,7 +80,7 @@ All JWT-protected with the same middleware as `/me`. All responses JSON over HTT
 
 Phase 1 sections in `/home` (order matters): `most_popular`, `top_rated`, `new_on_feastnow`, `under_30`. `order_again` and `because_you_liked` are Phase 3+ — the contract already supports them (client renders whatever sections arrive).
 
-Performance: with seeded scale this is trivially under NFR-1's ~2s search budget; queries should still use indexes on `cuisines`, `approvedAt`, `orderCount`, `avgRating`.
+Performance: NFR-1's ~2s search budget is **assumed, not yet verified**, to be comfortably met at seeded scale. Phase 1 verification must measure actual endpoint latency (home, list, search) and record the numbers; the assumption must be re-benchmarked once data volume grows past seed scale. Queries use indexes on `cuisines`, `approvedAt`, `orderCount`, `avgRating` regardless.
 
 ## 5. Frontend — `app/` React + Vite SPA
 
@@ -86,7 +94,8 @@ Performance: with seeded scale this is trivially under NFR-1's ~2s search budget
 
 ### App shell
 - Bottom tab bar: **Home / Orders / Profile**. Floating cart pill is Phase 2.
-- Mobile-first; on desktop the app renders as a centered phone-width canvas (max ~480px) on the cream backdrop — a deliberate "app in a frame."
+- Mobile-first; on desktop the app renders as a centered phone-width canvas (max ~480px) on the cream backdrop — a deliberate "app in a frame." This is an **accepted limitation, not an oversight**: a stretched desktop layout of a bottom-tab app would be worse than a clean frame. A real responsive desktop layout is deferred to post-Phase-4 (or earlier if desktop usage justifies it).
+- **PWA installability:** web app manifest (name, icons, theme colors) + minimal service worker so the app is installable from the browser. Full offline support is out of scope; this is the interim install story until the Capacitor wrap (§2).
 - Transitions 150–250ms with `prefers-reduced-motion` fallbacks (PRODUCT.md/DESIGN.md motion rules).
 
 ### Design system
@@ -132,8 +141,18 @@ Performance: with seeded scale this is trivially under NFR-1's ~2s search budget
 
 - **Backend (Vitest):** per-endpoint tests — home section shapes and ordering, restaurant list filtering/search/pagination, detail grouping, `isOpenNow` logic across boundary times, search grouping; plus a seed-integrity test (counts, rating consistency).
 - **Frontend:** Playwright smoke — login → feed renders with sections → open a restaurant → menu + reviews visible → search returns grouped results; screenshot verification against the design system (same workflow as the auth pages).
+- **Latency measurement (NFR-1):** verification includes measuring real response times for `/home`, `/restaurants`, and `/search` against the seeded database and recording the numbers — the ~2s budget is verified, not assumed.
 - Everything verified locally end-to-end before commit/push (git workflow rule); Vercel and Render auto-deploy from `main`.
 
-## 9. Out of scope for Phase 1
+## 9. Known limitations (accepted, revisit later)
+
+- **"Most Popular Near You" is not measuring real popularity.** It ranks a synthetic, hand-written `orderCount` from the seed script. It becomes real in Phase 3+ when actual orders accumulate and the basis switches to real order counts. Until then the row is a believable demo, not a signal.
+- **"Near You" is not geographic.** No real location logic in Phase 1; the location pill is a static demo address.
+- **Desktop is a letterboxed phone frame** (~480px centered), by decision — see §5. Real responsive desktop layout deferred to post-Phase-4.
+- **No true push notifications on web.** In-app live status only until the Capacitor wrap (§2); iOS web push is unavailable/unreliable at SRS's target versions.
+- **All marketplace content is seeded demo data** (flagged `isDemo`, lifecycle in §3) until the Restaurant role onboards real restaurants.
+- **NFR-1 performance is verified only at seed scale** (§8); must be re-benchmarked as data grows.
+
+## 10. Out of scope for Phase 1
 
 Add-to-cart and cart pill; checkout; order placement and the order state machine; live tracking; saved/real addresses (location pill is static); loyalty, promo codes, customer-authored ratings; Order Again and Because-you-liked rows (contract supports them; data arrives in Phase 3); Restaurant/Delivery/Admin shells.

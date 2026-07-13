@@ -4,17 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This is a **greenfield project**. The repository currently contains only the requirements spec, `FeastNow_SRS.docx` (SRS v1.0, July 2026). There is **no code, build tooling, or tests yet**. The stack (below) has been chosen; when implementation starts, both the stack and the requirements below are constraints, not suggestions.
+No longer greenfield. Built so far: static landing + vanilla-JS auth flow in `landing/` (Vercel), Node/TS + Prisma auth backend in `backend/` (Render, Supabase Postgres), design docs in `docs/superpowers/`. The requirements spec is `FeastNow_SRS.docx` (SRS v1.0, July 2026); the stack and requirements below are constraints, not suggestions.
 
-Because no toolchain exists, the commands in "Common commands" are anticipated, not verified. Replace each with the real command as soon as the project is scaffolded.
+**Build order (decided 2026-07-13, reversing the earlier Auth → Admin → Restaurant → Customer → Delivery order):** Customer role is built first, on seeded demo data flagged `isDemo` (lifecycle: retired via `isActive: false` when real restaurants onboard; hard-purge script for pre-launch). Admin and Restaurant roles follow the customer phases. Rationale and confirmation recorded in `docs/superpowers/specs/2026-07-13-customer-browse-phase1-design.md` §2.
 
 ## Tech stack
 
-- **Mobile:** React Native + TypeScript — single codebase targeting Android 10+ and iOS 15+. All role shells (Customer, Restaurant, Delivery Partner) live in this one app, switching navigation tree by `User.role`.
-- **Backend:** Node.js + TypeScript, REST API (Express or Fastify — pick one before scaffolding and record the choice here). The SRS only specifies "cloud-hosted REST API over HTTPS/JSON" (§2.4, §4.3); it does not mandate a language or framework, so this was chosen for consistency with the RN client (shared TS types/DTOs between mobile and API) and typical fit for a REST-over-HTTPS marketplace backend.
+- **Client (decided 2026-07-13, reversing the original React Native plan):** **mobile-first web** — vanilla HTML/CSS/JS for landing/auth pages in `landing/`, and a **React + Vite + TypeScript SPA** in `app/` (served at `/app/`) for the role shells, starting with Customer. Targets phone browsers on Android 10+ / iOS 15+; renders as a centered phone-width frame on desktop (accepted limitation; responsive desktop deferred). PWA-installable (manifest + service worker). **Native capabilities (background geolocation for FR-27, FCM/APNs push, app-store distribution) arrive via a Capacitor wrap of the SPA, planned before the Delivery Partner role** — until then, customer notifications are in-app live status (polling/SSE), since mobile-web push is unavailable/unreliable at target iOS versions.
+- **Backend:** Node.js + TypeScript, REST API — **Express** (chosen; in production on Render with Prisma + Supabase Postgres). The SRS only specifies "cloud-hosted REST API over HTTPS/JSON" (§2.4, §4.3); it does not mandate a language or framework, so this was chosen for consistency with the RN client (shared TS types/DTOs between mobile and API) and typical fit for a REST-over-HTTPS marketplace backend.
 - **Database:** PostgreSQL. Recommend an ORM (Prisma or TypeORM) given the relational, foreign-key-heavy schema in SRS §7 (Order → Order Item → Menu Item, etc.).
 - **Admin portal:** SRS §1.2/§2.1 describes Admin as a "web or tablet-based back-office" — likely a separate web app (e.g. React) rather than a shell inside the RN mobile app. Confirm this before building; it changes the repo layout (mobile app vs. mobile app + separate admin web app).
-- **Push notifications:** FCM (Android) / APNs (iOS), per SRS §4.3.
+- **Push notifications:** FCM (Android) / APNs (iOS), per SRS §4.3 — delivered via the Capacitor wrap (see Client above); in-app live status until then.
 - **Mapping/geolocation:** required by SRS §4.3 for delivery routing and live tracking; vendor not specified — decide (e.g. Google Maps Platform, Mapbox) before building the Delivery Partner and tracking modules.
 - **Auth:** salted password hashes, TLS 1.2+ in transit (NFR-3). No specific auth library mandated — decide when scaffolding.
 
