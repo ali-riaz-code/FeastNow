@@ -182,3 +182,29 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   .authsplit__form, .authsplit__art { animation: none; }
   .field--error .field__input { animation: none; }
 }
+
+/* ---- OTP step (signup) ---- */
+.otp-boxes { display: flex; gap: .5rem; justify-content: center; margin: .5rem 0 .75rem; }
+.otp-boxes__input {
+  width: 44px; height: 52px; text-align: center;
+  font-size: 1.3rem; border-radius: var(--r-sm); border: 2px solid transparent;
+  background: var(--dough); color: var(--navy);
+}
+.otp-boxes__input:focus-visible { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+.otp-boxes--shake { animation: fieldShake var(--dur) var(--ease-out-quart); }
+.otp-error { display: block; min-height: 1.1em; text-align: center; margin-bottom: .75rem; font-size: .85rem; color: var(--tomato); }
+.otp-resend { text-align: center; font-size: .88rem; color: var(--brown); }
+.otp-resend button { background: none; border: none; color: var(--navy); font-weight: 700; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; }
+.otp-resend button:disabled { color: var(--beige); cursor: default; }
+
+.authsplit__form--sealed .authsplit__seal { animation: sealStamp .5s var(--ease-out-expo); }
+@keyframes sealStamp {
+  0%   { scale: 1.6; opacity: .4; }
+  60%  { scale: .9; opacity: 1; }
+  100% { scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .otp-boxes--shake { animation: none; }
+  .authsplit__form--sealed .authsplit__seal { animation: none; }
+}
