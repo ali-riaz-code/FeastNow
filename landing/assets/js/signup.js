@@ -89,7 +89,13 @@ signupForm.addEventListener("submit", async (event) => {
 resendBtn.addEventListener("click", async () => {
   if (!pendingSignup || resendBtn.disabled) return;
   resendBtn.disabled = true;
-  await requestOtp(pendingSignup.email);
+  otpError.textContent = "";
+  const { ok, data } = await requestOtp(pendingSignup.email);
+  if (!ok) {
+    otpError.textContent = data.error || "Could not resend the code. Try again.";
+    resendBtn.disabled = false;
+    return;
+  }
   startResendCooldown(60);
 });
 
