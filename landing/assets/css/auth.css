@@ -223,12 +223,12 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 .fpcard__confirm { color: var(--navy); font-weight: 500; margin-bottom: 1.5rem; }
 .fpcard__back { display: inline-block; margin-top: 1.25rem; color: var(--navy); font-weight: 600; font-size: .9rem; }
 
-.fpcard__confirm, .fpcard form {
+.fpcard__confirm {
   animation: authPop var(--dur) var(--ease-out-expo) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fpcard__confirm, .fpcard form { animation: none; }
+  .fpcard__confirm { animation: none; }
 }
 
 /* ---- welcome (post-auth stub) ---- */

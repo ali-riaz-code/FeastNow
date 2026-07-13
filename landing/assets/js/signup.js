@@ -43,6 +43,15 @@ otpInputs.forEach((input, i) => {
       otpInputs[i - 1].focus();
     }
   });
+  input.addEventListener("paste", (event) => {
+    const digits = (event.clipboardData.getData("text") || "").replace(/\D/g, "");
+    if (digits.length < 2) return;
+    event.preventDefault();
+    digits.slice(0, otpInputs.length - i).split("").forEach((d, j) => {
+      otpInputs[i + j].value = d;
+    });
+    otpInputs[Math.min(i + digits.length, otpInputs.length) - 1].focus();
+  });
 });
 
 function otpValue() {
