@@ -46,13 +46,22 @@
         </form>
 
         <div class="authsplit__links">
-          <a href="signup.html" data-transition-link>New Sign Up</a>
-          <a href="forgot-password.html" data-transition-link>Forgot Password</a>
+          <a class="authlink-pill" href="signup.html" data-transition-link>New Sign Up</a>
+          <a class="authlink" href="forgot-password.html" data-transition-link>Forgot Password</a>
         </div>
       </div>
 
-      <div class="authsplit__art" aria-hidden="true" data-cart-mount></div>
+      <div class="authsplit__art">
+        <div class="authsplit__cart" aria-hidden="true" data-cart-mount></div>
+        <ul class="authsplit__stats" role="list">
+          <li class="statchip statchip--basil"><span class="num">500+</span> restaurants</li>
+          <li class="statchip statchip--gold"><span aria-hidden="true">★</span> <span class="num">4.8</span> rated</li>
+          <li class="statchip statchip--navy"><span><span class="num">10</span>-min avg delivery</span></li>
+        </ul>
+      </div>
     </div>
+
+    <span class="authpage__watermark" aria-hidden="true">buon appetito</span>
   </main>
 
   <script>

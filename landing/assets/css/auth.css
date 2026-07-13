@@ -15,11 +15,28 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   display: grid;
   place-items: center;
   padding: var(--gutter);
-  background: var(--cream);
+  overflow: hidden;
+  isolation: isolate; /* lets the negative-z watermark sit above this background, below content */
+  background:
+    radial-gradient(circle, rgba(15, 44, 86, .055) 1px, transparent 1.4px) 0 0 / 26px 26px,
+    var(--cream);
 }
 .authpage__home {
   position: absolute; top: var(--s-lg); left: var(--gutter);
   z-index: 2;
+}
+@media (max-width: 860px) {
+  .authpage { padding-top: 5.5rem; } /* clear the absolute logo lockup */
+}
+.authpage__watermark {
+  position: absolute; right: 3%; bottom: 3%; z-index: -1;
+  font-family: var(--font-script);
+  font-size: clamp(3rem, 8vw, 5.25rem);
+  line-height: 1;
+  color: rgba(15, 44, 86, .08);
+  rotate: -7deg;
+  white-space: nowrap;
+  pointer-events: none; user-select: none;
 }
 
 /* ---- generic pop-up entrance for a centered card ---- */
@@ -38,12 +55,34 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   ::view-transition-new(*) { animation: none !important; }
 }
 
+/* ---- floating stat chips (login/signup art + role-select tiles) ---- */
+.statchip {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .5rem .95rem;
+  border-radius: var(--r-pill);
+  font-size: .8rem; font-weight: 600; letter-spacing: .01em;
+  white-space: nowrap;
+  box-shadow: var(--sh-raised);
+  /* `backwards`, not `both`: a forwards fill would pin translate/scale and kill hover transitions */
+  animation: chipPop var(--dur-slow) var(--ease-out-expo) backwards;
+}
+.statchip .num { font-size: .95em; }
+.statchip--basil { background: var(--basil-deep); color: var(--cream); }
+.statchip--gold  { background: var(--gold); color: var(--navy); }
+.statchip--navy  { background: var(--navy); color: var(--cream); }
+@keyframes chipPop {
+  from { opacity: 0; scale: .6; translate: 0 10px; }
+  to   { opacity: 1; scale: 1; translate: 0 0; }
+}
+
 /* ---- role-select ---- */
 .roleselect__card {
-  width: min(560px, 100%);
-  background: var(--off-white);
+  width: min(760px, 100%);
+  background:
+    linear-gradient(165deg, rgba(192, 222, 238, .38), rgba(192, 222, 238, .10) 62%),
+    var(--off-white);
   border-radius: var(--r-lg);
-  box-shadow: var(--sh-overlay);
+  box-shadow: var(--sh-overlay), 0 0 0 1px rgba(227, 175, 4, .30);
   padding: clamp(1.75rem, 5vw, 3rem);
   text-align: center;
 }
@@ -53,55 +92,105 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 .roleselect__tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--s-md);
+  gap: var(--s-lg);
 }
 @media (max-width: 560px) {
   .roleselect__tiles { grid-template-columns: 1fr; }
 }
 
 .roleselect__tile {
-  display: grid; justify-items: center; gap: .5rem;
-  padding: 1.75rem 1rem;
+  position: relative;
+  display: flex; flex-direction: column;
+  justify-content: flex-end; align-items: center; gap: .3rem;
+  min-height: 290px;
+  padding: 1.25rem 1rem 1.4rem;
   border-radius: var(--r-md);
-  background: var(--dough);
   color: var(--navy);
   text-decoration: none;
+  animation: tileRise .7s var(--ease-out-expo) backwards;
   transition: translate var(--dur) var(--ease-out-quart),
               rotate var(--dur) var(--ease-out-quart),
-              box-shadow var(--dur) var(--ease-out-quart),
-              background var(--dur);
+              scale var(--dur) var(--ease-out-quart),
+              opacity var(--dur) var(--ease-out-quart),
+              box-shadow var(--dur) var(--ease-out-quart);
 }
-.roleselect__tile-icon { width: 40px; height: 40px; }
-.roleselect__tile-icon svg { width: 100%; height: 100%; }
-.roleselect__tile-label { font-weight: 700; font-size: 1.05rem; }
-.roleselect__tile-sub { font-size: .82rem; color: var(--brown); }
+.roleselect__tile--customer { animation-delay: .12s; }
+.roleselect__tile--restaurant { animation-delay: .24s; }
+@keyframes tileRise {
+  from { opacity: 0; translate: 0 18px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+/* imagery layer: photo + cream scrim keeps navy text ≥AA at the bottom */
+.roleselect__tile-media {
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+}
+.roleselect__tile-media img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.roleselect__tile-media::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255, 252, 240, .05) 0%,
+    rgba(255, 252, 240, .40) 42%,
+    rgba(255, 252, 240, .92) 66%,
+    var(--cream) 80%);
+}
+/* warm tomato-adjacent wash on the restaurant scene (energy, not error) */
+.roleselect__tile--restaurant .roleselect__tile-media::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(200deg, rgba(199, 37, 49, .20), rgba(199, 37, 49, 0) 55%);
+}
+
+.roleselect__tile-label { position: relative; font-weight: 700; font-size: 1.05rem; }
+.roleselect__tile-sub { position: relative; font-size: .82rem; color: var(--brown); }
+
+.roleselect__tile-chip {
+  position: absolute; top: -12px; right: 14px; z-index: 1;
+}
+.roleselect__tile--customer .roleselect__tile-chip { rotate: -2deg; animation-delay: .48s; }
+.roleselect__tile--restaurant .roleselect__tile-chip { rotate: 2deg; animation-delay: .60s; }
 
 .roleselect__tile--customer:hover {
-  translate: 0 -6px; rotate: -1deg;
-  box-shadow: var(--sh-raised), 0 0 0 3px var(--gold);
-  background: var(--cream);
+  translate: 0 -6px; rotate: -1deg; scale: 1.02;
+  box-shadow: var(--sh-overlay), 0 0 0 3px var(--gold);
 }
 .roleselect__tile--restaurant:hover {
-  translate: 0 -6px; rotate: 1deg;
-  box-shadow: var(--sh-raised), 0 0 0 3px var(--navy);
-  background: var(--cream);
+  translate: 0 -6px; rotate: 1deg; scale: 1.02;
+  box-shadow: var(--sh-overlay), 0 0 0 3px var(--navy);
+}
+.roleselect__tile:focus-visible {
+  outline: none;
+  box-shadow: var(--sh-overlay), 0 0 0 3px var(--gold);
+}
+/* the untargeted tile recedes so the hovered one reads as the choice */
+.roleselect__tiles:hover .roleselect__tile:not(:hover) {
+  opacity: .72; scale: .985;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .roleselect__tile:hover { translate: none; rotate: none; }
+  .roleselect__tile { animation: none; }
+  .statchip { animation: none; }
+  .roleselect__tile:hover { translate: none; rotate: none; scale: none; }
+  .roleselect__tiles:hover .roleselect__tile:not(:hover) { opacity: 1; scale: none; }
 }
 
 /* ---- split-screen: envelope form (left) + cart art (right) ---- */
 .authsplit {
   display: grid;
-  grid-template-columns: minmax(320px, 480px) minmax(280px, 420px);
-  gap: var(--s-xl);
+  grid-template-columns: minmax(320px, 440px) minmax(320px, 500px);
+  gap: clamp(var(--s-lg), 4vw, var(--s-xl));
   align-items: center;
-  width: min(1000px, 100%);
+  justify-content: center;
+  width: min(1040px, 100%);
 }
 @media (max-width: 860px) {
-  .authsplit { grid-template-columns: 1fr; gap: var(--s-lg); }
-  .authsplit__art { order: -1; max-width: 220px; margin-inline: auto; }
+  .authsplit { grid-template-columns: minmax(0, 480px); gap: var(--s-lg); }
+  .authsplit__art { order: -1; max-width: 320px; margin-inline: auto; }
 }
 
 .authsplit__form {
@@ -109,7 +198,7 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   background: var(--cream);
   border-radius: var(--r-lg);
   padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.25rem) 2.25rem;
-  box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15,44,86,.06);
+  box-shadow: var(--sh-overlay), inset 0 0 0 1px rgba(15, 44, 86, .06);
   animation: authFormIn var(--dur-slow) var(--ease-out-expo) both;
 }
 .authsplit__flap {
@@ -118,52 +207,95 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
 .authsplit__seal {
-  position: absolute; top: -14px; left: 50%; translate: -50% 0;
-  width: 40px; height: 40px;
+  position: absolute; top: -18px; left: 50%; translate: -50% 0;
+  width: 48px; height: 48px;
   display: grid; place-items: center;
   background: var(--gold); color: var(--navy);
   border-radius: 50%;
-  font-size: .7rem; font-weight: 700; letter-spacing: .04em;
-  box-shadow: 0 2px 6px rgba(15,44,86,.18);
+  font-size: .8rem; font-weight: 700; letter-spacing: .04em;
+  box-shadow: 0 0 0 3px var(--cream), 0 4px 12px rgba(15, 44, 86, .22);
 }
-.authsplit__title { margin-top: 1rem; font-size: clamp(1.35rem, 3vw, 1.75rem); text-align: center; }
+.authsplit__title { margin-top: 1.1rem; font-size: clamp(1.35rem, 3vw, 1.75rem); text-align: center; }
 .authsplit__sub { color: var(--brown); text-align: center; margin-bottom: 1.5rem; font-size: .92rem; }
 .authsplit__submit { width: 100%; margin-top: .5rem; }
-.authsplit__links { display: flex; justify-content: space-between; margin-top: 1.25rem; font-size: .88rem; }
-.authsplit__links a { color: var(--navy); font-weight: 600; }
 
-.authsplit__art {
-  display: grid; place-items: center;
-  animation: authArtIn var(--dur-slow) var(--ease-out-expo) both;
+.authsplit__links {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 1.4rem; font-size: .88rem;
 }
-.authsplit__art svg { width: 100%; height: auto; max-width: 340px; }
+.authsplit__links a { color: var(--navy); font-weight: 600; text-decoration: none; }
+.authlink {
+  padding-bottom: 2px;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size var(--dur) var(--ease-out-quart);
+}
+.authlink:hover, .authlink:focus-visible { background-size: 100% 2px; }
+.authlink-pill {
+  padding: .45rem 1.05rem;
+  border-radius: var(--r-pill);
+  background: var(--dough);
+  transition: background var(--dur), color var(--dur), translate var(--dur-fast) var(--ease-out-quart);
+}
+.authlink-pill:hover, .authlink-pill:focus-visible {
+  background: var(--navy); color: var(--cream);
+  translate: 0 -2px;
+}
+
+/* press feedback on top of main.css's scale — tonal darken per DESIGN.md */
+.btn:active { filter: brightness(.92); }
+
+/* illustration card: sky-tint wash, raised, staggered in after the form */
+.authsplit__art {
+  position: relative;
+  display: grid; place-items: center;
+  padding: clamp(2rem, 5vw, 3.25rem) clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(160deg, rgba(192, 222, 238, .55), rgba(192, 222, 238, .16) 70%),
+    var(--off-white);
+  box-shadow: var(--sh-raised);
+  animation: authArtIn var(--dur-slow) var(--ease-out-expo) .14s both;
+}
+.authsplit__cart { width: 100%; display: grid; place-items: center; }
+.authsplit__art svg { width: 100%; height: auto; max-width: 420px; }
+
+.authsplit__art .statchip { position: absolute; }
+.authsplit__art .statchip--basil { top: 8%; left: -1.1rem; rotate: -3deg; animation-delay: .42s; }
+.authsplit__art .statchip--gold  { top: 46%; right: -1.3rem; rotate: 2deg; animation-delay: .54s; }
+.authsplit__art .statchip--navy  { bottom: 8%; left: 8%; rotate: -2deg; animation-delay: .66s; }
 
 @keyframes authFormIn {
-  from { opacity: 0; translate: -24px 0; rotate: -3deg; }
-  to   { opacity: 1; translate: 0 0; rotate: 0deg; }
+  from { opacity: 0; translate: 0 22px; }
+  to   { opacity: 1; translate: 0 0; }
 }
 @keyframes authArtIn {
-  from { opacity: 0; translate: 24px 0; rotate: 2deg; }
-  to   { opacity: 1; translate: 0 0; rotate: 0deg; }
+  from { opacity: 0; translate: 0 26px; scale: .96; }
+  to   { opacity: 1; translate: 0 0; scale: 1; }
 }
 
 /* ---- form fields (shared by login, signup, forgot-password) ---- */
-.field { margin-bottom: 1.1rem; text-align: left; }
+.field { margin-bottom: 1.25rem; text-align: left; }
 .field__label {
   display: block; font-size: .8125rem; font-weight: 600;
-  letter-spacing: .04em; text-transform: uppercase; color: var(--navy);
-  margin-bottom: .35rem;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--navy);
+  margin-bottom: .4rem;
+  transition: color var(--dur);
 }
+.field:focus-within .field__label { color: var(--gold-deep); }
 .field__input {
   width: 100%; min-height: 48px; padding: 0 1rem;
   border-radius: var(--r-sm); border: 2px solid transparent;
   background: var(--dough); color: var(--navy);
   font-family: var(--font-sans); font-size: 1rem;
-  transition: border-color var(--dur), box-shadow var(--dur);
+  transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
 }
 .field__input:focus-visible {
   outline: none; border-color: var(--gold);
-  box-shadow: 0 0 0 2px var(--gold);
+  background: var(--cream);
+  box-shadow: 0 0 0 2px var(--gold), 0 6px 16px rgba(227, 175, 4, .25);
 }
 .field__error {
   display: block; min-height: 1.1em; margin-top: .35rem;
@@ -181,6 +313,8 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 @media (prefers-reduced-motion: reduce) {
   .authsplit__form, .authsplit__art { animation: none; }
   .field--error .field__input { animation: none; }
+  .field__label, .authlink, .authlink-pill { transition: none; }
+  .authlink-pill:hover { translate: none; }
 }
 
 /* ---- OTP step (signup) ---- */
@@ -189,8 +323,13 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   width: 44px; height: 52px; text-align: center;
   font-size: 1.3rem; border-radius: var(--r-sm); border: 2px solid transparent;
   background: var(--dough); color: var(--navy);
+  transition: border-color var(--dur), box-shadow var(--dur), background var(--dur);
 }
-.otp-boxes__input:focus-visible { outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+.otp-boxes__input:focus-visible {
+  outline: none; border-color: var(--gold);
+  background: var(--cream);
+  box-shadow: 0 0 0 2px var(--gold), 0 6px 16px rgba(227, 175, 4, .25);
+}
 .otp-boxes--shake { animation: fieldShake var(--dur) var(--ease-out-quart); }
 .otp-error { display: block; min-height: 1.1em; text-align: center; margin-bottom: .75rem; font-size: .85rem; color: var(--tomato); }
 .otp-resend { text-align: center; font-size: .88rem; color: var(--brown); }

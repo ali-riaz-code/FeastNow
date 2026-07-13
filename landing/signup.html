@@ -82,12 +82,21 @@
         </form>
 
         <div class="authsplit__links">
-          <a href="login.html" data-transition-link>Already have an account?</a>
+          <a class="authlink" href="login.html" data-transition-link>Already have an account?</a>
         </div>
       </div>
 
-      <div class="authsplit__art" aria-hidden="true" data-cart-mount></div>
+      <div class="authsplit__art">
+        <div class="authsplit__cart" aria-hidden="true" data-cart-mount></div>
+        <ul class="authsplit__stats" role="list">
+          <li class="statchip statchip--basil"><span class="num">500+</span> restaurants</li>
+          <li class="statchip statchip--gold"><span aria-hidden="true">★</span> <span class="num">4.8</span> rated</li>
+          <li class="statchip statchip--navy"><span><span class="num">10</span>-min avg delivery</span></li>
+        </ul>
+      </div>
     </div>
+
+    <span class="authpage__watermark" aria-hidden="true">buon appetito</span>
   </main>
 
   <script>

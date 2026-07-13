@@ -14,6 +14,7 @@
   --gold-deep: #7A5E00; /* gold-family for TEXT on light surfaces (AA ≥4.5:1) */
   --tomato: #C72531;
   --basil: #128643;
+  --basil-deep: #0C6B33; /* basil-family for chip fills under cream text (AA ≥4.5:1) */
   --sky: #C0DEEE;
 
   --ink: var(--navy);
