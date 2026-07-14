@@ -26,4 +26,11 @@ describe("createApp", () => {
     const res = await request(app).get("/api/me");
     expect(res.status).toBe(401);
   });
+
+  it("mounts the browse endpoints and requires auth on each", async () => {
+    for (const path of ["/api/customer/home", "/api/restaurants", "/api/restaurants/some-id", "/api/search?q=pizza"]) {
+      const res = await request(app).get(path);
+      expect(res.status, path).toBe(401);
+    }
+  });
 });
