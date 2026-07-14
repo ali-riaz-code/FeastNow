@@ -26,15 +26,15 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   z-index: 2;
 }
 @media (max-width: 860px) {
-  .authpage { padding-top: 5rem; }
   .authpage__home {
     top: var(--s-sm);
-    left: 50%; translate: -50% 0;
+    left: var(--gutter);
     background: var(--cream);
     padding: .3rem .9rem .3rem .6rem;
     border-radius: var(--r-pill);
     box-shadow: var(--sh-raised);
     white-space: nowrap;
+    z-index: 3;
   }
 }
 .authpage__watermark {
