@@ -2,7 +2,7 @@ import express from "express";
 import request from "supertest";
 import { describe, it, expect } from "vitest";
 import { createRestaurantsRouter } from "../../src/routes/restaurantsRouter";
-import { createFakeRestaurantRepository, makeRestaurant } from "../test-helpers/fakeRestaurantRepository";
+import { createFakeRestaurantRepository, makeRestaurant, makeMenuItem, makeRating } from "../test-helpers/fakeRestaurantRepository";
 import { signToken } from "../../src/lib/jwt";
 
 const JWT_SECRET = "test-secret";
@@ -66,5 +66,44 @@ describe("GET /api/restaurants", () => {
     expect((await request(buildApp()).get("/api/restaurants?sort=cheapest").set(auth)).status).toBe(400);
     expect((await request(buildApp()).get("/api/restaurants?page=0").set(auth)).status).toBe(400);
     expect((await request(buildApp()).get("/api/restaurants?page=abc").set(auth)).status).toBe(400);
+  });
+});
+
+describe("GET /api/restaurants/:id", () => {
+  it("returns profile, menu grouped by category in position order, and recent reviews", async () => {
+    const r = makeRestaurant({ name: "Karahi Khaas", opensAt: "00:00", closesAt: "00:00" });
+    const menuItems = [
+      makeMenuItem(r.id, { category: "Starters", name: "Samosa", position: 1 }),
+      makeMenuItem(r.id, { category: "Mains", name: "Karahi", position: 2 }),
+      makeMenuItem(r.id, { category: "Starters", name: "Kebab", position: 3 }),
+    ];
+    const ratings = Array.from({ length: 6 }, (_, i) =>
+      makeRating(r.id, { stars: 5, createdAt: new Date(2026, 0, i + 1) }));
+    const res = await request(buildApp([{ profile: r, menuItems, ratings }]))
+      .get(`/api/restaurants/${r.id}`).set(auth);
+
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe("Karahi Khaas");
+    expect(res.body.isOpenNow).toBe(true);
+    expect(res.body.menu.map((g: { category: string }) => g.category)).toEqual(["Starters", "Mains"]);
+    expect(res.body.menu[0].items.map((i: { name: string }) => i.name)).toEqual(["Samosa", "Kebab"]);
+    expect(res.body.menu[0].items[0]).toEqual({
+      id: menuItems[0].id, name: "Samosa", description: "Tasty.",
+      priceCents: 45000, imageUrl: null, isAvailable: true,
+    });
+    expect(res.body.reviews).toHaveLength(5); // capped at 5 most recent
+    expect(new Date(res.body.reviews[0].createdAt).getTime())
+      .toBeGreaterThan(new Date(res.body.reviews[4].createdAt).getTime());
+  });
+
+  it("404s for unknown and inactive restaurants", async () => {
+    const retired = makeRestaurant({ isActive: false });
+    const app = buildApp([{ profile: retired }]);
+    expect((await request(app).get("/api/restaurants/nope").set(auth)).status).toBe(404);
+    expect((await request(app).get(`/api/restaurants/${retired.id}`).set(auth)).status).toBe(404);
+  });
+
+  it("requires auth", async () => {
+    expect((await request(buildApp()).get("/api/restaurants/x")).status).toBe(401);
   });
 });
