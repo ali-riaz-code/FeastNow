@@ -6,7 +6,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc && prisma generate",
     "start": "prisma migrate deploy && node dist/server.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed": "tsx prisma/seed.ts",
+    "purge:demo": "tsx prisma/purgeDemo.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",

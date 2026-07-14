@@ -35,3 +35,59 @@ model OtpChallenge {
 
   @@index([email])
 }
+
+model RestaurantProfile {
+  id             String     @id @default(uuid())
+  userId         String?    // owner account arrives with the Restaurant role; seeded rows have none
+  name           String
+  description    String
+  address        String
+  cuisines       String[]
+  opensAt        String     // "HH:mm" 24h local (Asia/Karachi)
+  closesAt       String     // "HH:mm"; earlier than opensAt = overnight window
+  avgRating      Float      @default(0)
+  ratingCount    Int        @default(0)
+  estDeliveryMin Int
+  orderCount     Int        @default(0)
+  approvedAt     DateTime
+  heroImageUrl   String
+  isActive       Boolean    @default(true)
+  isDemo         Boolean    @default(false)
+  menuItems      MenuItem[]
+  ratings        Rating[]
+
+  @@index([isActive, orderCount])
+  @@index([isActive, avgRating])
+  @@index([isActive, approvedAt])
+  @@index([isActive, estDeliveryMin])
+  @@index([cuisines], type: Gin)
+}
+
+model MenuItem {
+  id           String            @id @default(uuid())
+  restaurantId String
+  restaurant   RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  category     String
+  name         String
+  description  String
+  priceCents   Int               // money is integer cents — Phase 2's price_at_order snapshots from this
+  imageUrl     String?
+  isAvailable  Boolean           @default(true)
+  position     Int               @default(0) // menu display order; category order = first occurrence
+
+  @@index([restaurantId])
+  @@index([name])
+}
+
+model Rating {
+  id           String            @id @default(uuid())
+  restaurantId String
+  restaurant   RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderId      String?           // linked to real orders in Phase 3
+  stars        Int
+  reviewText   String
+  authorName   String
+  createdAt    DateTime          @default(now())
+
+  @@index([restaurantId, createdAt])
+}
