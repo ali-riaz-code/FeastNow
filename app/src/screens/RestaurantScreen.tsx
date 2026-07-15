@@ -147,7 +147,7 @@ export function RestaurantScreen() {
         ))}
         {!allReviews && r.reviews.length > INITIAL_REVIEWS_SHOWN && (
           <button className="btn-retry" onClick={() => setAllReviews(true)}>
-            See all ({r.ratingCount})
+            See all ({r.reviews.length})
           </button>
         )}
       </section>
