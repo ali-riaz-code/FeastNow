@@ -1,6 +1,29 @@
-// Placeholder — replaced with the real app shell in Task 13.
-function App() {
-  return null;
-}
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AuthGate } from "./AuthGate";
+import { TabBar } from "./components/TabBar";
+import { OrdersScreen } from "./screens/OrdersScreen";
+import { ProfileScreen } from "./screens/ProfileScreen";
 
-export default App;
+// Placeholders replaced in Tasks 15-17.
+const HomeScreen = () => <main className="screen">Home</main>;
+const RestaurantScreen = () => <main className="screen">Restaurant</main>;
+const SearchScreen = () => <main className="screen">Search</main>;
+
+export default function App() {
+  return (
+    <AuthGate>
+      <BrowserRouter basename="/app">
+        <div className="shell">
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/restaurant/:id" element={<RestaurantScreen />} />
+            <Route path="/search" element={<SearchScreen />} />
+            <Route path="/orders" element={<OrdersScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+          </Routes>
+          <TabBar />
+        </div>
+      </BrowserRouter>
+    </AuthGate>
+  );
+}

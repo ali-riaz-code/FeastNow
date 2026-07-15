@@ -1,0 +1,50 @@
+.shell { display: flex; flex-direction: column; min-height: 100dvh; }
+.screen { flex: 1; padding: var(--s-md); padding-bottom: calc(64px + var(--s-md)); }
+
+.boot-screen {
+  min-height: 100dvh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: var(--s-md);
+  padding: var(--s-lg); text-align: center;
+}
+.boot-screen__logo { font-family: var(--font-display); font-size: 28px; color: var(--navy); }
+.boot-screen__message { color: var(--brown); max-width: 32ch; }
+
+.tab-bar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px; height: 64px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  background: var(--cream); border-top: 1px solid var(--dough);
+  z-index: var(--z-nav);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.tab-bar__tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; font-size: 11px; color: var(--brown);
+  transition: color var(--dur-fast) var(--ease-out-quart);
+}
+.tab-bar__tab--active { color: var(--navy); font-weight: 600; }
+
+.btn-primary {
+  display: inline-block; background: var(--navy); color: var(--cream);
+  border: none; border-radius: var(--r-pill); padding: 12px 24px; font-weight: 600;
+}
+.btn-retry, .btn-logout {
+  background: none; border: 1px solid var(--navy); color: var(--navy);
+  border-radius: var(--r-pill); padding: 10px 22px; font-weight: 600;
+}
+.btn-logout { margin-top: var(--s-lg); border-color: var(--tomato); color: var(--tomato); }
+
+.orders-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-sm); text-align: center; }
+.orders-empty h1 { margin: var(--s-sm) 0 0; color: var(--navy); }
+.orders-empty p { margin: 0 0 var(--s-md); color: var(--brown); }
+
+.profile { display: flex; flex-direction: column; align-items: center; padding-top: var(--s-xl); }
+.profile__avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--navy); color: var(--cream);
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+}
+.profile h1 { margin: var(--s-md) 0 var(--s-lg); color: var(--navy); }
+.profile__details { width: 100%; max-width: 320px; margin: 0; }
+.profile__details dt { font-size: 12px; color: var(--brown); margin-top: var(--s-md); }
+.profile__details dd { margin: 2px 0 0; }
