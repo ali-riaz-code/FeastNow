@@ -28,32 +28,39 @@ export function SearchScreen() {
   const [recent, setRecent] = useState<string[]>(readRecent);
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [searching, setSearching] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const debounceRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     window.clearTimeout(debounceRef.current);
+    let cancelled = false;
     const q = query.trim();
     if (q.length < MIN_QUERY_LENGTH) {
       setResults(null);
       setSearching(false);
-      return;
+      setSearchError(false);
+      return () => { cancelled = true; };
     }
     setSearching(true);
+    setSearchError(false);
     debounceRef.current = window.setTimeout(async () => {
       try {
         const res = await apiGet<SearchResponse>(`/api/search?q=${encodeURIComponent(q)}`);
+        if (cancelled) return;
         setResults(res);
         setRecent(pushRecent(q));
       } catch {
-        setResults({ restaurants: [], dishes: [] });
+        if (cancelled) return;
+        setResults(null);
+        setSearchError(true);
       } finally {
-        setSearching(false);
+        if (!cancelled) setSearching(false);
       }
     }, DEBOUNCE_MS);
-    return () => window.clearTimeout(debounceRef.current);
+    return () => { cancelled = true; window.clearTimeout(debounceRef.current); };
   }, [query]);
 
-  const noMatches = results !== null && !searching
+  const noMatches = results !== null && !searching && !searchError
     && results.restaurants.length === 0 && results.dishes.length === 0;
 
   return (
@@ -88,6 +95,9 @@ export function SearchScreen() {
       )}
 
       {searching && <p className="search__status mono" role="status">Searching…</p>}
+      {searchError && !searching && (
+        <p className="search__status" role="status">Search isn't working right now. Check your connection and try again.</p>
+      )}
       {noMatches && <p className="search__status">No matches for "{query.trim()}".</p>}
 
       {results && results.restaurants.length > 0 && (
@@ -103,13 +113,18 @@ export function SearchScreen() {
         <section className="search__group">
           <h2 className="serif">Dishes</h2>
           {results.dishes.map((dish) => (
-            <Link key={dish.id} to={`/restaurant/${dish.restaurantId}`} className="dish-hit">
+            <Link
+              key={dish.id}
+              to={`/restaurant/${dish.restaurantId}`}
+              className={`dish-hit${dish.isAvailable ? "" : " dish-hit--unavailable"}`}
+            >
               {dish.imageUrl
                 ? <img className="dish-hit__thumb" src={dish.imageUrl} alt="" loading="lazy" />
                 : <div className="dish-hit__thumb dish-hit__thumb--empty" aria-hidden="true" />}
               <div className="dish-hit__text">
                 <h3>{dish.name}</h3>
                 <p>{dish.restaurantName}</p>
+                {!dish.isAvailable && <span className="dish-hit__unavailable-label">Unavailable</span>}
               </div>
               <span className="dish-hit__price mono">{formatPrice(dish.priceCents)}</span>
             </Link>
