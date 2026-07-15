@@ -31,6 +31,8 @@ export function HomeScreen() {
   const [gridPage, setGridPage] = useState(1);
   const [gridTotal, setGridTotal] = useState<number | null>(null);
   const [gridLoading, setGridLoading] = useState(false);
+  const [gridError, setGridError] = useState(false);
+  const [gridEpoch, setGridEpoch] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const loadFeed = useCallback(async () => {
@@ -49,9 +51,12 @@ export function HomeScreen() {
     setGridItems([]);
     setGridPage(1);
     setGridTotal(null);
+    setGridError(false);
   }, [cuisine, sort]);
 
-  // Load grid pages.
+  // Load grid pages. gridEpoch is bumped by pull-to-refresh / retry to force a
+  // re-fetch even when gridPage is already 1 (setGridPage(1) would otherwise be
+  // a no-op by value identity and never re-trigger this effect).
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -63,15 +68,22 @@ export function HomeScreen() {
         if (cancelled) return;
         setGridItems((prev) => (gridPage === 1 ? res.restaurants : [...prev, ...res.restaurants]));
         setGridTotal(res.total);
+        setGridError(false);
       } catch {
-        if (!cancelled && gridPage === 1) setGridTotal(0);
+        if (cancelled) return;
+        if (gridPage === 1) {
+          setGridTotal(null);
+          setGridError(true);
+        }
+        // Page >= 2 failures leave existing items/total intact so the sentinel
+        // or a future retry can attempt the same page again.
       } finally {
         if (!cancelled) setGridLoading(false);
       }
     };
     void load();
     return () => { cancelled = true; };
-  }, [cuisine, sort, gridPage]);
+  }, [cuisine, sort, gridPage, gridEpoch]);
 
   // Infinite scroll sentinel.
   useEffect(() => {
@@ -88,9 +100,15 @@ export function HomeScreen() {
   }, [gridItems.length, gridTotal, gridLoading]);
 
   const refreshing = usePullToRefresh(mainRef, useCallback(async () => {
-    setGridItems([]); setGridPage(1); setGridTotal(null);
+    setGridItems([]); setGridPage(1); setGridTotal(null); setGridError(false);
+    setGridEpoch((e) => e + 1);
     await loadFeed();
   }, [loadFeed]));
+
+  const retryGrid = useCallback(() => {
+    setGridError(false);
+    setGridEpoch((e) => e + 1);
+  }, []);
 
   const cuisines = feed.status === "ready" ? feed.home.cuisines : [];
 
@@ -144,11 +162,20 @@ export function HomeScreen() {
                 ))}
               </select>
             </div>
-            <div className="grid">
-              {gridItems.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
-              {gridLoading && Array.from({ length: 4 }, (_, i) => <SkeletonCard key={`s${i}`} />)}
-            </div>
-            {gridTotal === 0 && <p className="home__empty">No restaurants match this filter.</p>}
+            {gridError ? (
+              <div className="home__error">
+                <p>Couldn't load restaurants — check your connection and try again.</p>
+                <button className="btn-retry" onClick={retryGrid}>Try again</button>
+              </div>
+            ) : (
+              <>
+                <div className="grid">
+                  {gridItems.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
+                  {gridLoading && Array.from({ length: 4 }, (_, i) => <SkeletonCard key={`s${i}`} />)}
+                </div>
+                {gridTotal === 0 && <p className="home__empty">No restaurants match this filter.</p>}
+              </>
+            )}
             <div ref={sentinelRef} aria-hidden="true" />
           </section>
         </>
