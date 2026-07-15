@@ -134,5 +134,5 @@ otpForm.addEventListener("submit", async (event) => {
 
   document.querySelector(".authsplit__form").classList.add("authsplit__form--sealed");
   saveToken(data.token);
-  setTimeout(() => { window.location.href = "welcome.html"; }, 500);
+  setTimeout(() => { window.location.href = "/app/"; }, 500);
 });

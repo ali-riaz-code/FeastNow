@@ -34,5 +34,5 @@ form.addEventListener("submit", async (event) => {
   }
 
   saveToken(data.token);
-  window.location.href = "welcome.html";
+  window.location.href = "/app/";
 });
