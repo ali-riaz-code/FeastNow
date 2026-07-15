@@ -4,9 +4,9 @@ import { TabBar } from "./components/TabBar";
 import { HomeScreen } from "./screens/HomeScreen";
 import { OrdersScreen } from "./screens/OrdersScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
+import { RestaurantScreen } from "./screens/RestaurantScreen";
 
-// Placeholders replaced in Tasks 16-17.
-const RestaurantScreen = () => <main className="screen">Restaurant</main>;
+// Placeholder replaced in Task 17.
 const SearchScreen = () => <main className="screen">Search</main>;
 
 export default function App() {
