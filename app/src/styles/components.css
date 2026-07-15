@@ -1,0 +1,78 @@
+/* --- RestaurantCard --- */
+.restaurant-card {
+  display: block; width: 240px; flex-shrink: 0;
+  border-radius: var(--r-md); overflow: hidden;
+  background: var(--off-white); box-shadow: var(--sh-raised);
+  transition: transform var(--dur-fast) var(--ease-out-quart);
+}
+.restaurant-card:active { transform: scale(0.98); }
+.restaurant-card__media { position: relative; aspect-ratio: 16 / 9; background: var(--dough); }
+.restaurant-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.restaurant-card--closed .restaurant-card__media img { filter: grayscale(0.9); opacity: 0.75; }
+.closed-badge {
+  position: absolute; left: 8px; bottom: 8px;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--tomato); color: var(--cream);
+  font-size: 11px; font-weight: 600;
+  border-radius: var(--r-pill); padding: 3px 8px;
+}
+.restaurant-card__body { padding: 10px 12px 12px; }
+.restaurant-card__name { margin: 0; font-size: 16px; color: var(--navy); }
+.restaurant-card__cuisines {
+  margin: 2px 0 6px; font-size: 12px; color: var(--brown);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.restaurant-card__meta {
+  margin: 0; display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--brown);
+}
+/* Gold-Is-Rare: the rating star (and menu prices) only. */
+.restaurant-card__rating { display: inline-flex; align-items: center; gap: 3px; color: var(--gold-deep); }
+
+/* Grid variant fills its cell instead of fixed row width */
+.grid .restaurant-card { width: auto; }
+
+/* --- Chip --- */
+.chip {
+  border: 1px solid var(--beige); background: var(--dough); color: var(--ink);
+  border-radius: var(--r-pill); padding: 7px 14px; font-size: 13px; white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out-quart), color var(--dur-fast) var(--ease-out-quart);
+}
+.chip--selected { background: var(--navy); border-color: var(--navy); color: var(--cream); font-weight: 600; }
+
+/* --- SectionRow --- */
+.section-row { margin-top: var(--s-lg); }
+.section-row__title { margin: 0 0 var(--s-sm); font-size: 19px; color: var(--navy); }
+.section-row__scroller {
+  display: flex; gap: var(--s-md); overflow-x: auto;
+  padding: 2px 2px 10px; scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.section-row__scroller::-webkit-scrollbar { display: none; }
+.section-row__scroller > * { scroll-snap-align: start; }
+
+/* --- SkeletonCard --- */
+.skeleton-card { width: 240px; flex-shrink: 0; border-radius: var(--r-md); overflow: hidden; background: var(--off-white); }
+.skeleton-card__media { aspect-ratio: 16 / 9; }
+.skeleton-card__line { height: 12px; border-radius: 6px; margin: 10px 12px 0; }
+.skeleton-card__line--short { width: 50%; margin-bottom: 12px; }
+.skeleton-card__media, .skeleton-card__line {
+  background: linear-gradient(90deg, var(--dough) 25%, var(--beige) 50%, var(--dough) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+}
+@keyframes skeleton-shimmer { to { background-position: -200% 0; } }
+.grid .skeleton-card { width: auto; }
+
+/* --- SearchBar --- */
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--off-white); border: 1px solid var(--beige);
+  border-radius: var(--r-pill); padding: 10px 14px; color: var(--brown);
+}
+.search-bar:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227, 175, 4, 0.25); }
+.search-bar input {
+  flex: 1; border: none; background: none; outline: none;
+  font: inherit; color: var(--ink); min-width: 0;
+}
+.search-bar input::placeholder { color: var(--brown); opacity: 0.7; }
