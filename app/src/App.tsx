@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { AuthGate } from "./AuthGate";
 import { TabBar } from "./components/TabBar";
+import { HomeScreen } from "./screens/HomeScreen";
 import { OrdersScreen } from "./screens/OrdersScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 
-// Placeholders replaced in Tasks 15-17.
-const HomeScreen = () => <main className="screen">Home</main>;
+// Placeholders replaced in Tasks 16-17.
 const RestaurantScreen = () => <main className="screen">Restaurant</main>;
 const SearchScreen = () => <main className="screen">Search</main>;
 
