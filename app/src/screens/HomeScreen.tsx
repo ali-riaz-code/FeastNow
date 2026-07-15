@@ -32,8 +32,15 @@ export function HomeScreen() {
   const [gridTotal, setGridTotal] = useState<number | null>(null);
   const [gridLoading, setGridLoading] = useState(false);
   const [gridError, setGridError] = useState(false);
+  const [loadMoreError, setLoadMoreError] = useState(false);
   const [gridEpoch, setGridEpoch] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  // Mirror of loadMoreError for the IntersectionObserver callback. Kept out of
+  // the observer effect's deps on purpose: a recreated observer re-fires its
+  // initial callback immediately while the sentinel is visible, which would
+  // auto-retry in a loop on persistent failure (or race an in-flight retry).
+  const loadMoreErrorRef = useRef(false);
+  useEffect(() => { loadMoreErrorRef.current = loadMoreError; }, [loadMoreError]);
 
   const loadFeed = useCallback(async () => {
     setFeed({ status: "loading" });
@@ -52,6 +59,7 @@ export function HomeScreen() {
     setGridPage(1);
     setGridTotal(null);
     setGridError(false);
+    setLoadMoreError(false);
   }, [cuisine, sort]);
 
   // Load grid pages. gridEpoch is bumped by pull-to-refresh / retry to force a
@@ -69,14 +77,19 @@ export function HomeScreen() {
         setGridItems((prev) => (gridPage === 1 ? res.restaurants : [...prev, ...res.restaurants]));
         setGridTotal(res.total);
         setGridError(false);
+        setLoadMoreError(false);
       } catch {
         if (cancelled) return;
         if (gridPage === 1) {
           setGridTotal(null);
           setGridError(true);
+        } else {
+          // Page >= 2 failure: keep existing items/total intact and freeze the
+          // sentinel (loadMoreErrorRef blocks its increment) so gridPage stays
+          // on the failed page. The load-more retry button bumps gridEpoch to
+          // re-request this SAME page — no skipping, no auto-retry loop.
+          setLoadMoreError(true);
         }
-        // Page >= 2 failures leave existing items/total intact so the sentinel
-        // or a future retry can attempt the same page again.
       } finally {
         if (!cancelled) setGridLoading(false);
       }
@@ -91,7 +104,7 @@ export function HomeScreen() {
     if (!sentinel) return;
     const observer = new IntersectionObserver((entries) => {
       const hasMore = gridTotal !== null && gridItems.length < gridTotal;
-      if (entries[0].isIntersecting && hasMore && !gridLoading) {
+      if (entries[0].isIntersecting && hasMore && !gridLoading && !loadMoreErrorRef.current) {
         setGridPage((p) => p + 1);
       }
     });
@@ -100,13 +113,17 @@ export function HomeScreen() {
   }, [gridItems.length, gridTotal, gridLoading]);
 
   const refreshing = usePullToRefresh(mainRef, useCallback(async () => {
-    setGridItems([]); setGridPage(1); setGridTotal(null); setGridError(false);
+    setGridItems([]); setGridPage(1); setGridTotal(null);
+    setGridError(false); setLoadMoreError(false);
     setGridEpoch((e) => e + 1);
     await loadFeed();
   }, [loadFeed]));
 
+  // Retries the current gridPage: page 1 for a full-grid error, or the failed
+  // page (unchanged since the failure) for a load-more error.
   const retryGrid = useCallback(() => {
     setGridError(false);
+    setLoadMoreError(false);
     setGridEpoch((e) => e + 1);
   }, []);
 
@@ -173,6 +190,12 @@ export function HomeScreen() {
                   {gridItems.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
                   {gridLoading && Array.from({ length: 4 }, (_, i) => <SkeletonCard key={`s${i}`} />)}
                 </div>
+                {loadMoreError && (
+                  <div className="home__error">
+                    <p>Couldn't load more restaurants.</p>
+                    <button className="btn-retry" onClick={retryGrid}>Try again</button>
+                  </div>
+                )}
                 {gridTotal === 0 && <p className="home__empty">No restaurants match this filter.</p>}
               </>
             )}
