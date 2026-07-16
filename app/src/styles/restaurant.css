@@ -65,6 +65,8 @@
 .reviews { padding: var(--s-md); }
 .reviews h2 { margin: 0 0 var(--s-sm); font-size: 18px; color: var(--navy); }
 .review { padding: var(--s-sm) 0; border-bottom: 1px solid var(--dough); }
-.review__stars { color: var(--gold-deep); display: flex; gap: 2px; }
+/* Gold-Is-Rare: review stars are navy ink, not gold — gold stays reserved for the header rating badge + prices */
+.review__stars { color: var(--navy); display: flex; gap: 2px; }
+.review__star--empty { color: var(--dough); }
 .review__text { margin: 6px 0 2px; font-size: 14px; }
 .review__author { margin: 0; font-size: 12px; color: var(--brown); }

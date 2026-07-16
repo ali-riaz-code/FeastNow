@@ -108,13 +108,13 @@ A warm, layered palette: cream neutrals ranging from bright to biscuit, anchored
 - **Deep Brown** (`#2F241A`) / **Brown** (`#4F3C2C`): Warmest dark tones for secondary text and warm detail where pure navy would feel cold.
 
 ### Named Rules
-**The Tricolore-Means-Status Rule.** Red and green are never decorative. They belong to the order-lifecycle and availability states, and every use is backed by an icon *and* a text label — never color alone (color-blind safe, per PRODUCT.md).
+**The Tricolore-Means-Status Rule.** Red and green are never decorative. They belong to the order-lifecycle and availability states, and every use is backed by an icon *and* a text label — never color alone (color-blind safe, per PRODUCT.md). Tomato has one sanctioned use outside status: destructive/irreversible actions (Log Out, Clear recents) — always with a clear text label (an icon is not required there). Basil stays status-only.
 
-**The Gold-Is-Rare Rule.** Brass gold marks *the one thing that matters* on a screen (the price, the rating, the current step). If two things are gold, one is wrong.
+**The Gold-Is-Rare Rule.** Brass gold marks *the one thing that matters* on a screen (the price, the rating, the current step). If two things are gold, one is wrong. Review stars render in navy ink, not gold — gold stays reserved for the header rating badge and prices.
 
 ## 3. Typography
 
-**Display Font:** Awesome Serif (fallback: Playfair Display, Georgia) — expressive, high-contrast serif.
+**Display Font:** Fraunces (fallback: Playfair Display, Georgia) — expressive, high-contrast serif.
 **Heading/UI Font:** salo-variable (fallback: Space Grotesk, system-ui) — a warm variable sans.
 **Body Font:** salo-variable / system-ui stack.
 **Numeric/Mono Font:** Azeret Mono (fallback: JetBrains Mono, ui-monospace).
@@ -123,7 +123,7 @@ A warm, layered palette: cream neutrals ranging from bright to biscuit, anchored
 **Character:** An editorial mix — a warm serif for expressive moments, a clean variable sans doing the daily work, and a monospace that shows up only for numbers, where it reads like a printed receipt. The script is a garnish, not an ingredient.
 
 ### Hierarchy
-- **Display** (Awesome Serif, 600, `clamp(1.75rem, 5vw, 3rem)`, lh 1.05): Customer-shell hero moments, restaurant names, marquee section titles. Sparing in operator shells.
+- **Display** (Fraunces, 600, `clamp(1.75rem, 5vw, 3rem)`, lh 1.05): Display headings generally — restaurant names, screen and section headings (e.g. "Most Popular Near You", "Reviews", "Recent searches"), the boot wordmark, and other Customer-shell hero moments. Sparing in operator shells.
 - **Headline** (salo-variable, 600, ~1.5rem, lh 1.15): Screen titles, card headers across all shells.
 - **Title** (salo-variable, 600, ~1.125rem, lh 1.2): List-row titles, dialog titles, section headers.
 - **Body** (salo-variable, 400, 1rem, lh 1.5): All running UI text and prose. Cap prose at 65–75ch.
@@ -195,6 +195,6 @@ Warm and mostly flat. Surfaces are layered by tone (cream → off-white → doug
 - **Don't** set body text, labels, or navigation in monospace, however tempting the receipt aesthetic.
 - **Don't** put text (body or button) in gold on cream — gold is a fill/accent, not a text color.
 - **Don't** convey order status by color alone; never a bare red or green dot.
-- **Don't** import brand-site motion wholesale (heavy Locomotive-style scroll choreography). Motion is responsive (150–250ms), conveys state, and has a reduced-motion fallback — it must never stutter on a low-end Android phone.
+- **Don't** import brand-site motion wholesale (heavy Locomotive-style scroll choreography). Motion is responsive (150–250ms), conveys state, and has a reduced-motion fallback — it must never stutter on a low-end Android phone. Exemption: continuous ambient loops (e.g. skeleton shimmer, ~1.4s) aren't interaction motion and may run longer than the 150–250ms bound, provided they respect `prefers-reduced-motion`.
 - **Don't** ship a cold enterprise-dashboard look in the Restaurant/Delivery/Admin shells; they wear the same warm palette, just quieter.
 - **Don't** use `border-left`/`border-right` colored stripes, gradient text, or decorative glassmorphism.

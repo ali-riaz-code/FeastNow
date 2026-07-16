@@ -135,6 +135,7 @@ export function RestaurantScreen() {
             <div className="review__stars" aria-label={`${review.stars} out of 5 stars`}>
               {Array.from({ length: 5 }, (_, i) => (
                 <svg key={i} viewBox="0 0 24 24" width="13" height="13"
+                  className={i < review.stars ? undefined : "review__star--empty"}
                   fill={i < review.stars ? "currentColor" : "none"}
                   stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
                   <path d="m12 2 3 6.6 7 .9-5.2 4.9 1.4 7-6.2-3.6L5.8 21.4l1.4-7L2 9.5l7-.9Z" />
