@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { apiGet, NetworkError } from "../lib/api";
+import { apiGet, ApiError, NetworkError } from "../lib/api";
 import type { RestaurantDetail } from "../lib/types";
 import { formatPrice, formatRating } from "../lib/format";
 
@@ -31,7 +31,7 @@ export function RestaurantScreen() {
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        if (err instanceof Error && err.message.includes("404")) setState({ status: "missing" });
+        if (err instanceof ApiError && err.status === 404) setState({ status: "missing" });
         else setState({ status: "error", message: err instanceof NetworkError ? err.message : "Couldn't load this restaurant." });
       });
     return () => { cancelled = true; };

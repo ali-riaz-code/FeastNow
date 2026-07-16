@@ -18,7 +18,8 @@ function readRecent(): string[] {
 
 function pushRecent(term: string): string[] {
   const next = [term, ...readRecent().filter((t) => t !== term)].slice(0, MAX_RECENT);
-  window.localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+  try { window.localStorage.setItem(RECENT_KEY, JSON.stringify(next)); }
+  catch { /* quota exceeded / private mode — recent list just won't persist */ }
   return next;
 }
 

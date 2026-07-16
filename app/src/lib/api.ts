@@ -7,6 +7,16 @@ export class NetworkError extends Error {
   constructor() { super("Network error — check your connection and try again."); }
 }
 
+/** Non-OK HTTP response (excluding 401, which is handled separately). Carries
+ *  the status code so callers can branch on it (e.g. 404 vs. generic). */
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number) {
+    super(`Request failed (${status}).`);
+    this.status = status;
+  }
+}
+
 export async function apiGet<T>(path: string): Promise<T> {
   const token = getToken();
   if (!token) {
@@ -26,6 +36,6 @@ export async function apiGet<T>(path: string): Promise<T> {
     redirectToLogin();
     throw new Error("Session expired.");
   }
-  if (!res.ok) throw new Error(`Request failed (${res.status}).`);
+  if (!res.ok) throw new ApiError(res.status);
   return res.json() as Promise<T>;
 }

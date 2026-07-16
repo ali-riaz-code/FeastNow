@@ -29,11 +29,14 @@ export function AuthGate({ children }: { children: ReactNode }) {
       const me = await apiGet<Me>("/api/me");
       setState({ status: "ready", me });
     } catch (err) {
-      if (err instanceof NetworkError) {
-        // Valid session, no network — keep the token, offer retry.
-        setState({ status: "offline", message: err.message });
-      }
-      // 401s already redirected inside apiGet.
+      // 401s already redirected (full page nav) inside apiGet; whatever we
+      // set here is moot. Every other failure — NetworkError, ApiError from
+      // a 5xx, or anything unexpected — gets the same offline/retry state.
+      // The token is left in place (no forced logout on a server blip).
+      const message = err instanceof NetworkError
+        ? err.message
+        : "Something went wrong. Check your connection and try again.";
+      setState({ status: "offline", message });
     }
   }, []);
 

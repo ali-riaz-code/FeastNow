@@ -38,5 +38,9 @@ Thumbs.db
 # Vercel
 .vercel
 
+# Playwright
+app/test-results/
+app/playwright-report/
+
 # stray local tool dir (literal tilde folder)
 ~/
