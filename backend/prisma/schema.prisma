@@ -22,6 +22,7 @@ model User {
   passwordHash String
   role         UserRole @default(customer)
   createdAt    DateTime @default(now())
+  orders       Order[]
 }
 
 model OtpChallenge {
@@ -37,24 +38,28 @@ model OtpChallenge {
 }
 
 model RestaurantProfile {
-  id             String     @id @default(uuid())
-  userId         String?    // owner account arrives with the Restaurant role; seeded rows have none
+  id             String         @id @default(uuid())
+  userId         String?        // owner account arrives with the Restaurant role; seeded rows have none
   name           String
   description    String
   address        String
   cuisines       String[]
-  opensAt        String     // "HH:mm" 24h local (Asia/Karachi)
-  closesAt       String     // "HH:mm"; earlier than opensAt = overnight window
-  avgRating      Float      @default(0)
-  ratingCount    Int        @default(0)
+  opensAt        String         // "HH:mm" 24h local (Asia/Karachi)
+  closesAt       String         // "HH:mm"; earlier than opensAt = overnight window
+  avgRating      Float          @default(0)
+  ratingCount    Int            @default(0)
   estDeliveryMin Int
-  orderCount     Int        @default(0)
-  approvedAt     DateTime
+  orderCount     Int            @default(0)
+  approvedAt     DateTime?
   heroImageUrl   String
-  isActive       Boolean    @default(true)
-  isDemo         Boolean    @default(false)
+  isActive       Boolean        @default(true)
+  isDemo         Boolean        @default(false)
+  approvalStatus ApprovalStatus @default(pending)
+  isOnline       Boolean        @default(true)
+  createdAt      DateTime       @default(now())
   menuItems      MenuItem[]
   ratings        Rating[]
+  orders         Order[]
 
   @@index([isActive, orderCount])
   @@index([isActive, avgRating])
@@ -74,6 +79,7 @@ model MenuItem {
   imageUrl     String?
   isAvailable  Boolean           @default(true)
   position     Int               @default(0) // menu display order; category order = first occurrence
+  orderItems   OrderItem[]
 
   @@index([restaurantId])
   @@index([name])
@@ -90,4 +96,62 @@ model Rating {
   createdAt    DateTime          @default(now())
 
   @@index([restaurantId, createdAt])
+}
+
+enum OrderStatus {
+  placed
+  accepted
+  preparing
+  ready
+  assigned
+  out_for_delivery
+  delivered
+  rejected
+  cancelled
+}
+
+enum ApprovalStatus {
+  pending
+  approved
+  rejected
+}
+
+model Order {
+  id               String            @id @default(uuid())
+  orderNumber      Int               @unique @default(autoincrement())
+  customerId       String
+  customer         User              @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurantId     String
+  restaurant       RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  status           OrderStatus       @default(placed)
+  rejectionReason  String?
+  note             String            @default("")
+  deliveryAddress  String
+  subtotalCents    Int
+  deliveryFeeCents Int
+  totalCents       Int
+  createdAt        DateTime          @default(now())
+  acceptedAt       DateTime?
+  preparingAt      DateTime?
+  readyAt          DateTime?
+  closedAt         DateTime?
+  expiresAt        DateTime
+  isDemo           Boolean           @default(false)
+  items            OrderItem[]
+
+  @@index([restaurantId, status])
+  @@index([customerId, createdAt])
+}
+
+model OrderItem {
+  id                String    @id @default(uuid())
+  orderId           String
+  order             Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId        String?
+  menuItem          MenuItem? @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+  nameSnapshot      String
+  priceAtOrderCents Int
+  quantity          Int
+
+  @@index([orderId])
 }
