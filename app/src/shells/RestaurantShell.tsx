@@ -5,6 +5,7 @@ import { apiSend } from "../lib/api";
 import type { OwnerProfile } from "../lib/types";
 import { TabBar, type TabDef } from "../components/TabBar";
 import { ROrdersScreen } from "../screens/restaurant/ROrdersScreen";
+import { NewOrderWatcher } from "../screens/restaurant/IncomingOrderAlert";
 
 const QueueIcon = (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
@@ -95,6 +96,7 @@ function RestaurantRoutes() {
     <>
       <RTopBar />
       <OfflineBanner />
+      <NewOrderWatcher />
       <Routes>
         <Route path="/" element={<ROrdersScreen />} />
         <Route path="/menu" element={<ComingSoon name="Menu" />} />
