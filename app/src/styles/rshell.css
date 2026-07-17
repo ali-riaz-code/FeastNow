@@ -175,3 +175,16 @@
 .rform__check input { width: 20px; height: 20px; accent-color: var(--basil-deep); }
 .rform__actions { display: flex; justify-content: space-between; gap: var(--s-md); }
 .rform__actions .btn-primary { margin-left: auto; }
+
+.rsearch { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md); }
+.rsearch h2 { margin: 0 0 var(--s-sm); font-size: 1rem; }
+.rsearch__chips { display: flex; gap: var(--s-sm); flex-wrap: wrap; }
+.rsearch__chip {
+  min-height: 44px; padding: 0 var(--s-md); border-radius: var(--r-pill);
+  border: 1px solid var(--beige); background: var(--off-white); color: var(--muted);
+  font-weight: 600; font-size: 0.8125rem;
+}
+.rsearch__chip--active { background: var(--navy); border-color: var(--navy); color: var(--cream); }
+.rsearch__recent { display: flex; flex-direction: column; gap: var(--s-sm); }
+.rsearch__hint { color: var(--muted); margin: 0; }
+.rsearch__hit { flex-direction: row; align-items: center; justify-content: space-between; box-shadow: none; margin-bottom: var(--s-sm); }
