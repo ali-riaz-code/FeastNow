@@ -5,6 +5,7 @@ import { apiSend } from "../lib/api";
 import type { OwnerProfile } from "../lib/types";
 import { TabBar, type TabDef } from "../components/TabBar";
 import { ROrdersScreen } from "../screens/restaurant/ROrdersScreen";
+import { ROrderDetailScreen } from "../screens/restaurant/ROrderDetailScreen";
 import { NewOrderWatcher } from "../screens/restaurant/IncomingOrderAlert";
 
 const QueueIcon = (
@@ -99,6 +100,7 @@ function RestaurantRoutes() {
       <NewOrderWatcher />
       <Routes>
         <Route path="/" element={<ROrdersScreen />} />
+        <Route path="/orders/:id" element={<ROrderDetailScreen />} />
         <Route path="/menu" element={<ComingSoon name="Menu" />} />
         <Route path="/search" element={<ComingSoon name="Search" />} />
         <Route path="/profile" element={<ComingSoon name="Profile" />} />
