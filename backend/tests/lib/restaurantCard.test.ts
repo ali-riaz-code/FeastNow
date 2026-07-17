@@ -8,6 +8,7 @@ const profile: RestaurantProfile = {
   opensAt: "00:00", closesAt: "00:00", avgRating: 4.7, ratingCount: 8,
   estDeliveryMin: 25, orderCount: 900, approvedAt: new Date("2026-06-01T00:00:00Z"),
   heroImageUrl: "https://example.com/hero.jpg", isActive: true, isDemo: true,
+  approvalStatus: "approved", isOnline: true, createdAt: new Date("2026-01-01T00:00:00Z"),
 };
 
 describe("toRestaurantCard", () => {

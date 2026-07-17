@@ -4,9 +4,11 @@ import type { PrismaClient } from "@prisma/client";
 import { createUserRepository } from "./repositories/userRepository";
 import { createOtpRepository } from "./repositories/otpRepository";
 import { createRestaurantRepository } from "./repositories/restaurantRepository";
+import { createOrderRepository } from "./repositories/orderRepository";
 import { createAuthRouter } from "./routes/authRouter";
 import { createMeRouter } from "./routes/meRouter";
 import { createCustomerRouter } from "./routes/customerRouter";
+import { createCustomerOrdersRouter } from "./routes/customerOrdersRouter";
 import { createRestaurantsRouter } from "./routes/restaurantsRouter";
 import { createSearchRouter } from "./routes/searchRouter";
 import { errorHandler } from "./middleware/errorHandler";
@@ -26,12 +28,14 @@ export function createApp(config: AppConfig) {
   const userRepo = createUserRepository(config.prisma);
   const otpRepo = createOtpRepository(config.prisma);
   const restaurantRepo = createRestaurantRepository(config.prisma);
+  const orderRepo = createOrderRepository(config.prisma);
 
   app.get("/health", (_req, res) => res.status(200).json({ ok: true }));
   app.use("/api/auth", createAuthRouter({
     userRepo, otpRepo, sendOtpEmail: config.sendOtpEmail, jwtSecret: config.jwtSecret,
   }));
   app.use("/api/me", createMeRouter({ userRepo, jwtSecret: config.jwtSecret }));
+  app.use("/api/customer/orders", createCustomerOrdersRouter({ restaurantRepo, orderRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer", createCustomerRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/restaurants", createRestaurantsRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/search", createSearchRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));

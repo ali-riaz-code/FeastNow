@@ -14,6 +14,7 @@ export function makeRestaurant(overrides: Partial<RestaurantProfile> = {}): Rest
     avgRating: 4.2, ratingCount: 10, estDeliveryMin: 25, orderCount: 100,
     approvedAt: new Date("2026-01-01T00:00:00Z"),
     heroImageUrl: "https://example.com/hero.jpg", isActive: true, isDemo: true,
+    approvalStatus: "approved", isOnline: true, createdAt: new Date("2026-01-01T00:00:00Z"),
     ...overrides,
   };
 }
@@ -43,7 +44,7 @@ export interface FakeRestaurantData {
 }
 
 export function createFakeRestaurantRepository(data: FakeRestaurantData[] = []): RestaurantRepository {
-  const active = () => data.map((d) => d.profile).filter((p) => p.isActive);
+  const active = () => data.map((d) => d.profile).filter((p) => p.isActive && p.approvalStatus === "approved");
   const byName = (a: RestaurantProfile, b: RestaurantProfile) => a.name.localeCompare(b.name);
 
   return {

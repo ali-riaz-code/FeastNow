@@ -40,6 +40,7 @@ export function createFakeOrderRepository(seedOrders: OrderWithItems[] = []): Or
       const { items, ...rest } = input;
       const o = makeOrder({
         ...rest,
+        createdAt: new Date(),
         customer: { name: "Demo Customer", phone: "03001234567" },
         restaurant: { name: "Trattoria Demo" },
       });

@@ -25,7 +25,7 @@ export interface RestaurantRepository {
   searchDishes(q: string, limit: number): Promise<DishHit[]>;
 }
 
-const ACTIVE = { isActive: true } as const;
+const ACTIVE = { isActive: true, approvalStatus: "approved" } as const;
 
 const LIST_ORDER: Record<RestaurantSort, Prisma.RestaurantProfileOrderByWithRelationInput[]> = {
   popular: [{ orderCount: "desc" }, { name: "asc" }],

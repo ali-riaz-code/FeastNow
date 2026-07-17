@@ -21,6 +21,6 @@ export function toRestaurantCard(r: RestaurantProfile, now: Date = new Date()): 
     ratingCount: r.ratingCount,
     estDeliveryMin: r.estDeliveryMin,
     heroImageUrl: r.heroImageUrl,
-    isOpenNow: isOpenNow(r.opensAt, r.closesAt, now),
+    isOpenNow: r.isOnline && isOpenNow(r.opensAt, r.closesAt, now),
   };
 }
