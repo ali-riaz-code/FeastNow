@@ -44,7 +44,11 @@ describe("POST /api/customer/orders", () => {
     expect(res.body.order.totalCents).toBe(90000 + DELIVERY_FEE_CENTS);
     expect(res.body.order.items[0]).toMatchObject({ nameSnapshot: "Margherita", priceAtOrderCents: 45000, quantity: 2 });
     const stored = orders.orders[0];
-    expect(stored.expiresAt.getTime() - stored.createdAt.getTime()).toBe(120_000);
+    // expiresAt and createdAt come from separate clock reads (router vs. repo),
+    // so the window is ~2min, not exactly 120000ms.
+    const windowMs = stored.expiresAt.getTime() - stored.createdAt.getTime();
+    expect(windowMs).toBeGreaterThan(119_000);
+    expect(windowMs).toBeLessThanOrEqual(120_000);
   });
 
   it("409s items_unavailable listing the offending ids", async () => {
