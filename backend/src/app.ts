@@ -11,6 +11,7 @@ import { createMeRouter } from "./routes/meRouter";
 import { createCustomerRouter } from "./routes/customerRouter";
 import { createCustomerOrdersRouter } from "./routes/customerOrdersRouter";
 import { createOwnerRouter } from "./routes/ownerRouter";
+import { createOwnerOrdersRouter } from "./routes/ownerOrdersRouter";
 import { createRestaurantsRouter } from "./routes/restaurantsRouter";
 import { createSearchRouter } from "./routes/searchRouter";
 import { errorHandler } from "./middleware/errorHandler";
@@ -40,6 +41,7 @@ export function createApp(config: AppConfig) {
   app.use("/api/me", createMeRouter({ userRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer/orders", createCustomerOrdersRouter({ restaurantRepo, orderRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer", createCustomerRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
+  app.use("/api/restaurant/orders", createOwnerOrdersRouter({ ownerRepo, orderRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/restaurant", createOwnerRouter({ ownerRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/restaurants", createRestaurantsRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/search", createSearchRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
