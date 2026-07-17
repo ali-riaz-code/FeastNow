@@ -4634,6 +4634,28 @@ git add docs/ && git commit -m "docs: restaurant role + ordering completion ledg
 git push origin main
 ```
 
+---
+
+## Completion ledger (2026-07-17)
+
+**Status:** All 23 tasks implemented, committed, and pushed to `main`. Backend and app both verified green by automated checks; the two-browser manual end-to-end (Step 2) remains a human verification pass against local/prod dev servers.
+
+**What shipped**
+
+- *Backend (Tasks 1–10):* order-domain schema + migration; shared order state machine + pricing (integer cents, `DELIVERY_FEE_CENTS = 9900`, snapshotted `priceAtOrderCents`/`nameSnapshot`); order repository with guarded transitions and lazy expiry sweep; role-aware auth (restaurant signup → pending profile, `role` in login/`/me`); customer order endpoints (place/list/detail/cancel); owner repository + `/restaurant` router (me with lazy auto-approve, profile, store-status, reviews); owner orders router (queue tabs, counts, search, accept/reject/status, `GET /:id` detail); owner menu CRUD with availability toggle; demo owner + historical demo orders seed.
+- *Landing (Task 11):* restaurant signup page with business fields; role-select tile wired.
+- *App — foundation & customer ordering (Tasks 12–16):* role-branched shells, order types, `apiSend`, polling/countdown hooks; restaurant shell chrome (OwnerContext, pending-approval gate, store toggle); single-restaurant cart with steppers + sticky basket; cart tab + cash checkout placing real orders; live customer orders (status timeline, detail receipt, cancel).
+- *App — restaurant shell (Tasks 17–22):* order queue (tabs, countdown, accept/reject, status flow); full-screen incoming-order alert with WebAudio chime + vibration; order detail + printable receipt; menu tab (grouped list, availability toggle, add/edit/delete); search tab across own orders + menu (FR-16, debounced, status chips, persisted recents); profile tab (business editor, hours, ratings breakdown, logout, FR-21).
+
+**Verification (Task 23 Step 1):** `backend/` — 108/108 Vitest tests pass, `tsc --noEmit` clean. `app/` — `npm run build` and `npm run lint` clean (lint shows only pre-existing `react-refresh/only-export-components` warnings on files that co-export constants; no errors). Pushed `0b934a3..af2dbc9`.
+
+**Deviations from the plan**
+
+- `RSearchScreen` used `useRef<number | undefined>(undefined)` instead of the plan's bare `useRef<number>()` — the app's React 19 types require an initializer argument. Behaviorally identical.
+- Manual end-to-end (Step 2) and production smoke test (Step 3 verification) are left for a human pass: they need two live accounts, real-time chime/countdown timing, and a browser — not reliably automatable from this session. All code paths they exercise are covered by backend tests and a clean build.
+
+**Follow-ups / not in this phase:** delivery-partner auto-assignment at `Ready` (order currently rests at "Waiting for pickup"); push notifications via the Capacitor wrap; camera/menu-photo upload (future-only per SRS).
+
 
 
 
