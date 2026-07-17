@@ -5,10 +5,12 @@ import { createUserRepository } from "./repositories/userRepository";
 import { createOtpRepository } from "./repositories/otpRepository";
 import { createRestaurantRepository } from "./repositories/restaurantRepository";
 import { createOrderRepository } from "./repositories/orderRepository";
+import { createOwnerRepository } from "./repositories/ownerRepository";
 import { createAuthRouter } from "./routes/authRouter";
 import { createMeRouter } from "./routes/meRouter";
 import { createCustomerRouter } from "./routes/customerRouter";
 import { createCustomerOrdersRouter } from "./routes/customerOrdersRouter";
+import { createOwnerRouter } from "./routes/ownerRouter";
 import { createRestaurantsRouter } from "./routes/restaurantsRouter";
 import { createSearchRouter } from "./routes/searchRouter";
 import { errorHandler } from "./middleware/errorHandler";
@@ -29,6 +31,7 @@ export function createApp(config: AppConfig) {
   const otpRepo = createOtpRepository(config.prisma);
   const restaurantRepo = createRestaurantRepository(config.prisma);
   const orderRepo = createOrderRepository(config.prisma);
+  const ownerRepo = createOwnerRepository(config.prisma);
 
   app.get("/health", (_req, res) => res.status(200).json({ ok: true }));
   app.use("/api/auth", createAuthRouter({
@@ -37,6 +40,7 @@ export function createApp(config: AppConfig) {
   app.use("/api/me", createMeRouter({ userRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer/orders", createCustomerOrdersRouter({ restaurantRepo, orderRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer", createCustomerRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
+  app.use("/api/restaurant", createOwnerRouter({ ownerRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/restaurants", createRestaurantsRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/search", createSearchRouter({ restaurantRepo, jwtSecret: config.jwtSecret }));
 
