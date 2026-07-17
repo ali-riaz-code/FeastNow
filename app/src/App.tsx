@@ -1,26 +1,20 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthGate } from "./AuthGate";
-import { TabBar } from "./components/TabBar";
-import { HomeScreen } from "./screens/HomeScreen";
-import { OrdersScreen } from "./screens/OrdersScreen";
-import { ProfileScreen } from "./screens/ProfileScreen";
-import { RestaurantScreen } from "./screens/RestaurantScreen";
-import { SearchScreen } from "./screens/SearchScreen";
+import { BrowserRouter } from "react-router-dom";
+import { AuthGate, useMe } from "./AuthGate";
+import { CustomerShell } from "./shells/CustomerShell";
+import { RestaurantShell } from "./shells/RestaurantShell";
+
+function RoleShell() {
+  const me = useMe();
+  // Delivery partner and admin shells arrive in later phases; anything
+  // unknown falls back to the customer experience (SRS §4.1).
+  return me.role === "restaurant" ? <RestaurantShell /> : <CustomerShell />;
+}
 
 export default function App() {
   return (
     <AuthGate>
       <BrowserRouter basename="/app">
-        <div className="shell">
-          <Routes>
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/restaurant/:id" element={<RestaurantScreen />} />
-            <Route path="/search" element={<SearchScreen />} />
-            <Route path="/orders" element={<OrdersScreen />} />
-            <Route path="/profile" element={<ProfileScreen />} />
-          </Routes>
-          <TabBar />
-        </div>
+        <RoleShell />
       </BrowserRouter>
     </AuthGate>
   );

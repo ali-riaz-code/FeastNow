@@ -1,4 +1,5 @@
-export interface Me { id: string; name: string; email: string; phone: string; }
+export type UserRole = "customer" | "restaurant" | "delivery_partner" | "admin";
+export interface Me { id: string; name: string; email: string; phone: string; role: UserRole; }
 
 export interface RestaurantCard {
   id: string; name: string; cuisines: string[]; avgRating: number;
@@ -34,3 +35,43 @@ export interface DishHit {
 export interface SearchResponse { restaurants: RestaurantCard[]; dishes: DishHit[]; }
 
 export type RestaurantSort = "popular" | "rating" | "delivery_time";
+
+export type OrderStatus =
+  | "placed" | "accepted" | "preparing" | "ready"
+  | "assigned" | "out_for_delivery" | "delivered"
+  | "rejected" | "cancelled";
+
+export interface OrderItemDTO {
+  id: string; nameSnapshot: string; priceAtOrderCents: number; quantity: number;
+}
+
+export interface OrderDTO {
+  id: string; orderNumber: number; status: OrderStatus;
+  rejectionReason: string | null; note: string; deliveryAddress: string;
+  subtotalCents: number; deliveryFeeCents: number; totalCents: number;
+  placedAt: string; acceptedAt: string | null; preparingAt: string | null;
+  readyAt: string | null; closedAt: string | null; expiresAt: string;
+  restaurantName: string; customerName: string; customerPhone: string;
+  items: OrderItemDTO[];
+}
+
+export interface OrdersListResponse {
+  orders: OrderDTO[]; total: number; page: number; pageSize: number;
+  counts?: { new: number; preparing: number; ready: number };
+}
+
+export interface OwnerProfile {
+  id: string; name: string; description: string; address: string; cuisines: string[];
+  opensAt: string; closesAt: string; isOnline: boolean;
+  approvalStatus: "pending" | "approved" | "rejected";
+  avgRating: number; ratingCount: number; estDeliveryMin: number;
+}
+
+export interface OwnerMenuItem {
+  id: string; category: string; name: string; description: string;
+  priceCents: number; imageUrl: string | null; isAvailable: boolean; position: number;
+}
+
+export interface OwnerReview {
+  id: string; stars: number; reviewText: string; authorName: string; createdAt: string;
+}

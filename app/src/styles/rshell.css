@@ -1,0 +1,4 @@
+/* Restaurant shell (Operator-Restraint: sans-dominant, no .serif in here). */
+
+.rplaceholder { display: grid; place-items: center; gap: var(--s-sm); min-height: 60dvh; }
+.rplaceholder h1 { font-size: 1.5rem; margin: 0; }

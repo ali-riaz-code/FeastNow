@@ -1,0 +1,10 @@
+/* Customer ordering: cart, checkout, order cards, status timeline. */
+
+.tab-bar__icon { position: relative; display: inline-flex; }
+.tab-bar__badge {
+  position: absolute; top: -6px; right: -10px;
+  min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--tomato); color: var(--cream);
+  font-size: 0.6875rem; line-height: 18px; text-align: center;
+}
