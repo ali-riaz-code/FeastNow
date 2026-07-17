@@ -44,7 +44,8 @@ export interface FakeRestaurantData {
 }
 
 export function createFakeRestaurantRepository(data: FakeRestaurantData[] = []): RestaurantRepository {
-  const active = () => data.map((d) => d.profile).filter((p) => p.isActive && p.approvalStatus === "approved");
+  const isVisible = (p: RestaurantProfile) => p.isActive && p.approvalStatus === "approved";
+  const active = () => data.map((d) => d.profile).filter(isVisible);
   const byName = (a: RestaurantProfile, b: RestaurantProfile) => a.name.localeCompare(b.name);
 
   return {
@@ -83,7 +84,7 @@ export function createFakeRestaurantRepository(data: FakeRestaurantData[] = []):
       return { restaurants: rows.slice(start, start + params.pageSize), total: rows.length };
     },
     async findDetailById(id): Promise<RestaurantDetail | null> {
-      const d = data.find((x) => x.profile.id === id && x.profile.isActive);
+      const d = data.find((x) => x.profile.id === id && isVisible(x.profile));
       if (!d) return null;
       const menuItems = [...(d.menuItems ?? [])].sort((a, b) => a.position - b.position);
       const recentRatings = [...(d.ratings ?? [])]
@@ -99,7 +100,7 @@ export function createFakeRestaurantRepository(data: FakeRestaurantData[] = []):
       const s = q.toLowerCase();
       const hits: DishHit[] = [];
       for (const d of data) {
-        if (!d.profile.isActive) continue;
+        if (!isVisible(d.profile)) continue;
         for (const m of d.menuItems ?? []) {
           if (m.name.toLowerCase().includes(s)) {
             hits.push({ ...m, restaurant: { id: d.profile.id, name: d.profile.name } });

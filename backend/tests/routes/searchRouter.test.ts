@@ -45,6 +45,15 @@ describe("GET /api/search", () => {
     expect(res.body).toEqual({ restaurants: [], dishes: [] });
   });
 
+  it("excludes unapproved (pending) restaurants and their dishes", async () => {
+    const pending = makeRestaurant({ name: "Pending Biryani House", approvalStatus: "pending" });
+    const dish = makeMenuItem(pending.id, { name: "Secret Biryani" });
+    const res = await request(buildApp([{ profile: pending, menuItems: [dish] }]))
+      .get("/api/search?q=biryani").set(auth);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ restaurants: [], dishes: [] });
+  });
+
   it("returns empty groups when nothing matches", async () => {
     const res = await request(buildApp([{ profile: makeRestaurant({ name: "Karahi Khaas" }) }]))
       .get("/api/search?q=sushi").set(auth);

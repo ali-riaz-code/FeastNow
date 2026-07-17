@@ -68,6 +68,15 @@ describe("POST /api/customer/orders", () => {
     expect(res.body.error).toBe("restaurant_closed");
   });
 
+  it("404s when the restaurant is unapproved (pending)", async () => {
+    const r = makeRestaurant({ opensAt: "00:00", closesAt: "00:00", approvalStatus: "pending" });
+    const item = makeMenuItem(r.id);
+    const res = await request(buildApp([{ profile: r, menuItems: [item] }]))
+      .post("/api/customer/orders").set(auth)
+      .send({ restaurantId: r.id, deliveryAddress: "x", items: [{ menuItemId: item.id, quantity: 1 }] });
+    expect(res.status).toBe(404);
+  });
+
   it("400s on bad payloads (no items, qty out of range, missing address)", async () => {
     const r = openRestaurant();
     const item = makeMenuItem(r.id);

@@ -103,6 +103,13 @@ describe("GET /api/restaurants/:id", () => {
     expect((await request(app).get(`/api/restaurants/${retired.id}`).set(auth)).status).toBe(404);
   });
 
+  it("404s for unapproved (pending) restaurants", async () => {
+    const pending = makeRestaurant({ approvalStatus: "pending" });
+    const res = await request(buildApp([{ profile: pending }]))
+      .get(`/api/restaurants/${pending.id}`).set(auth);
+    expect(res.status).toBe(404);
+  });
+
   it("requires auth", async () => {
     expect((await request(buildApp()).get("/api/restaurants/x")).status).toBe(401);
   });
