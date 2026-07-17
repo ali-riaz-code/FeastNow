@@ -9,6 +9,7 @@ import { ROrderDetailScreen } from "../screens/restaurant/ROrderDetailScreen";
 import { RMenuScreen } from "../screens/restaurant/RMenuScreen";
 import { RMenuItemEditScreen } from "../screens/restaurant/RMenuItemEditScreen";
 import { RSearchScreen } from "../screens/restaurant/RSearchScreen";
+import { RProfileScreen } from "../screens/restaurant/RProfileScreen";
 import { NewOrderWatcher } from "../screens/restaurant/IncomingOrderAlert";
 
 const QueueIcon = (
@@ -38,15 +39,6 @@ export const RESTAURANT_TABS: TabDef[] = [
   { to: "/search", label: "Search", icon: SearchIcon, end: false },
   { to: "/profile", label: "Profile", icon: StoreIcon, end: false },
 ];
-
-function ComingSoon({ name }: { name: string }) {
-  return (
-    <main className="screen rplaceholder">
-      <h1>{name}</h1>
-      <p>This screen ships later in this phase.</p>
-    </main>
-  );
-}
 
 function RTopBar() {
   const { profile, setProfile } = useOwner();
@@ -108,7 +100,7 @@ function RestaurantRoutes() {
         <Route path="/menu/new" element={<RMenuItemEditScreen />} />
         <Route path="/menu/:id" element={<RMenuItemEditScreen />} />
         <Route path="/search" element={<RSearchScreen />} />
-        <Route path="/profile" element={<ComingSoon name="Profile" />} />
+        <Route path="/profile" element={<RProfileScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <TabBar tabs={RESTAURANT_TABS} />
