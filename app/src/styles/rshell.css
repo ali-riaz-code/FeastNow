@@ -2,3 +2,34 @@
 
 .rplaceholder { display: grid; place-items: center; gap: var(--s-sm); min-height: 60dvh; }
 .rplaceholder h1 { font-size: 1.5rem; margin: 0; }
+
+.pending { display: grid; place-items: center; align-content: center; gap: var(--s-md); min-height: 80dvh; text-align: center; padding: var(--s-lg); }
+.pending h1 { font-size: 1.5rem; margin: 0; }
+.pending p { color: var(--muted); max-width: 34ch; margin: 0; }
+.pending__spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--beige); border-top-color: var(--gold); animation: rspin 900ms linear infinite; }
+@keyframes rspin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .pending__spinner { animation: none; border-top-color: var(--beige); } }
+
+.rtopbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-md);
+  padding: var(--s-md); background: var(--navy-deep); color: var(--cream);
+  position: sticky; top: 0; z-index: var(--z-nav);
+}
+.rtopbar__name { font-weight: 600; font-size: 1.0625rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rtoggle {
+  display: inline-flex; align-items: center; gap: var(--s-sm);
+  min-height: 44px; padding: 0 var(--s-md) 0 var(--s-sm);
+  border-radius: var(--r-pill); border: 1px solid rgba(255, 252, 240, .35);
+  background: transparent; color: var(--cream);
+  font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase;
+  transition: background var(--dur-fast) var(--ease-out-quart);
+}
+.rtoggle__knob { width: 12px; height: 12px; border-radius: 50%; background: var(--tomato); transition: background var(--dur-fast); }
+.rtoggle--on .rtoggle__knob { background: var(--basil); }
+.rtoggle:disabled { opacity: .6; }
+
+.rbanner {
+  display: flex; align-items: center; justify-content: center; gap: var(--s-sm);
+  margin: 0; padding: var(--s-sm) var(--s-md);
+  background: var(--butter); color: var(--brown-deep); font-size: 0.875rem;
+}

@@ -1,4 +1,8 @@
+import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { OwnerProvider, useOwner } from "../OwnerContext";
+import { apiSend } from "../lib/api";
+import type { OwnerProfile } from "../lib/types";
 import { TabBar, type TabDef } from "../components/TabBar";
 
 const QueueIcon = (
@@ -38,9 +42,58 @@ function ComingSoon({ name }: { name: string }) {
   );
 }
 
-export function RestaurantShell() {
+function RTopBar() {
+  const { profile, setProfile } = useOwner();
+  const [busy, setBusy] = useState(false);
+
+  const toggle = async () => {
+    const next = !profile.isOnline;
+    if (!next && !window.confirm("Go offline? Customers won't be able to order until you come back online.")) return;
+    setBusy(true);
+    try {
+      const { profile: updated } = await apiSend<{ profile: OwnerProfile }>("PATCH", "/api/restaurant/store-status", { isOnline: next });
+      setProfile(updated);
+    } catch {
+      window.alert("Couldn't update your store status. Check your connection.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <div className="shell">
+    <header className="rtopbar">
+      <span className="rtopbar__name">{profile.name}</span>
+      <button
+        type="button"
+        className={`rtoggle${profile.isOnline ? " rtoggle--on" : ""}`}
+        role="switch" aria-checked={profile.isOnline} disabled={busy}
+        onClick={() => void toggle()}
+      >
+        <span className="rtoggle__knob" aria-hidden="true" />
+        {profile.isOnline ? "Online" : "Offline"}
+      </button>
+    </header>
+  );
+}
+
+function OfflineBanner() {
+  const { profile } = useOwner();
+  if (profile.isOnline) return null;
+  return (
+    <p className="rbanner" role="status">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+      </svg>
+      You're offline — new orders are paused.
+    </p>
+  );
+}
+
+function RestaurantRoutes() {
+  return (
+    <>
+      <RTopBar />
+      <OfflineBanner />
       <Routes>
         <Route path="/" element={<ComingSoon name="Orders" />} />
         <Route path="/menu" element={<ComingSoon name="Menu" />} />
@@ -49,6 +102,16 @@ export function RestaurantShell() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <TabBar tabs={RESTAURANT_TABS} />
+    </>
+  );
+}
+
+export function RestaurantShell() {
+  return (
+    <div className="shell">
+      <OwnerProvider>
+        <RestaurantRoutes />
+      </OwnerProvider>
     </div>
   );
 }
