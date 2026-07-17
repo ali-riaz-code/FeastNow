@@ -60,3 +60,42 @@
 .cart__totals-total { font-weight: 600; }
 .cart__server-error { display: flex; flex-direction: column; gap: var(--s-sm); color: var(--tomato); margin: 0; }
 .cart__place { min-height: 52px; }
+
+.orders { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md); }
+.orders h1, .orders h2 { margin: 0; font-size: 1.375rem; }
+.order-card {
+  display: flex; flex-direction: column; gap: var(--s-sm);
+  background: var(--off-white); border-radius: var(--r-md); padding: var(--s-md);
+}
+.order-card--active { box-shadow: var(--sh-raised); }
+.order-card header { display: flex; justify-content: space-between; gap: var(--s-md); }
+.order-card__name { font-weight: 600; }
+.order-card footer { color: var(--muted); font-size: 0.875rem; }
+
+.status { display: inline-flex; align-items: center; gap: var(--s-xs); font-weight: 600; font-size: 0.8125rem; }
+.status--navy { color: var(--navy); }
+.status--basil { color: var(--basil-deep); }
+.status--tomato { color: var(--tomato); }
+
+.timeline { display: flex; flex-wrap: wrap; gap: var(--s-sm) var(--s-md); list-style: none; margin: 0; padding: 0; }
+.timeline__step { display: inline-flex; align-items: center; gap: var(--s-xs); font-size: 0.8125rem; color: var(--beige); }
+.timeline__step--done { color: var(--basil-deep); }
+.timeline__step--current { color: var(--gold-deep); font-weight: 600; }
+.timeline__note { flex-basis: 100%; color: var(--muted); font-size: 0.8125rem; list-style: none; }
+.timeline--closed { display: flex; flex-direction: column; gap: var(--s-xs); }
+.timeline__reason { margin: 0; color: var(--muted); font-size: 0.875rem; }
+
+.order-detail { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md); }
+.order-detail__head h1 { margin: var(--s-sm) 0 0; }
+.order-detail__head p { margin: var(--s-xs) 0 0; color: var(--muted); font-size: 0.875rem; }
+.order-detail__meta p { margin: 0 0 var(--s-xs); }
+
+.receipt { background: var(--off-white); border-radius: var(--r-md); padding: var(--s-md); }
+.receipt__line { display: grid; grid-template-columns: 32px 1fr auto; gap: var(--s-sm); padding: 2px 0; }
+.receipt__line--sub { color: var(--muted); }
+.receipt__line--total { font-weight: 600; border-top: 1px solid var(--beige); margin-top: var(--s-xs); padding-top: var(--s-sm); }
+
+.btn-danger {
+  min-height: 48px; border: 1px solid var(--tomato); border-radius: var(--r-pill);
+  background: transparent; color: var(--tomato); font-weight: 600; padding: 0 var(--s-lg);
+}

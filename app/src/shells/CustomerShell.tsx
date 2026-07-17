@@ -3,6 +3,7 @@ import { TabBar, type TabDef } from "../components/TabBar";
 import { cartCount, useCart } from "../lib/cart";
 import { CartScreen } from "../screens/CartScreen";
 import { HomeScreen } from "../screens/HomeScreen";
+import { OrderDetailScreen } from "../screens/OrderDetailScreen";
 import { OrdersScreen } from "../screens/OrdersScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { RestaurantScreen } from "../screens/RestaurantScreen";
@@ -45,6 +46,7 @@ export function CustomerShell() {
         <Route path="/search" element={<SearchScreen />} />
         <Route path="/cart" element={<CartScreen />} />
         <Route path="/orders" element={<OrdersScreen />} />
+        <Route path="/orders/:id" element={<OrderDetailScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
       </Routes>
       <TabBar tabs={tabs} />
