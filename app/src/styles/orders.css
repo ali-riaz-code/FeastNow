@@ -8,3 +8,28 @@
   background: var(--tomato); color: var(--cream);
   font-size: 0.6875rem; line-height: 18px; text-align: center;
 }
+
+.menu-row__actions { display: flex; align-items: center; margin-left: auto; }
+.stepper__add {
+  min-width: 44px; min-height: 44px; border-radius: var(--r-pill);
+  border: 1px solid var(--navy); background: var(--off-white); color: var(--navy);
+  font-size: 1.25rem; font-weight: 600; line-height: 1;
+  transition: background var(--dur-fast) var(--ease-out-quart);
+}
+.stepper__add:disabled { border-color: var(--beige); color: var(--beige); background: transparent; cursor: default; }
+.stepper { display: inline-flex; align-items: center; gap: 2px; background: var(--navy); border-radius: var(--r-pill); }
+.stepper__btn { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--cream); font-size: 1.125rem; }
+.stepper__qty { min-width: 20px; text-align: center; color: var(--cream); font-size: 0.9375rem; }
+
+.basket-bar {
+  position: sticky; bottom: calc(64px + env(safe-area-inset-bottom)); z-index: var(--z-sticky);
+  display: flex; align-items: center; gap: var(--s-md);
+  margin: var(--s-md); padding: var(--s-md) var(--s-lg); min-height: 52px;
+  background: var(--navy); color: var(--cream); border-radius: var(--r-pill);
+  box-shadow: var(--sh-overlay); font-weight: 600;
+}
+.basket-bar__count {
+  display: inline-grid; place-items: center; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--gold); color: var(--navy); font-size: 0.875rem;
+}
+.basket-bar__total { margin-left: auto; }

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { apiGet, ApiError, NetworkError } from "../lib/api";
-import type { RestaurantDetail } from "../lib/types";
+import type { MenuItem, RestaurantDetail } from "../lib/types";
 import { formatPrice, formatRating } from "../lib/format";
+import { loadCart, saveCart, setLineQuantity, useCart, cartCount, cartSubtotal } from "../lib/cart";
 
 const INITIAL_REVIEWS_SHOWN = 3;
 
@@ -19,6 +20,7 @@ export function RestaurantScreen() {
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [allReviews, setAllReviews] = useState(false);
   const categoryRefs = useRef(new Map<string, HTMLElement>());
+  const cart = useCart();
 
   useEffect(() => {
     let cancelled = false;
@@ -59,6 +61,24 @@ export function RestaurantScreen() {
 
   const r = state.detail;
   const reviewsShown = allReviews ? r.reviews : r.reviews.slice(0, INITIAL_REVIEWS_SHOWN);
+
+  const cartForThis = cart && cart.restaurantId === id ? cart : null;
+  const qtyOf = (menuItemId: string) => cartForThis?.lines.find((l) => l.menuItemId === menuItemId)?.quantity ?? 0;
+
+  const changeQty = (item: MenuItem, delta: number) => {
+    let base = loadCart();
+    if (base && base.restaurantId !== r.id) {
+      if (!window.confirm(`Start a new basket? Your items from ${base.restaurantName} will be removed.`)) return;
+      base = null;
+    }
+    if (!base) base = { restaurantId: r.id, restaurantName: r.name, lines: [] };
+    const existing = base.lines.find((l) => l.menuItemId === item.id);
+    if (!existing && delta > 0) {
+      saveCart({ ...base, lines: [...base.lines, { menuItemId: item.id, name: item.name, priceCents: item.priceCents, quantity: 1 }] });
+    } else if (existing) {
+      saveCart(setLineQuantity(base, item.id, existing.quantity + delta));
+    }
+  };
 
   const scrollToCategory = (category: string) => {
     setActiveCategory(category);
@@ -122,6 +142,20 @@ export function RestaurantScreen() {
                 <p className="menu-row__price mono">{formatPrice(item.priceCents)}</p>
                 {!item.isAvailable && <span className="menu-row__unavailable-label">Unavailable</span>}
               </div>
+              <div className="menu-row__actions">
+                {qtyOf(item.id) === 0 ? (
+                  <button type="button" className="stepper__add"
+                    disabled={!item.isAvailable || !r.isOpenNow}
+                    aria-label={`Add ${item.name} to basket`}
+                    onClick={() => changeQty(item, +1)}>+</button>
+                ) : (
+                  <div className="stepper" role="group" aria-label={`${item.name} quantity`}>
+                    <button type="button" className="stepper__btn" aria-label="Remove one" onClick={() => changeQty(item, -1)}>−</button>
+                    <span className="stepper__qty mono">{qtyOf(item.id)}</span>
+                    <button type="button" className="stepper__btn" aria-label="Add one" onClick={() => changeQty(item, +1)}>+</button>
+                  </div>
+                )}
+              </div>
               {item.imageUrl && <img className="menu-row__thumb" src={item.imageUrl} alt="" loading="lazy" />}
             </article>
           ))}
@@ -152,6 +186,14 @@ export function RestaurantScreen() {
           </button>
         )}
       </section>
+
+      {cartForThis && (
+        <Link to="/cart" className="basket-bar">
+          <span className="basket-bar__count mono">{cartCount(cartForThis)}</span>
+          <span>View basket</span>
+          <span className="basket-bar__total mono">{formatPrice(cartSubtotal(cartForThis))}</span>
+        </Link>
+      )}
     </main>
   );
 }
