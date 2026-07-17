@@ -75,6 +75,16 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
       return res.status(400).json({ error: "Missing or invalid signup details." });
     }
 
+    const { role, businessName, businessAddress, cuisine } = req.body ?? {};
+    const isRestaurant = role === "restaurant";
+    if (isRestaurant && (
+      typeof businessName !== "string" || !businessName.trim() ||
+      typeof businessAddress !== "string" || !businessAddress.trim() ||
+      typeof cuisine !== "string" || !cuisine.trim()
+    )) {
+      return res.status(400).json({ error: "Business name, address, and cuisine are required for a restaurant account." });
+    }
+
     const challenge = await deps.otpRepo.findActiveForEmail(email);
     if (!challenge) {
       return res.status(400).json({ error: "No active verification code for this email. Request a new one." });
@@ -99,7 +109,12 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
     const passwordHash = await hashPassword(password);
     let user;
     try {
-      user = await deps.userRepo.create({ name, email, phone, passwordHash });
+      user = isRestaurant
+        ? await deps.userRepo.createRestaurantOwner({
+            name, email, phone, passwordHash,
+            businessName: businessName.trim(), businessAddress: businessAddress.trim(), cuisine: cuisine.trim(),
+          })
+        : await deps.userRepo.create({ name, email, phone, passwordHash });
     } catch (err) {
       if (err && typeof err === "object" && "code" in err && (err as { code?: unknown }).code === "P2002") {
         return res.status(409).json({ error: "An account with this email or phone already exists." });
@@ -111,7 +126,7 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
 
     return res.status(200).json({
       token,
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role },
     });
   }));
 
@@ -140,7 +155,7 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
     const token = signToken({ userId: user.id }, deps.jwtSecret);
     return res.status(200).json({
       token,
-      user: { id: user.id, name: user.name, email: user.email, phone: user.phone },
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role },
     });
   }));
 

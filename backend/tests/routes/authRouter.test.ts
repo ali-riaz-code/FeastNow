@@ -1,6 +1,7 @@
 import express from "express";
 import request from "supertest";
 import { describe, it, expect, vi } from "vitest";
+import type { User } from "@prisma/client";
 import { createAuthRouter } from "../../src/routes/authRouter";
 import { createFakeUserRepository } from "../test-helpers/fakeUserRepository";
 import { createFakeOtpRepository } from "../test-helpers/fakeOtpRepository";
@@ -230,9 +231,85 @@ describe("POST /api/auth/signup/verify-otp", () => {
     expect(challenge.consumedAt).not.toBeNull();
     expect(await otpRepo.findActiveForEmail("taken@example.com")).toBeNull();
   });
+
+  it("creates a restaurant owner with a pending profile when role=restaurant", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "rosa@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app, userRepo } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Rosa",
+      email: "rosa@example.com",
+      phone: "03119876543",
+      password: "password123",
+      otp: "123456",
+      role: "restaurant",
+      businessName: "Rosa's Trattoria",
+      businessAddress: "9 Zamzama Blvd, Karachi",
+      cuisine: "Italian",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.user.role).toBe("restaurant");
+    expect(userRepo.lastRestaurantOwner).toMatchObject({
+      businessName: "Rosa's Trattoria",
+      businessAddress: "9 Zamzama Blvd, Karachi",
+      cuisine: "Italian",
+    });
+  });
+
+  it("rejects role=restaurant signup missing business fields", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "rosa2@example.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Rosa",
+      email: "rosa2@example.com",
+      phone: "03119876544",
+      password: "password123",
+      otp: "123456",
+      role: "restaurant",
+      businessAddress: "9 Zamzama Blvd",
+      cuisine: "Italian",
+    });
+
+    expect(res.status).toBe(400);
+  });
 });
 
 describe("POST /api/auth/login", () => {
+  it("returns role on login", async () => {
+    const userRepo = createFakeUserRepository([
+      {
+        id: "user-rosa3",
+        name: "Rosa",
+        email: "rosa3@example.com",
+        phone: "555-0300",
+        passwordHash: await hashPassword("correct horse battery staple"),
+        role: "restaurant",
+        createdAt: new Date(),
+      } as User,
+    ]);
+    const { app } = buildApp({ userRepo });
+
+    const res = await request(app).post("/api/auth/login").send({
+      identifier: "rosa3@example.com",
+      password: "correct horse battery staple",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.user.role).toBe("restaurant");
+  });
+
   it("returns a token for correct credentials", async () => {
     const userRepo = createFakeUserRepository();
     await userRepo.create({

@@ -25,7 +25,9 @@ describe("GET /api/me", () => {
     const res = await request(app).get("/api/me").set("Authorization", `Bearer ${token}`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ id: user.id, name: "Ada Lovelace", email: "ada@example.com", phone: "555-0100" });
+    expect(res.body).toEqual({
+      id: user.id, name: "Ada Lovelace", email: "ada@example.com", phone: "555-0100", role: "customer",
+    });
   });
 
   it("returns 401 with no Authorization header", async () => {
