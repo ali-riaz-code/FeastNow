@@ -108,3 +108,17 @@ describe("transitions", () => {
     expect((await request(app).post(`/api/restaurant/orders/${foreign.id}/accept`).set(ownerAuth)).status).toBe(404);
   });
 });
+
+describe("GET /api/restaurant/orders/:id", () => {
+  it("returns own order detail, 404s foreign", async () => {
+    const owned = makeOwnedRestaurant();
+    const mine = makeOrder({ restaurantId: owned.profile.id, expiresAt: future() });
+    const foreign = makeOrder({ restaurantId: "someone-elses", expiresAt: future() });
+    const { app } = buildApp([mine, foreign], owned);
+    const res = await request(app).get(`/api/restaurant/orders/${mine.id}`).set(ownerAuth);
+    expect(res.status).toBe(200);
+    expect(res.body.order.id).toBe(mine.id);
+    expect(res.body.order.customerPhone).toBeTruthy(); // masked client-side, full over TLS to the owner
+    expect((await request(app).get(`/api/restaurant/orders/${foreign.id}`).set(ownerAuth)).status).toBe(404);
+  });
+});

@@ -58,6 +58,12 @@ export function createOwnerOrdersRouter(deps: OwnerOrdersRouterDeps): Router {
     });
   }));
 
+  router.get("/:id", requireOwner, asyncHandler(async (req: OwnerRequest, res) => {
+    const order = await loadOwn(req);
+    if (!order) return res.status(404).json({ error: "Order not found." });
+    return res.status(200).json({ order: toOrderDTO(order) });
+  }));
+
   router.post("/:id/accept", requireOwner, asyncHandler(async (req: OwnerRequest, res) => {
     const order = await loadOwn(req);
     if (!order) return res.status(404).json({ error: "Order not found." });
