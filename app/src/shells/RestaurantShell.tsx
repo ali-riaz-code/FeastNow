@@ -6,6 +6,8 @@ import type { OwnerProfile } from "../lib/types";
 import { TabBar, type TabDef } from "../components/TabBar";
 import { ROrdersScreen } from "../screens/restaurant/ROrdersScreen";
 import { ROrderDetailScreen } from "../screens/restaurant/ROrderDetailScreen";
+import { RMenuScreen } from "../screens/restaurant/RMenuScreen";
+import { RMenuItemEditScreen } from "../screens/restaurant/RMenuItemEditScreen";
 import { NewOrderWatcher } from "../screens/restaurant/IncomingOrderAlert";
 
 const QueueIcon = (
@@ -101,7 +103,9 @@ function RestaurantRoutes() {
       <Routes>
         <Route path="/" element={<ROrdersScreen />} />
         <Route path="/orders/:id" element={<ROrderDetailScreen />} />
-        <Route path="/menu" element={<ComingSoon name="Menu" />} />
+        <Route path="/menu" element={<RMenuScreen />} />
+        <Route path="/menu/new" element={<RMenuItemEditScreen />} />
+        <Route path="/menu/:id" element={<RMenuItemEditScreen />} />
         <Route path="/search" element={<ComingSoon name="Search" />} />
         <Route path="/profile" element={<ComingSoon name="Profile" />} />
         <Route path="*" element={<Navigate to="/" replace />} />
