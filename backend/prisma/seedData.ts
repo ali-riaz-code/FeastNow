@@ -11,6 +11,7 @@ export interface SeedRestaurant {
   name: string; description: string; address: string; cuisines: string[];
   opensAt: string; closesAt: string; estDeliveryMin: number; orderCount: number;
   approvedAt: Date; heroImageUrl: string; avgRating: number; ratingCount: number;
+  lat: number; lng: number;
   menuItems: SeedMenuItem[]; reviews: SeedReview[];
 }
 
@@ -274,6 +275,7 @@ export function buildSeedData(now: Date = new Date()): SeedRestaurant[] {
       heroImageUrl: unsplash(heroId),
       avgRating: Math.round(mean * 10) / 10,
       ratingCount: reviews.length,
+      lat: 24.86 + index * 0.01, lng: 67.01 + index * 0.01,
       menuItems, reviews,
     };
   });

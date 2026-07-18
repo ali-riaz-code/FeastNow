@@ -56,6 +56,22 @@ async function main() {
     },
   });
 
+  // Demo delivery partner — idempotent via upsert.
+  const partnerUser = await prisma.user.upsert({
+    where: { email: "rider@demo.feastnow" },
+    update: {},
+    create: {
+      name: "Demo Rider", email: "rider@demo.feastnow", phone: "03009990000",
+      passwordHash: await hashPassword("Demo1234!"), role: "delivery_partner",
+    },
+  });
+  await prisma.deliveryPartnerProfile.upsert({
+    where: { userId: partnerUser.id },
+    update: {},
+    create: { userId: partnerUser.id, vehicleType: "motorcycle", availabilityStatus: "offline", approvedAt: new Date() },
+  });
+  console.log(`Demo partner: rider@demo.feastnow / Demo1234!`);
+
   const menu = await prisma.menuItem.findMany({ where: { restaurantId: first.id }, take: 2 });
   const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000);
   const historical = [

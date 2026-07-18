@@ -39,19 +39,21 @@ model OtpChallenge {
 
 model RestaurantProfile {
   id             String         @id @default(uuid())
-  userId         String?        // owner account arrives with the Restaurant role; seeded rows have none
+  userId         String? // owner account arrives with the Restaurant role; seeded rows have none
   name           String
   description    String
   address        String
   cuisines       String[]
-  opensAt        String         // "HH:mm" 24h local (Asia/Karachi)
-  closesAt       String         // "HH:mm"; earlier than opensAt = overnight window
+  opensAt        String // "HH:mm" 24h local (Asia/Karachi)
+  closesAt       String // "HH:mm"; earlier than opensAt = overnight window
   avgRating      Float          @default(0)
   ratingCount    Int            @default(0)
   estDeliveryMin Int
   orderCount     Int            @default(0)
   approvedAt     DateTime?
   heroImageUrl   String
+  lat            Float?
+  lng            Float?
   isActive       Boolean        @default(true)
   isDemo         Boolean        @default(false)
   approvalStatus ApprovalStatus @default(pending)
@@ -75,7 +77,7 @@ model MenuItem {
   category     String
   name         String
   description  String
-  priceCents   Int               // money is integer cents — Phase 2's price_at_order snapshots from this
+  priceCents   Int // money is integer cents — Phase 2's price_at_order snapshots from this
   imageUrl     String?
   isAvailable  Boolean           @default(true)
   position     Int               @default(0) // menu display order; category order = first occurrence
@@ -89,7 +91,7 @@ model Rating {
   id           String            @id @default(uuid())
   restaurantId String
   restaurant   RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  orderId      String?           // linked to real orders in Phase 3
+  orderId      String? // linked to real orders in Phase 3
   stars        Int
   reviewText   String
   authorName   String
@@ -116,31 +118,58 @@ enum ApprovalStatus {
   rejected
 }
 
+enum VehicleType {
+  bike
+  motorcycle
+  car
+}
+
+enum AvailabilityStatus {
+  offline
+  online
+}
+
+enum OfferStatus {
+  pending
+  accepted
+  declined
+  expired
+}
+
 model Order {
-  id               String            @id @default(uuid())
-  orderNumber      Int               @unique @default(autoincrement())
-  customerId       String
-  customer         User              @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  restaurantId     String
-  restaurant       RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  status           OrderStatus       @default(placed)
-  rejectionReason  String?
-  note             String            @default("")
-  deliveryAddress  String
-  subtotalCents    Int
-  deliveryFeeCents Int
-  totalCents       Int
-  createdAt        DateTime          @default(now())
-  acceptedAt       DateTime?
-  preparingAt      DateTime?
-  readyAt          DateTime?
-  closedAt         DateTime?
-  expiresAt        DateTime
-  isDemo           Boolean           @default(false)
-  items            OrderItem[]
+  id                String            @id @default(uuid())
+  orderNumber       Int               @unique @default(autoincrement())
+  customerId        String
+  customer          User              @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurantId      String
+  restaurant        RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  status            OrderStatus       @default(placed)
+  rejectionReason   String?
+  note              String            @default("")
+  deliveryAddress   String
+  subtotalCents     Int
+  deliveryFeeCents  Int
+  totalCents        Int
+  createdAt         DateTime          @default(now())
+  acceptedAt        DateTime?
+  preparingAt       DateTime?
+  readyAt           DateTime?
+  closedAt          DateTime?
+  deliveryPartnerId String?
+  deliveryLat       Float?
+  deliveryLng       Float?
+  payoutCents       Int?
+  assignedAt        DateTime?
+  outForDeliveryAt  DateTime?
+  deliveredAt       DateTime?
+  proofNote         String?
+  expiresAt         DateTime
+  isDemo            Boolean           @default(false)
+  items             OrderItem[]
 
   @@index([restaurantId, status])
   @@index([customerId, createdAt])
+  @@index([status])
 }
 
 model OrderItem {
@@ -154,4 +183,33 @@ model OrderItem {
   quantity          Int
 
   @@index([orderId])
+}
+
+model DeliveryPartnerProfile {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  vehicleType        VehicleType
+  idDocumentUrl      String?
+  availabilityStatus AvailabilityStatus @default(offline)
+  currentLat         Float?
+  currentLng         Float?
+  locationUpdatedAt  DateTime?
+  approvedAt         DateTime?
+  createdAt          DateTime           @default(now())
+
+  @@index([availabilityStatus])
+}
+
+model DeliveryOffer {
+  id          String      @id @default(uuid())
+  orderId     String
+  partnerId   String // User id of the offered partner
+  status      OfferStatus @default(pending)
+  sequence    Int         @default(1)
+  offeredAt   DateTime    @default(now())
+  expiresAt   DateTime
+  respondedAt DateTime?
+
+  @@index([partnerId, status])
+  @@index([orderId, status])
 }
