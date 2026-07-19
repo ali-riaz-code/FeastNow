@@ -48,3 +48,24 @@ describe("constants", () => {
     expect(REJECTION_REASONS).toEqual(["Item unavailable", "Store too busy", "Closing soon", "Other"]);
   });
 });
+
+describe("delivery lifecycle transitions", () => {
+  it("system assigns a ready order", () => {
+    expect(canTransition("ready", "assigned", "system")).toBe(true);
+  });
+  it("partner drives assigned → out_for_delivery → delivered", () => {
+    expect(canTransition("assigned", "out_for_delivery", "delivery_partner")).toBe(true);
+    expect(canTransition("out_for_delivery", "delivered", "delivery_partner")).toBe(true);
+  });
+  it("blocks illegal delivery moves", () => {
+    expect(canTransition("assigned", "delivered", "delivery_partner")).toBe(false);   // skip
+    expect(canTransition("ready", "assigned", "delivery_partner")).toBe(false);        // wrong actor
+    expect(canTransition("delivered", "out_for_delivery", "delivery_partner")).toBe(false);
+    expect(canTransition("assigned", "out_for_delivery", "restaurant")).toBe(false);   // wrong actor
+  });
+  it("maps delivery timestamps", () => {
+    expect(timestampFieldFor("assigned")).toBe("assignedAt");
+    expect(timestampFieldFor("out_for_delivery")).toBe("outForDeliveryAt");
+    expect(timestampFieldFor("delivered")).toBe("deliveredAt");
+  });
+});

@@ -1,6 +1,6 @@
 import type { OrderStatus } from "@prisma/client";
 
-export type OrderActor = "customer" | "restaurant" | "system";
+export type OrderActor = "customer" | "restaurant" | "delivery_partner" | "system";
 
 /** Server-authoritative windows (spec §3). Client countdowns are cosmetic. */
 export const ORDER_EXPIRY_MS = 2 * 60_000;
@@ -12,8 +12,6 @@ export const REJECTION_REASONS = [
 ] as const;
 
 // The single source of truth for the order lifecycle (CLAUDE.md mandate).
-// Post-ready transitions (assigned → … → delivered) arrive with the
-// Delivery Partner phase — absent here means disabled.
 const TRANSITIONS: Record<OrderActor, Partial<Record<OrderStatus, readonly OrderStatus[]>>> = {
   restaurant: {
     placed: ["accepted", "rejected"],
@@ -21,21 +19,30 @@ const TRANSITIONS: Record<OrderActor, Partial<Record<OrderStatus, readonly Order
     preparing: ["ready"],
   },
   customer: { placed: ["cancelled"] },
-  system: { placed: ["rejected"] },
+  delivery_partner: {
+    assigned: ["out_for_delivery"],
+    out_for_delivery: ["delivered"],
+  },
+  system: { placed: ["rejected"], ready: ["assigned"] },
 };
 
 export function canTransition(from: OrderStatus, to: OrderStatus, actor: OrderActor): boolean {
   return (TRANSITIONS[actor][from] ?? []).includes(to);
 }
 
-const TIMESTAMP_FIELDS: Partial<Record<OrderStatus, "acceptedAt" | "preparingAt" | "readyAt" | "closedAt">> = {
+const TIMESTAMP_FIELDS: Partial<Record<OrderStatus,
+  "acceptedAt" | "preparingAt" | "readyAt" | "assignedAt" | "outForDeliveryAt" | "deliveredAt" | "closedAt">> = {
   accepted: "acceptedAt",
   preparing: "preparingAt",
   ready: "readyAt",
+  assigned: "assignedAt",
+  out_for_delivery: "outForDeliveryAt",
+  delivered: "deliveredAt",
   rejected: "closedAt",
   cancelled: "closedAt",
 };
 
-export function timestampFieldFor(to: OrderStatus): "acceptedAt" | "preparingAt" | "readyAt" | "closedAt" | null {
+export function timestampFieldFor(to: OrderStatus):
+  "acceptedAt" | "preparingAt" | "readyAt" | "assignedAt" | "outForDeliveryAt" | "deliveredAt" | "closedAt" | null {
   return TIMESTAMP_FIELDS[to] ?? null;
 }
