@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && prisma generate",
+    "build": "prisma generate && tsc",
     "start": "prisma migrate deploy && node dist/server.js",
     "test": "vitest run",
     "seed": "tsx prisma/seed.ts",
