@@ -3,6 +3,7 @@ import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { clearToken, redirectToLogin } from "../lib/session";
 import { useMe } from "../AuthGate";
 import { ADashboardScreen } from "../screens/admin/ADashboardScreen";
+import { AApprovalsScreen } from "../screens/admin/AApprovalsScreen";
 
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
@@ -47,7 +48,7 @@ export function AdminShell() {
       <main className="admin-main">
         <Routes>
           <Route path="/" element={<ADashboardScreen />} />
-          <Route path="/approvals" element={<div className="admin-screen">Approvals</div>} />
+          <Route path="/approvals" element={<AApprovalsScreen />} />
           <Route path="/users" element={<div className="admin-screen">Users</div>} />
           <Route path="/moderation" element={<div className="admin-screen">Moderation</div>} />
           <Route path="/promotions" element={<div className="admin-screen">Promotions</div>} />
