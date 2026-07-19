@@ -2,12 +2,15 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthGate, useMe } from "./AuthGate";
 import { CustomerShell } from "./shells/CustomerShell";
 import { RestaurantShell } from "./shells/RestaurantShell";
+import { DeliveryShell } from "./shells/DeliveryShell";
 
 function RoleShell() {
   const me = useMe();
-  // Delivery partner and admin shells arrive in later phases; anything
-  // unknown falls back to the customer experience (SRS §4.1).
-  return me.role === "restaurant" ? <RestaurantShell /> : <CustomerShell />;
+  // The admin shell arrives in a later phase; anything unknown falls back to
+  // the customer experience (SRS §4.1).
+  return me.role === "restaurant" ? <RestaurantShell />
+    : me.role === "delivery_partner" ? <DeliveryShell />
+    : <CustomerShell />;
 }
 
 export default function App() {

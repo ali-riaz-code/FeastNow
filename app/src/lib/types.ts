@@ -51,6 +51,8 @@ export interface OrderDTO {
   subtotalCents: number; deliveryFeeCents: number; totalCents: number;
   placedAt: string; acceptedAt: string | null; preparingAt: string | null;
   readyAt: string | null; closedAt: string | null; expiresAt: string;
+  assignedAt: string | null; outForDeliveryAt: string | null; deliveredAt: string | null;
+  payoutCents: number | null; deliveryPartnerName: string | null;
   restaurantName: string; customerName: string; customerPhone: string;
   items: OrderItemDTO[];
 }
@@ -74,4 +76,30 @@ export interface OwnerMenuItem {
 
 export interface OwnerReview {
   id: string; stars: number; reviewText: string; authorName: string; createdAt: string;
+}
+
+// ---- Delivery partner ----
+export type VehicleType = "bike" | "motorcycle" | "car";
+
+export interface PartnerProfile {
+  id: string; name: string; phone: string; vehicleType: VehicleType;
+  availabilityStatus: "offline" | "online"; approved: boolean;
+}
+
+export interface DeliveryOfferDTO {
+  id: string; orderNumber: number; restaurantName: string;
+  pickupDistanceKm: number | null; dropoffDistanceKm: number | null;
+  payoutCents: number; expiresAt: string;
+}
+
+export interface ActiveDeliveryDTO {
+  order: OrderDTO; restaurantAddress: string; restaurantPhone: string | null;
+  restaurantLat: number | null; restaurantLng: number | null;
+  deliveryLat: number | null; deliveryLng: number | null; payoutCents: number | null;
+}
+
+export interface EarningsDTO {
+  today: { cents: number; count: number };
+  week: { cents: number; count: number };
+  deliveries: { id: string; orderNumber: number; restaurantName: string; payoutCents: number; deliveredAt: string }[];
 }

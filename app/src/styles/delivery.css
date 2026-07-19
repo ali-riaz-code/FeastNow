@@ -1,0 +1,12 @@
+/* Delivery Partner shell — mirrors the restaurant shell's structure, trattoria skin. */
+
+.dscreen {
+  padding: var(--space-4, 16px);
+  padding-bottom: calc(var(--tab-bar-height, 64px) + var(--space-4, 16px));
+}
+
+.dscreen__title {
+  font-size: 1.5rem;
+  color: var(--color-ink, #1f2a44);
+  margin: 0 0 var(--space-3, 12px);
+}

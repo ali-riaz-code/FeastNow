@@ -10,6 +10,7 @@ import "./styles/restaurant.css";
 import "./styles/search.css";
 import "./styles/orders.css";
 import "./styles/rshell.css";
+import "./styles/delivery.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
