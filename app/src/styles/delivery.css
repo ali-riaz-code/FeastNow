@@ -133,6 +133,39 @@
 }
 .dactive__unable:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* ---- Profile ---- */
+.dprofile__readonly {
+  margin: 0;
+  padding: 10px;
+  border-radius: var(--r-md, 12px);
+  background: var(--dough);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---- Pending approval (dormant this phase) ---- */
+.dpending {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--s-md);
+  padding: var(--s-xl) var(--s-lg);
+}
+.dpending__badge {
+  width: 88px; height: 88px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--gold, #b8862b); background: var(--dough); border: 2px solid var(--beige);
+}
+.dpending h1 { font-size: 1.6rem; color: var(--ink); margin: 0; }
+.dpending p { color: var(--muted); max-width: 40ch; margin: 0; }
+.dpending__logout {
+  background: none; border: none; color: var(--muted);
+  font: inherit; text-decoration: underline; cursor: pointer;
+}
+
 /* ---- Earnings ---- */
 .dearn__cards { display: flex; gap: var(--s-sm); margin-bottom: var(--s-lg); }
 .dearn__card {
