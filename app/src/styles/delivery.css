@@ -1,12 +1,79 @@
 /* Delivery Partner shell — mirrors the restaurant shell's structure, trattoria skin. */
 
 .dscreen {
-  padding: var(--space-4, 16px);
-  padding-bottom: calc(var(--tab-bar-height, 64px) + var(--space-4, 16px));
+  padding: var(--s-md);
+  padding-bottom: calc(72px + var(--s-md));
 }
 
 .dscreen__title {
   font-size: 1.5rem;
-  color: var(--color-ink, #1f2a44);
-  margin: 0 0 var(--space-3, 12px);
+  color: var(--ink);
+  margin: 0 0 var(--s-sm);
 }
+
+/* ---- Availability ---- */
+.davail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--s-md);
+}
+.davail__head { margin-top: var(--s-md); }
+.davail__sub {
+  color: var(--muted);
+  margin: var(--s-sm) 0 0;
+  max-width: 34ch;
+}
+.davail__orb {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin: var(--s-md) 0;
+  color: var(--muted);
+  background: var(--dough);
+  border: 2px solid var(--beige);
+  transition: background var(--dur), color var(--dur), border-color var(--dur);
+}
+.davail__orb--on {
+  color: var(--cream);
+  background: var(--basil);
+  border-color: var(--basil);
+}
+.davail__orb--pulse { animation: davail-pulse 1800ms ease-out infinite; }
+@keyframes davail-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(18, 134, 67, 0.45); }
+  100% { box-shadow: 0 0 0 22px rgba(18, 134, 67, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .davail__orb--pulse { animation: none; }
+}
+
+.dtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-sm);
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  border: none;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--cream);
+  background: var(--navy);
+  transition: background var(--dur);
+}
+.dtoggle--on { background: var(--tomato); }
+.dtoggle:disabled { opacity: 0.6; cursor: not-allowed; }
+.dtoggle__knob {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.davail__locked { color: var(--muted); font-size: 0.9rem; }
+.davail__locked a { color: var(--basil); font-weight: 600; }
+.davail__error { color: var(--tomato); font-size: 0.9rem; max-width: 36ch; }
