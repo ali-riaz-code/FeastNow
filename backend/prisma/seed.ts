@@ -72,6 +72,18 @@ async function main() {
   });
   console.log(`Demo partner: rider@demo.feastnow / Demo1234!`);
 
+  // Admin back-office account (FR-36) — idempotent via upsert.
+  const ADMIN_EMAIL = "admin@demo.feastnow.pk";
+  await prisma.user.upsert({
+    where: { email: ADMIN_EMAIL },
+    update: {},
+    create: {
+      name: "FeastNow Admin", email: ADMIN_EMAIL, phone: "03330000009",
+      passwordHash: await hashPassword("Admin1234!"), role: "admin",
+    },
+  });
+  console.log(`Admin: ${ADMIN_EMAIL} / Admin1234!`);
+
   const menu = await prisma.menuItem.findMany({ where: { restaurantId: first.id }, take: 2 });
   const daysAgo = (n: number) => new Date(Date.now() - n * 86_400_000);
   const historical = [
