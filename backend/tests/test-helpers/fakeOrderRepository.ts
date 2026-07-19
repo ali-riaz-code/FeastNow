@@ -23,6 +23,7 @@ export function makeOrder(overrides: Partial<OrderWithItems> = {}): OrderWithIte
     } satisfies OrderItem],
     customer: { name: "Demo Customer", phone: "03001234567" },
     restaurant: { name: "Trattoria Demo" },
+    deliveryPartner: null,
     ...overrides,
   };
 }

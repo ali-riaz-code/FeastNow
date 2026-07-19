@@ -12,6 +12,7 @@ export type OrderWithItems = Order & {
   items: OrderItem[];
   customer: { name: string; phone: string };
   restaurant: { name: string };
+  deliveryPartner: { name: string } | null;
 };
 
 export interface OrderRepository {
@@ -30,6 +31,7 @@ const INCLUDE = {
   items: true,
   customer: { select: { name: true, phone: true } },
   restaurant: { select: { name: true } },
+  deliveryPartner: { select: { name: true } },
 } satisfies Prisma.OrderInclude;
 
 export function createOrderRepository(prisma: PrismaClient): OrderRepository {

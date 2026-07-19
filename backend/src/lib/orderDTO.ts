@@ -11,6 +11,8 @@ export interface OrderDTO {
   subtotalCents: number; deliveryFeeCents: number; totalCents: number;
   placedAt: string; acceptedAt: string | null; preparingAt: string | null;
   readyAt: string | null; closedAt: string | null; expiresAt: string;
+  assignedAt: string | null; outForDeliveryAt: string | null; deliveredAt: string | null;
+  payoutCents: number | null; deliveryPartnerName: string | null;
   restaurantName: string; customerName: string; customerPhone: string;
   items: OrderItemDTO[];
 }
@@ -25,6 +27,8 @@ export function toOrderDTO(o: OrderWithItems): OrderDTO {
     placedAt: o.createdAt.toISOString(), acceptedAt: iso(o.acceptedAt),
     preparingAt: iso(o.preparingAt), readyAt: iso(o.readyAt), closedAt: iso(o.closedAt),
     expiresAt: o.expiresAt.toISOString(),
+    assignedAt: iso(o.assignedAt), outForDeliveryAt: iso(o.outForDeliveryAt), deliveredAt: iso(o.deliveredAt),
+    payoutCents: o.payoutCents ?? null, deliveryPartnerName: o.deliveryPartner?.name ?? null,
     restaurantName: o.restaurant.name, customerName: o.customer.name, customerPhone: o.customer.phone,
     items: o.items.map((i) => ({
       id: i.id, nameSnapshot: i.nameSnapshot, priceAtOrderCents: i.priceAtOrderCents, quantity: i.quantity,

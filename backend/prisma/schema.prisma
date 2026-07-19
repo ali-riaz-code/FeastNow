@@ -22,7 +22,8 @@ model User {
   passwordHash String
   role         UserRole @default(customer)
   createdAt    DateTime @default(now())
-  orders       Order[]
+  orders        Order[] @relation("CustomerOrders")
+  partnerOrders Order[] @relation("PartnerOrders")
 }
 
 model OtpChallenge {
@@ -140,7 +141,7 @@ model Order {
   id                String            @id @default(uuid())
   orderNumber       Int               @unique @default(autoincrement())
   customerId        String
-  customer          User              @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer          User              @relation("CustomerOrders", fields: [customerId], references: [id], onDelete: Cascade)
   restaurantId      String
   restaurant        RestaurantProfile @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   status            OrderStatus       @default(placed)
@@ -156,6 +157,7 @@ model Order {
   readyAt           DateTime?
   closedAt          DateTime?
   deliveryPartnerId String?
+  deliveryPartner   User?             @relation("PartnerOrders", fields: [deliveryPartnerId], references: [id], onDelete: SetNull)
   deliveryLat       Float?
   deliveryLng       Float?
   payoutCents       Int?

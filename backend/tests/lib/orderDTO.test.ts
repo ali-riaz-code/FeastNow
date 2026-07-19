@@ -20,4 +20,22 @@ describe("toOrderDTO", () => {
       priceAtOrderCents: o.items[0].priceAtOrderCents, quantity: o.items[0].quantity,
     });
   });
+
+  it("exposes delivery fields", () => {
+    const dto = toOrderDTO(makeOrder({
+      status: "assigned", assignedAt: new Date("2026-07-18T10:00:00Z"),
+      payoutCents: 10250, deliveryPartner: { name: "Rider Ray" },
+    }));
+    expect(dto.assignedAt).toBe("2026-07-18T10:00:00.000Z");
+    expect(dto.outForDeliveryAt).toBe(null);
+    expect(dto.deliveredAt).toBe(null);
+    expect(dto.payoutCents).toBe(10250);
+    expect(dto.deliveryPartnerName).toBe("Rider Ray");
+  });
+
+  it("defaults delivery fields when unassigned", () => {
+    const dto = toOrderDTO(makeOrder({ status: "ready" }));
+    expect(dto.payoutCents).toBe(null);
+    expect(dto.deliveryPartnerName).toBe(null);
+  });
 });

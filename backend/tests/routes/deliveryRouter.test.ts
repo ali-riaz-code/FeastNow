@@ -5,6 +5,7 @@ import { createDeliveryRouter } from "../../src/routes/deliveryRouter";
 import { createFakeDeliveryRepository, makePartner } from "../test-helpers/fakeDeliveryRepository";
 import type { OfferRecord, PartnerView } from "../../src/repositories/deliveryRepository";
 import type { OrderWithItems } from "../../src/repositories/orderRepository";
+import { makeOrder } from "../test-helpers/fakeOrderRepository";
 import { signToken } from "../../src/lib/jwt";
 import { errorHandler } from "../../src/middleware/errorHandler";
 
@@ -83,5 +84,54 @@ describe("availability + location", () => {
   it("400s an invalid availability status", async () => {
     const { app } = buildApp();
     expect((await request(app).post("/api/delivery/availability").set(auth("p1")).send({ status: "away" })).status).toBe(400);
+  });
+});
+
+describe("offers", () => {
+  it("lists a pending offer for the partner and accepts it", async () => {
+    const order = makeOrder({ id: "o1", status: "ready", deliveryLat: 24.90, deliveryLng: 67.05 });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+    // going online + a fresh location so the tick offers to p1:
+    await request(app).post("/api/delivery/location").set(auth("p1")).send({ lat: 24.86, lng: 67.01 });
+    await request(app).post("/api/delivery/availability").set(auth("p1")).send({ status: "online" });
+
+    const list = await request(app).get("/api/delivery/offers").set(auth("p1"));
+    expect(list.status).toBe(200);
+    expect(list.body.offers).toHaveLength(1);
+    expect(list.body.offers[0]).toMatchObject({ orderNumber: order.orderNumber, restaurantName: order.restaurant.name });
+    expect(list.body.offers[0].payoutCents).toBeGreaterThan(0);
+
+    const id = list.body.offers[0].id;
+    const acc = await request(app).post(`/api/delivery/offers/${id}/accept`).set(auth("p1"));
+    expect(acc.status).toBe(200);
+    expect(acc.body.order.status).toBe("assigned");
+    expect(acc.body.order.payoutCents).toBeGreaterThan(0);
+  });
+
+  it("409s accepting an already-taken offer", async () => {
+    const order = makeOrder({ id: "o1", status: "ready", deliveryLat: 24.90, deliveryLng: 67.05 });
+    const a = makePartner({ userId: "a" });
+    // b is offline so the tick offers only to a; b still has a resolvable profile for accept.
+    const b = makePartner({ userId: "b", availabilityStatus: "offline" });
+    const { app, deliveryRepo } = buildApp([a, b], [], [order]);
+
+    const list = await request(app).get("/api/delivery/offers").set(auth("a"));
+    const offerId = list.body.offers[0].id;
+    // Force a second pending offer to partner b for the same order (the race):
+    deliveryRepo.offers.push({ ...deliveryRepo.offers[0], id: "of-race", partnerId: "b", status: "pending" });
+
+    await request(app).post(`/api/delivery/offers/${offerId}/accept`).set(auth("a"));
+    const taken = await request(app).post("/api/delivery/offers/of-race/accept").set(auth("b"));
+    expect(taken.status).toBe(409);
+  });
+
+  it("declines an offer", async () => {
+    const order = makeOrder({ id: "o1", status: "ready", deliveryLat: 24.90, deliveryLng: 67.05 });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+    const list = await request(app).get("/api/delivery/offers").set(auth("p1"));
+    const id = list.body.offers[0].id;
+    const dec = await request(app).post(`/api/delivery/offers/${id}/decline`).set(auth("p1"));
+    expect(dec.status).toBe(200);
+    expect(dec.body.ok).toBe(true);
   });
 });

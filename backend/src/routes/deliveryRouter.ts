@@ -2,8 +2,10 @@ import { Router } from "express";
 import type { DeliveryRepository, PartnerView } from "../repositories/deliveryRepository";
 import { createRequirePartner, type PartnerRequest } from "../middleware/requirePartner";
 import { asyncHandler } from "../middleware/asyncHandler";
-import { toPartnerDTO } from "../lib/deliveryDTO";
+import { toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
+import { toOrderDTO } from "../lib/orderDTO";
 import { LOCATION_STALE_MS } from "../lib/deliveryConfig";
+import { runAssignmentTick, acceptOffer, declineOffer } from "../lib/deliveryAssignment";
 
 export interface DeliveryRouterDeps {
   deliveryRepo: DeliveryRepository;
@@ -59,6 +61,36 @@ export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
     }
     const updated = await deps.deliveryRepo.setAvailability(req.partner!.userId, status);
     return res.status(200).json({ partner: toPartnerDTO(updated) });
+  }));
+
+  router.get("/offers", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    await runAssignmentTick(deps.deliveryRepo, new Date()); // the lazy engine tick
+    const offers = await deps.deliveryRepo.listPendingOffersForPartner(req.partner!.userId);
+    const dtos = await Promise.all(offers.map(async (o) => {
+      const order = await deps.deliveryRepo.findOrderForDelivery(o.orderId);
+      return order ? toOfferDTO(o, {
+        orderNumber: order.orderNumber, restaurantName: order.restaurant.name,
+        partnerLat: req.partner!.currentLat, partnerLng: req.partner!.currentLng,
+        restaurantLat: order.restaurantLat, restaurantLng: order.restaurantLng,
+        deliveryLat: order.deliveryLat, deliveryLng: order.deliveryLng,
+      }) : null;
+    }));
+    return res.status(200).json({ offers: dtos.filter(Boolean) });
+  }));
+
+  router.post("/offers/:id/accept", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const result = await acceptOffer(deps.deliveryRepo, req.params.id, req.partner!.userId, new Date());
+    if (!result.ok) {
+      const status = result.code === "not_found" ? 404 : 409;
+      return res.status(status).json({ error: result.code });
+    }
+    return res.status(200).json({ order: toOrderDTO(result.order) });
+  }));
+
+  router.post("/offers/:id/decline", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const ok = await declineOffer(deps.deliveryRepo, req.params.id, req.partner!.userId, new Date());
+    if (!ok) return res.status(404).json({ error: "not_found" });
+    return res.status(200).json({ ok: true });
   }));
 
   return router;

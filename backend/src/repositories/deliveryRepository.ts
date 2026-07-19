@@ -46,6 +46,7 @@ const ORDER_INCLUDE = {
   items: true,
   customer: { select: { name: true, phone: true } },
   restaurant: { select: { name: true } },
+  deliveryPartner: { select: { name: true } },
 } as const;
 
 // Restaurant projection carrying the extra lat/lng fields the delivery flows need,
