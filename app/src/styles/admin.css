@@ -76,6 +76,12 @@
 .admin-reviewrow__stars { color: var(--gold-deep); letter-spacing: 1px; }
 .admin-reviewrow__text { margin: 0; color: var(--ink); }
 
+/* ---- Promotions ---- */
+.admin-promoform { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--s-md); align-items: end; margin-bottom: var(--s-lg); }
+.admin-promoform .btn-primary { align-self: end; }
+.admin-promorow { display: flex; align-items: center; justify-content: space-between; gap: var(--s-md); }
+.admin-promorow__code { display: block; color: var(--navy); font-size: 16px; }
+
 /* Responsive: stack the sidebar on top on narrow screens. */
 @media (max-width: 720px) {
   .admin-shell { grid-template-columns: 1fr; }
