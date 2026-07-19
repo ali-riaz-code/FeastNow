@@ -63,6 +63,12 @@
 .admin-actions { display: flex; gap: var(--s-sm); margin-top: var(--s-md); }
 .admin-muted { color: var(--brown); }
 
+/* ---- Users ---- */
+.admin-chips { display: flex; flex-wrap: wrap; gap: var(--s-sm); margin: var(--s-md) 0; }
+.admin-list--wide { margin-top: var(--s-md); }
+.admin-userrow { display: flex; align-items: center; justify-content: space-between; gap: var(--s-md); }
+.admin-userrow__right { display: flex; align-items: center; gap: var(--s-md); }
+
 /* Responsive: stack the sidebar on top on narrow screens. */
 @media (max-width: 720px) {
   .admin-shell { grid-template-columns: 1fr; }
