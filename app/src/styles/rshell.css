@@ -121,6 +121,12 @@
 .rdetail__meta p, .rdetail__times p { margin: 0 0 var(--s-xs); }
 .rdetail__times p { display: flex; justify-content: space-between; max-width: 280px; color: var(--muted); font-size: 0.875rem; }
 .rdetail__print { align-self: flex-start; }
+.rdetail__assignment {
+  display: flex; align-items: center; gap: var(--s-sm);
+  padding: var(--s-sm) var(--s-md);
+  background: var(--dough); border-radius: var(--r-md);
+}
+.rdetail__assignment-line { color: var(--muted); font-size: 0.875rem; }
 
 @media print {
   body * { visibility: hidden; }

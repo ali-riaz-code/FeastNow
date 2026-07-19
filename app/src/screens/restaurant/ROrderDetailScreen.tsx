@@ -39,8 +39,18 @@ export function ROrderDetailScreen() {
 
   const times: [string, string | null][] = [
     ["Placed", order.placedAt], ["Accepted", order.acceptedAt],
-    ["Preparing", order.preparingAt], ["Ready", order.readyAt], ["Closed", order.closedAt],
+    ["Preparing", order.preparingAt], ["Ready", order.readyAt],
+    ["Assigned", order.assignedAt], ["Out for delivery", order.outForDeliveryAt],
+    ["Delivered", order.deliveredAt], ["Closed", order.closedAt],
   ];
+
+  // Assignment progression, shown once the order is ready (auto-assign fires) or beyond.
+  const showAssignment = ["ready", "assigned", "out_for_delivery", "delivered"].includes(order.status);
+  const assignmentLine =
+    order.status === "delivered" ? `Delivered by ${order.deliveryPartnerName ?? "your rider"}`
+    : order.status === "out_for_delivery" ? `Out for delivery · ${order.deliveryPartnerName ?? "rider on the way"}`
+    : order.deliveryPartnerName ? `Rider assigned: ${order.deliveryPartnerName}`
+    : "Finding a rider…";
 
   return (
     <main className="screen rdetail printable">
@@ -71,6 +81,13 @@ export function ROrderDetailScreen() {
         <p><strong>Deliver to:</strong> {order.deliveryAddress}</p>
         {order.note && <p><strong>Note:</strong> {order.note}</p>}
       </section>
+
+      {showAssignment && (
+        <section className="rdetail__assignment" aria-label="Delivery assignment">
+          <StatusBadge status={order.status} />
+          <span className="rdetail__assignment-line">{assignmentLine}</span>
+        </section>
+      )}
 
       <section className="rdetail__times" aria-label="Timestamps">
         {times.filter(([, t]) => t !== null).map(([label, t]) => (
