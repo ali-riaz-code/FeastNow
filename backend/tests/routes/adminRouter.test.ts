@@ -52,3 +52,23 @@ describe("approvals", () => {
     expect(rej.body.restaurant.approvalStatus).toBe("rejected");
   });
 });
+
+describe("users", () => {
+  it("searches, suspends, blocks self/admin suspension, reinstates", async () => {
+    const { app } = buildAdminApp();
+    const list = await request(app).get("/api/admin/users?role=customer").set(adminAuth);
+    expect(list.body.users[0]).toMatchObject({ id: "cust1", suspended: false });
+
+    expect((await request(app).post("/api/admin/users/admin1/suspend").set(adminAuth)).status).toBe(400); // admin
+    expect((await request(app).post("/api/admin/users/nope/suspend").set(adminAuth)).status).toBe(404);
+
+    const s = await request(app).post("/api/admin/users/cust1/suspend").set(adminAuth).send({ reason: "spam" });
+    expect(s.status).toBe(200);
+    expect(s.body.user.suspended).toBe(true);
+    expect((await request(app).post("/api/admin/users/cust1/suspend").set(adminAuth)).status).toBe(409); // already
+
+    const r = await request(app).post("/api/admin/users/cust1/reinstate").set(adminAuth);
+    expect(r.body.user.suspended).toBe(false);
+    expect((await request(app).post("/api/admin/users/cust1/reinstate").set(adminAuth)).status).toBe(409); // not suspended
+  });
+});
