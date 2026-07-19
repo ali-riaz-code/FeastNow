@@ -5,6 +5,7 @@ import { DActiveDeliveryScreen } from "../screens/delivery/DActiveDeliveryScreen
 import { DAvailabilityScreen } from "../screens/delivery/DAvailabilityScreen";
 import { DEarningsScreen } from "../screens/delivery/DEarningsScreen";
 import { DProfileScreen } from "../screens/delivery/DProfileScreen";
+import { AssignmentOfferWatcher } from "../screens/delivery/AssignmentOfferModal";
 
 const TruckIcon = (
   <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
@@ -37,6 +38,7 @@ export const DELIVERY_TABS: TabDef[] = [
 function DeliveryRoutes() {
   return (
     <>
+      <AssignmentOfferWatcher />
       <Routes>
         <Route path="/" element={<DActiveDeliveryScreen />} />
         <Route path="/availability" element={<DAvailabilityScreen />} />
