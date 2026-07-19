@@ -135,3 +135,52 @@ describe("offers", () => {
     expect(dec.body.ok).toBe(true);
   });
 });
+
+describe("active delivery flow", () => {
+  it("walks assigned → out_for_delivery → delivered", async () => {
+    const order = makeOrder({ id: "o1", status: "assigned", deliveryPartnerId: "p1",
+      deliveryLat: 24.9, deliveryLng: 67.05 });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+
+    const active = await request(app).get("/api/delivery/active").set(auth("p1"));
+    expect(active.status).toBe(200);
+    expect(active.body.active.order.id).toBe("o1");
+
+    const pick = await request(app).post("/api/delivery/orders/o1/pickup").set(auth("p1"));
+    expect(pick.status).toBe(200);
+    expect(pick.body.order.status).toBe("out_for_delivery");
+
+    const del = await request(app).post("/api/delivery/orders/o1/deliver").set(auth("p1")).send({ note: "Left at door" });
+    expect(del.status).toBe(200);
+    expect(del.body.order.status).toBe("delivered");
+  });
+
+  it("blocks pickup on another partner's order", async () => {
+    const order = makeOrder({ id: "o1", status: "assigned", deliveryPartnerId: "someone" });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+    expect((await request(app).post("/api/delivery/orders/o1/pickup").set(auth("p1"))).status).toBe(409);
+  });
+
+  it("returns null active when the partner has none", async () => {
+    const { app } = buildApp();
+    const res = await request(app).get("/api/delivery/active").set(auth("p1"));
+    expect(res.status).toBe(200);
+    expect(res.body.active).toBe(null);
+  });
+
+  it("400s a deliver note that is too long", async () => {
+    const order = makeOrder({ id: "o1", status: "out_for_delivery", deliveryPartnerId: "p1" });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+    const res = await request(app).post("/api/delivery/orders/o1/deliver").set(auth("p1")).send({ note: "x".repeat(301) });
+    expect(res.status).toBe(400);
+  });
+
+  it("releases an order via unable", async () => {
+    const order = makeOrder({ id: "o1", status: "out_for_delivery", deliveryPartnerId: "p1" });
+    const { app, deliveryRepo } = buildApp([makePartner({ userId: "p1" })], [], [order]);
+    const res = await request(app).post("/api/delivery/orders/o1/unable").set(auth("p1"));
+    expect(res.status).toBe(200);
+    expect(res.body.order.status).toBe("ready");
+    expect(deliveryRepo.orders[0].deliveryPartnerId).toBe(null);
+  });
+});

@@ -1,6 +1,12 @@
 import type { OfferRecord, PartnerView } from "../repositories/deliveryRepository";
+import type { OrderWithItems } from "../repositories/orderRepository";
+import { toOrderDTO } from "./orderDTO";
 import { haversineKm } from "./geo";
 import { computePayoutCents } from "./deliveryConfig";
+
+type DeliveryOrder = OrderWithItems & {
+  restaurantLat: number | null; restaurantLng: number | null; restaurantPhone: string | null;
+};
 
 export function toPartnerDTO(p: PartnerView) {
   return {
@@ -28,5 +34,16 @@ export function toOfferDTO(offer: OfferRecord, ctx: {
     pickupDistanceKm: pickup == null ? null : Number(pickup.toFixed(1)),
     dropoffDistanceKm: dropoff == null ? null : Number(dropoff.toFixed(1)),
     payoutCents: computePayoutCents(dropoff), expiresAt: offer.expiresAt.toISOString(),
+  };
+}
+
+export function toActiveDeliveryDTO(order: DeliveryOrder) {
+  return {
+    order: toOrderDTO(order),
+    restaurantAddress: (order as { restaurant: { address?: string } }).restaurant.address ?? "",
+    restaurantPhone: order.restaurantPhone,
+    restaurantLat: order.restaurantLat, restaurantLng: order.restaurantLng,
+    deliveryLat: order.deliveryLat, deliveryLng: order.deliveryLng,
+    payoutCents: order.payoutCents ?? null,
   };
 }

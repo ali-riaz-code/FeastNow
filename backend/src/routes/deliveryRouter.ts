@@ -2,10 +2,11 @@ import { Router } from "express";
 import type { DeliveryRepository, PartnerView } from "../repositories/deliveryRepository";
 import { createRequirePartner, type PartnerRequest } from "../middleware/requirePartner";
 import { asyncHandler } from "../middleware/asyncHandler";
-import { toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
+import { toActiveDeliveryDTO, toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
 import { toOrderDTO } from "../lib/orderDTO";
 import { LOCATION_STALE_MS } from "../lib/deliveryConfig";
-import { runAssignmentTick, acceptOffer, declineOffer } from "../lib/deliveryAssignment";
+import { runAssignmentTick, acceptOffer, declineOffer, releaseOrder } from "../lib/deliveryAssignment";
+import type { Response } from "express";
 
 export interface DeliveryRouterDeps {
   deliveryRepo: DeliveryRepository;
@@ -91,6 +92,37 @@ export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
     const ok = await declineOffer(deps.deliveryRepo, req.params.id, req.partner!.userId, new Date());
     if (!ok) return res.status(404).json({ error: "not_found" });
     return res.status(200).json({ ok: true });
+  }));
+
+  router.get("/active", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const active = await deps.deliveryRepo.findActiveForPartner(req.partner!.userId);
+    return res.status(200).json({ active: active ? toActiveDeliveryDTO(active) : null });
+  }));
+
+  const move = async (
+    req: PartnerRequest, res: Response,
+    from: "assigned" | "out_for_delivery", to: "out_for_delivery" | "delivered", proofNote?: string,
+  ) => {
+    const updated = await deps.deliveryRepo.deliveryTransition(req.params.id, req.partner!.userId, from, to, new Date(), proofNote);
+    if (!updated) return res.status(409).json({ error: "invalid_transition", message: "That step isn't available for this delivery." });
+    return res.status(200).json({ order: toOrderDTO(updated) });
+  };
+
+  router.post("/orders/:id/pickup", requirePartner, asyncHandler((req: PartnerRequest, res) =>
+    move(req, res, "assigned", "out_for_delivery")));
+
+  router.post("/orders/:id/deliver", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const { note } = req.body ?? {};
+    if (note !== undefined && (typeof note !== "string" || note.length > 300)) {
+      return res.status(400).json({ error: "Note too long." });
+    }
+    return move(req, res, "out_for_delivery", "delivered", typeof note === "string" ? note.trim() : undefined);
+  }));
+
+  router.post("/orders/:id/unable", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const released = await releaseOrder(deps.deliveryRepo, req.params.id, req.partner!.userId, new Date());
+    if (!released) return res.status(409).json({ error: "no_active_delivery" });
+    return res.status(200).json({ order: toOrderDTO(released) });
   }));
 
   return router;
