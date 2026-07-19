@@ -160,6 +160,10 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
       return res.status(401).json(genericError);
     }
 
+    if (user.suspendedAt) {
+      return res.status(403).json({ error: "This account has been suspended." });
+    }
+
     const token = signToken({ userId: user.id }, deps.jwtSecret);
     return res.status(200).json({
       token,

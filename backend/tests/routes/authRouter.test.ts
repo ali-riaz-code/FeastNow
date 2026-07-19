@@ -391,4 +391,23 @@ describe("POST /api/auth/login", () => {
     });
     expect(res.status).toBe(401);
   });
+
+  it("403s a suspended user even with the correct password", async () => {
+    const userRepo = createFakeUserRepository([
+      {
+        id: "susp1",
+        name: "Suspended Sam",
+        email: "susp@x.co",
+        phone: "555-0700",
+        passwordHash: await hashPassword("Correct123"),
+        role: "customer",
+        createdAt: new Date(),
+        suspendedAt: new Date(),
+        suspensionReason: null,
+      } as User,
+    ]);
+    const { app } = buildApp({ userRepo });
+    const res = await request(app).post("/api/auth/login").send({ identifier: "susp@x.co", password: "Correct123" });
+    expect(res.status).toBe(403);
+  });
 });

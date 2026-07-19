@@ -14,7 +14,7 @@ export function createMeRouter(deps: MeRouterDeps): Router {
 
   router.get("/", requireAuth, asyncHandler(async (req: AuthenticatedRequest, res) => {
     const user = await deps.userRepo.findById(req.userId!);
-    if (!user) {
+    if (!user || user.suspendedAt) {
       return res.status(401).json({ error: "Invalid or expired token." });
     }
     return res.status(200).json({ id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role });
