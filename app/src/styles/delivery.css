@@ -133,6 +133,29 @@
 }
 .dactive__unable:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* ---- Earnings ---- */
+.dearn__cards { display: flex; gap: var(--s-sm); margin-bottom: var(--s-lg); }
+.dearn__card {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 4px;
+  background: var(--cream); border: 1px solid var(--beige);
+  border-radius: var(--r-lg, 20px); box-shadow: var(--sh-raised);
+  padding: var(--s-md);
+}
+.dearn__card-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.dearn__card-amount { font-size: 1.5rem; color: var(--basil); font-weight: 700; }
+.dearn__card-count { font-size: 0.85rem; color: var(--muted); }
+.dearn__subtitle { font-size: 1rem; color: var(--ink); margin: 0 0 var(--s-sm); }
+.dearn__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s-sm); }
+.dearn__row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--cream); border: 1px solid var(--beige);
+  border-radius: var(--r-md, 12px); padding: var(--s-sm) var(--s-md);
+}
+.dearn__row-name { margin: 0; color: var(--ink); font-weight: 600; }
+.dearn__row-meta { margin: 2px 0 0; font-size: 0.78rem; color: var(--muted); }
+.dearn__row-payout { color: var(--basil); font-weight: 700; }
+
 /* ---- Assignment offer modal ---- */
 .doffer {
   position: fixed;
