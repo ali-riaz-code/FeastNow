@@ -51,6 +51,31 @@ describe("POST /api/customer/orders", () => {
     expect(windowMs).toBeLessThanOrEqual(120_000);
   });
 
+  it("persists optional dropoff coordinates when provided", async () => {
+    const r = openRestaurant();
+    const item = makeMenuItem(r.id, { priceCents: 45000 });
+    const orders = createFakeOrderRepository();
+    const res = await request(buildApp([{ profile: r, menuItems: [item] }], orders))
+      .post("/api/customer/orders").set(auth)
+      .send({
+        restaurantId: r.id, deliveryAddress: "12 Demo Lane",
+        deliveryLat: 24.9, deliveryLng: 67.05,
+        items: [{ menuItemId: item.id, quantity: 1 }],
+      });
+    expect(res.status).toBe(201);
+    expect(orders.orders[0].deliveryLat).toBe(24.9);
+    expect(orders.orders[0].deliveryLng).toBe(67.05);
+  });
+
+  it("400s when only one dropoff coordinate is provided", async () => {
+    const r = openRestaurant();
+    const item = makeMenuItem(r.id);
+    const res = await request(buildApp([{ profile: r, menuItems: [item] }]))
+      .post("/api/customer/orders").set(auth)
+      .send({ restaurantId: r.id, deliveryAddress: "x", deliveryLat: 24.9, items: [{ menuItemId: item.id, quantity: 1 }] });
+    expect(res.status).toBe(400);
+  });
+
   it("409s items_unavailable listing the offending ids", async () => {
     const r = openRestaurant();
     const gone = makeMenuItem(r.id, { isAvailable: false });

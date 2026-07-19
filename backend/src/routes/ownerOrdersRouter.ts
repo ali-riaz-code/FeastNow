@@ -2,14 +2,17 @@ import { Router } from "express";
 import type { OrderStatus } from "@prisma/client";
 import type { OwnerRepository } from "../repositories/ownerRepository";
 import type { OrderRepository, OrderWithItems } from "../repositories/orderRepository";
+import type { DeliveryRepository } from "../repositories/deliveryRepository";
 import { createRequireOwner, type OwnerRequest } from "../middleware/requireOwner";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { canTransition, EXPIRY_REJECTION_REASON, REJECTION_REASONS } from "../lib/orderStateMachine";
+import { runAssignmentTick } from "../lib/deliveryAssignment";
 import { toOrderDTO } from "../lib/orderDTO";
 
 export interface OwnerOrdersRouterDeps {
   ownerRepo: OwnerRepository;
   orderRepo: OrderRepository;
+  deliveryRepo: DeliveryRepository;
   jwtSecret: string;
 }
 
@@ -106,6 +109,8 @@ export function createOwnerOrdersRouter(deps: OwnerOrdersRouterDeps): Router {
     }
     const updated = await deps.orderRepo.transition(order.id, order.status, to, new Date());
     if (!updated) return res.status(409).json({ error: "invalid_transition", message: "That step isn't available for this order." });
+    // Marking an order ready triggers delivery assignment (offer to the nearest online partner).
+    if (to === "ready") await runAssignmentTick(deps.deliveryRepo, new Date());
     return res.status(200).json({ order: toOrderDTO(updated) });
   }));
 

@@ -3,6 +3,7 @@ import { timestampFieldFor, EXPIRY_REJECTION_REASON } from "../lib/orderStateMac
 
 export interface PlaceOrderInput {
   customerId: string; restaurantId: string; note: string; deliveryAddress: string;
+  deliveryLat?: number | null; deliveryLng?: number | null;
   subtotalCents: number; deliveryFeeCents: number; totalCents: number;
   expiresAt: Date; isDemo: boolean;
   items: { menuItemId: string; nameSnapshot: string; priceAtOrderCents: number; quantity: number }[];

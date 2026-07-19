@@ -4,18 +4,23 @@ import { describe, it, expect } from "vitest";
 import { createOwnerOrdersRouter } from "../../src/routes/ownerOrdersRouter";
 import { createFakeOwnerRepository, makeOwnedRestaurant } from "../test-helpers/fakeOwnerRepository";
 import { createFakeOrderRepository, makeOrder } from "../test-helpers/fakeOrderRepository";
+import { createFakeDeliveryRepository, makePartner } from "../test-helpers/fakeDeliveryRepository";
 import { signToken } from "../../src/lib/jwt";
 
 const JWT_SECRET = "test-secret";
 const ownerAuth = { Authorization: `Bearer ${signToken({ userId: "owner-1" }, JWT_SECRET)}` };
 const future = () => new Date(Date.now() + 60_000);
 
-function buildApp(seedOrders: ReturnType<typeof makeOrder>[] = [], owned = makeOwnedRestaurant()) {
+function buildApp(
+  seedOrders: ReturnType<typeof makeOrder>[] = [],
+  owned = makeOwnedRestaurant(),
+  deliveryRepo = createFakeDeliveryRepository(),
+) {
   const orderRepo = createFakeOrderRepository(seedOrders);
   const app = express();
   app.use(express.json());
   app.use("/api/restaurant/orders", createOwnerOrdersRouter({
-    ownerRepo: createFakeOwnerRepository([owned]), orderRepo, jwtSecret: JWT_SECRET,
+    ownerRepo: createFakeOwnerRepository([owned]), orderRepo, deliveryRepo, jwtSecret: JWT_SECRET,
   }));
   return { app, orderRepo, restaurantId: owned.profile.id };
 }
@@ -106,6 +111,19 @@ describe("transitions", () => {
     const foreign = makeOrder({ restaurantId: "someone-elses", expiresAt: future() });
     const { app } = buildApp([foreign], owned);
     expect((await request(app).post(`/api/restaurant/orders/${foreign.id}/accept`).set(ownerAuth)).status).toBe(404);
+  });
+
+  it("offers the order to an online partner when marked ready", async () => {
+    const owned = makeOwnedRestaurant();
+    // The SAME order object is shared into both fakes so the ready transition is visible to the tick.
+    const o = makeOrder({ restaurantId: owned.profile.id, status: "preparing", expiresAt: future(),
+      deliveryLat: 24.9, deliveryLng: 67.05 });
+    const deliveryRepo = createFakeDeliveryRepository([makePartner({ userId: "p1" })], [], [o]);
+    const { app } = buildApp([o], owned, deliveryRepo);
+    const res = await request(app).post(`/api/restaurant/orders/${o.id}/status`).set(ownerAuth).send({ to: "ready" });
+    expect(res.status).toBe(200);
+    expect(deliveryRepo.offers).toHaveLength(1);
+    expect(deliveryRepo.offers[0]).toMatchObject({ orderId: o.id, partnerId: "p1", status: "pending" });
   });
 });
 

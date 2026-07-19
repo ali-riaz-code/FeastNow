@@ -33,4 +33,9 @@ describe("createApp", () => {
       expect(res.status, path).toBe(401);
     }
   });
+
+  it("mounts /api/delivery and requires auth", async () => {
+    const res = await request(app).get("/api/delivery/me");
+    expect(res.status).toBe(401);
+  });
 });

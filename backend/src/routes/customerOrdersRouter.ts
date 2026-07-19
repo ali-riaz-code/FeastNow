@@ -25,12 +25,17 @@ export function createCustomerOrdersRouter(deps: CustomerOrdersRouterDeps): Rout
   const requireAuth = createRequireAuth(deps.jwtSecret);
 
   router.post("/", requireAuth, asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const { restaurantId, items, note, deliveryAddress } = req.body ?? {};
+    const { restaurantId, items, note, deliveryAddress, deliveryLat, deliveryLng } = req.body ?? {};
     const validItems = Array.isArray(items) && items.length > 0 && items.length <= MAX_ITEMS &&
       items.every((i) => i && typeof i.menuItemId === "string" &&
         Number.isInteger(i.quantity) && i.quantity >= 1 && i.quantity <= MAX_QTY);
+    // Dropoff coords are optional, but must arrive as a complete finite pair when present.
+    const hasLat = deliveryLat !== undefined && deliveryLat !== null;
+    const hasLng = deliveryLng !== undefined && deliveryLng !== null;
+    const validCoords = (!hasLat && !hasLng) ||
+      (hasLat && hasLng && Number.isFinite(deliveryLat) && Number.isFinite(deliveryLng));
     if (
-      typeof restaurantId !== "string" || !validItems ||
+      typeof restaurantId !== "string" || !validItems || !validCoords ||
       typeof deliveryAddress !== "string" || !deliveryAddress.trim() || deliveryAddress.length > MAX_ADDRESS ||
       (note !== undefined && (typeof note !== "string" || note.length > MAX_NOTE))
     ) {
@@ -64,6 +69,7 @@ export function createCustomerOrdersRouter(deps: CustomerOrdersRouterDeps): Rout
     const order = await deps.orderRepo.create({
       customerId: req.userId!, restaurantId,
       note: (note ?? "").trim(), deliveryAddress: deliveryAddress.trim(),
+      deliveryLat: hasLat ? deliveryLat : null, deliveryLng: hasLng ? deliveryLng : null,
       ...totals, expiresAt: new Date(Date.now() + ORDER_EXPIRY_MS), isDemo: detail.isDemo,
       items: lines,
     });
