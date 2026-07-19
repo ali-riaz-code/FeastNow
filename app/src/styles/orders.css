@@ -76,6 +76,7 @@
 .status--navy { color: var(--navy); }
 .status--basil { color: var(--basil-deep); }
 .status--tomato { color: var(--tomato); }
+.status--gold { color: var(--gold-deep); }
 
 .timeline { display: flex; flex-wrap: wrap; gap: var(--s-sm) var(--s-md); list-style: none; margin: 0; padding: 0; }
 .timeline__step { display: inline-flex; align-items: center; gap: var(--s-xs); font-size: 0.8125rem; color: var(--beige); }
