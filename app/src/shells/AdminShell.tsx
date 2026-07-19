@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { clearToken, redirectToLogin } from "../lib/session";
 import { useMe } from "../AuthGate";
+import { ADashboardScreen } from "../screens/admin/ADashboardScreen";
 
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
@@ -45,7 +46,7 @@ export function AdminShell() {
       <AdminSidebar />
       <main className="admin-main">
         <Routes>
-          <Route path="/" element={<div className="admin-screen">Dashboard</div>} />
+          <Route path="/" element={<ADashboardScreen />} />
           <Route path="/approvals" element={<div className="admin-screen">Approvals</div>} />
           <Route path="/users" element={<div className="admin-screen">Users</div>} />
           <Route path="/moderation" element={<div className="admin-screen">Moderation</div>} />
