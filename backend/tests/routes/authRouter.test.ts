@@ -284,6 +284,42 @@ describe("POST /api/auth/signup/verify-otp", () => {
 
     expect(res.status).toBe(400);
   });
+
+  it("creates a delivery_partner account with a vehicle type", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "ray@x.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app, userRepo } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Rider Ray", email: "ray@x.com", phone: "03001112222", password: "password1",
+      otp: "123456", role: "delivery_partner", vehicleType: "bike",
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body.user.role).toBe("delivery_partner");
+    expect(userRepo.lastDeliveryPartner).toMatchObject({ vehicleType: "bike" });
+  });
+
+  it("rejects a delivery_partner signup without a valid vehicle type", async () => {
+    const otpRepo = createFakeOtpRepository();
+    await otpRepo.create({
+      email: "ray2@x.com",
+      otpHash: await hashOtp("123456"),
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+    const { app } = buildApp({ otpRepo });
+
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      name: "Rider Ray", email: "ray2@x.com", phone: "03001112223", password: "password1",
+      otp: "123456", role: "delivery_partner",
+    });
+
+    expect(res.status).toBe(400);
+  });
 });
 
 describe("POST /api/auth/login", () => {

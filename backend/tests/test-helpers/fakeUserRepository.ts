@@ -1,12 +1,21 @@
 import type { User } from "@prisma/client";
-import type { RestaurantOwnerSignup, UserRepository } from "../../src/repositories/userRepository";
+import type {
+  DeliveryPartnerSignup,
+  RestaurantOwnerSignup,
+  UserRepository,
+} from "../../src/repositories/userRepository";
 
 export function createFakeUserRepository(
   seed: User[] = [],
-): UserRepository & { users: User[]; lastRestaurantOwner: RestaurantOwnerSignup | null } {
+): UserRepository & {
+  users: User[];
+  lastRestaurantOwner: RestaurantOwnerSignup | null;
+  lastDeliveryPartner: DeliveryPartnerSignup | null;
+} {
   const users = [...seed];
   let nextId = seed.length + 1;
   let lastRestaurantOwner: RestaurantOwnerSignup | null = null;
+  let lastDeliveryPartner: DeliveryPartnerSignup | null = null;
 
   function makeUser(
     data: { name: string; email: string; phone: string; passwordHash: string },
@@ -28,6 +37,9 @@ export function createFakeUserRepository(
     get lastRestaurantOwner() {
       return lastRestaurantOwner;
     },
+    get lastDeliveryPartner() {
+      return lastDeliveryPartner;
+    },
     async findById(id) {
       return users.find((u) => u.id === id) ?? null;
     },
@@ -45,6 +57,12 @@ export function createFakeUserRepository(
     async createRestaurantOwner(data) {
       lastRestaurantOwner = data;
       const user = makeUser(data, "restaurant");
+      users.push(user);
+      return user;
+    },
+    async createDeliveryPartner(data) {
+      lastDeliveryPartner = data;
+      const user = makeUser(data, "delivery_partner");
       users.push(user);
       return user;
     },

@@ -75,7 +75,7 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
       return res.status(400).json({ error: "Missing or invalid signup details." });
     }
 
-    const { role, businessName, businessAddress, cuisine } = req.body ?? {};
+    const { role, businessName, businessAddress, cuisine, vehicleType } = req.body ?? {};
     const isRestaurant = role === "restaurant";
     if (isRestaurant && (
       typeof businessName !== "string" || !businessName.trim() ||
@@ -83,6 +83,12 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
       typeof cuisine !== "string" || !cuisine.trim()
     )) {
       return res.status(400).json({ error: "Business name, address, and cuisine are required for a restaurant account." });
+    }
+
+    const isPartner = role === "delivery_partner";
+    const VEHICLES = ["bike", "motorcycle", "car"];
+    if (isPartner && (typeof vehicleType !== "string" || !VEHICLES.includes(vehicleType))) {
+      return res.status(400).json({ error: "A valid vehicle type is required for a delivery account." });
     }
 
     const challenge = await deps.otpRepo.findActiveForEmail(email);
@@ -114,6 +120,8 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
             name, email, phone, passwordHash,
             businessName: businessName.trim(), businessAddress: businessAddress.trim(), cuisine: cuisine.trim(),
           })
+        : isPartner
+        ? await deps.userRepo.createDeliveryPartner({ name, email, phone, passwordHash, vehicleType })
         : await deps.userRepo.create({ name, email, phone, passwordHash });
     } catch (err) {
       if (err && typeof err === "object" && "code" in err && (err as { code?: unknown }).code === "P2002") {

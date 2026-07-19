@@ -1,4 +1,4 @@
-import type { PrismaClient, User } from "@prisma/client";
+import type { PrismaClient, User, VehicleType } from "@prisma/client";
 
 // Pending restaurants are hidden from browse until approved, so a neutral
 // placeholder hero is fine until imagery upload exists (SRS: future-only).
@@ -10,6 +10,11 @@ export interface RestaurantOwnerSignup {
   businessName: string; businessAddress: string; cuisine: string;
 }
 
+export interface DeliveryPartnerSignup {
+  name: string; email: string; phone: string; passwordHash: string;
+  vehicleType: VehicleType;
+}
+
 export interface UserRepository {
   findById(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
@@ -17,6 +22,8 @@ export interface UserRepository {
   create(data: { name: string; email: string; phone: string; passwordHash: string }): Promise<User>;
   /** User (role restaurant) + pending RestaurantProfile in one transaction (FR-2). */
   createRestaurantOwner(data: RestaurantOwnerSignup): Promise<User>;
+  /** User (role delivery_partner) + auto-approved DeliveryPartnerProfile in one transaction (FR-23). */
+  createDeliveryPartner(data: DeliveryPartnerSignup): Promise<User>;
 }
 
 export function createUserRepository(prisma: PrismaClient): UserRepository {
@@ -55,6 +62,16 @@ export function createUserRepository(prisma: PrismaClient): UserRepository {
             isActive: true,
             isDemo: false,
           },
+        });
+        return created;
+      });
+    },
+    createDeliveryPartner(data) {
+      const { vehicleType, ...user } = data;
+      return prisma.$transaction(async (tx) => {
+        const created = await tx.user.create({ data: { ...user, role: "delivery_partner" } });
+        await tx.deliveryPartnerProfile.create({
+          data: { userId: created.id, vehicleType, availabilityStatus: "offline", approvedAt: new Date() },
         });
         return created;
       });
