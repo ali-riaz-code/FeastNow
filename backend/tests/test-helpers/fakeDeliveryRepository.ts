@@ -1,6 +1,5 @@
 import type { DeliveryRepository, OfferRecord, PartnerView } from "../../src/repositories/deliveryRepository";
 import type { OrderWithItems } from "../../src/repositories/orderRepository";
-import { makeOrder } from "./fakeOrderRepository";
 
 let pSeq = 0, oSeq = 0;
 export function makePartner(o: Partial<PartnerView> = {}): PartnerView {
@@ -98,7 +97,7 @@ export function createFakeDeliveryRepository(
     },
     async setOfferStatus(id, status, now) {
       const o = offers.find((x) => x.id === id);
-      if (!o) return;
+      if (!o) throw new Error(`offer not found: ${id}`); // Prisma .update() throws P2025 on missing id
       o.status = status; o.respondedAt = now;
     },
     async expireOverduePendingOffers(now) {

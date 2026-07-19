@@ -48,23 +48,30 @@ const ORDER_INCLUDE = {
   restaurant: { select: { name: true } },
 } as const;
 
-// Restaurant projection carrying the extra lat/lng/phone fields the delivery flows need,
+// Restaurant projection carrying the extra lat/lng fields the delivery flows need,
 // layered on top of ORDER_INCLUDE (overrides its `restaurant` select).
+// NOTE: RestaurantProfile has no `user` relation (only a scalar `userId String?`), so the
+// owner's phone is resolved via a separate User lookup — same pattern as findByUserId.
 const DELIVERY_ORDER_INCLUDE = {
   ...ORDER_INCLUDE,
-  restaurant: { select: { name: true, address: true, lat: true, lng: true, user: { select: { phone: true } } } },
+  restaurant: { select: { name: true, address: true, lat: true, lng: true, userId: true } },
 } as const;
 
-function withDeliveryRestaurant(o: {
-  restaurant: { name: string; address: string; lat: number | null; lng: number | null; user: { phone: string } | null };
-} | null) {
-  if (!o) return null;
-  return {
-    ...o,
-    restaurantLat: o.restaurant.lat,
-    restaurantLng: o.restaurant.lng,
-    restaurantPhone: o.restaurant.user?.phone ?? null,
-  } as never;
+function withDeliveryRestaurant(prisma: PrismaClient) {
+  return async (o: {
+    restaurant: { name: string; address: string; lat: number | null; lng: number | null; userId: string | null };
+  } | null) => {
+    if (!o) return null;
+    const owner = o.restaurant.userId
+      ? await prisma.user.findUnique({ where: { id: o.restaurant.userId }, select: { phone: true } })
+      : null; // seeded restaurants have no owner account
+    return {
+      ...o,
+      restaurantLat: o.restaurant.lat,
+      restaurantLng: o.restaurant.lng,
+      restaurantPhone: owner?.phone ?? null,
+    } as never;
+  };
 }
 
 export function createDeliveryRepository(prisma: PrismaClient): DeliveryRepository {
@@ -167,7 +174,7 @@ export function createDeliveryRepository(prisma: PrismaClient): DeliveryReposito
       return prisma.order.findUnique({
         where: { id: orderId },
         include: DELIVERY_ORDER_INCLUDE,
-      }).then(withDeliveryRestaurant);
+      }).then(withDeliveryRestaurant(prisma));
     },
     async assignOrder(orderId, partnerUserId, payoutCents, now) {
       const { count } = await prisma.order.updateMany({
@@ -197,7 +204,7 @@ export function createDeliveryRepository(prisma: PrismaClient): DeliveryReposito
       return prisma.order.findFirst({
         where: { deliveryPartnerId: userId, status: { in: ["assigned", "out_for_delivery"] } },
         include: DELIVERY_ORDER_INCLUDE,
-      }).then(withDeliveryRestaurant);
+      }).then(withDeliveryRestaurant(prisma));
     },
     listDeliveredForPartner(userId) {
       return prisma.order.findMany({

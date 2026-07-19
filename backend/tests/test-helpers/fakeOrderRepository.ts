@@ -15,6 +15,8 @@ export function makeOrder(overrides: Partial<OrderWithItems> = {}): OrderWithIte
     createdAt: new Date("2026-07-16T12:00:00Z"),
     acceptedAt: null, preparingAt: null, readyAt: null, closedAt: null,
     expiresAt: new Date("2026-07-16T12:02:00Z"), isDemo: false,
+    deliveryPartnerId: null, deliveryLat: null, deliveryLng: null, payoutCents: null,
+    assignedAt: null, outForDeliveryAt: null, deliveredAt: null, proofNote: null,
     items: [{
       id: `oi-${seq}`, orderId: id, menuItemId: `item-${seq}`,
       nameSnapshot: "Margherita", priceAtOrderCents: 45000, quantity: 2,
