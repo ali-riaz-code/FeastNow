@@ -1,7 +1,7 @@
 # Delivery Partner Role — Design Spec
 
 **Date:** 2026-07-18
-**Status:** Approved for planning
+**Status:** Implemented 2026-07-19 (Tasks 1–21) — see `docs/superpowers/verification/2026-07-19-delivery-partner-completion.md`. Manual multi-actor E2E (Task 21 §3) is the one remaining human check.
 **SRS coverage:** FR-1, FR-3–FR-7, FR-13, FR-23–FR-29; NFR-1, NFR-3, NFR-5, NFR-7
 **Supersedes:** the earlier "full-native now" direction discussed at the start of this session (Capacitor wrap + Google Maps SDK + FCM + background geolocation). That direction was reversed in favor of a plain web SPA — see §1.
 
