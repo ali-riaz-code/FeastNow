@@ -78,6 +78,61 @@
 .davail__locked a { color: var(--basil); font-weight: 600; }
 .davail__error { color: var(--tomato); font-size: 0.9rem; max-width: 36ch; }
 
+/* ---- Active delivery ---- */
+.dactive { display: flex; flex-direction: column; gap: var(--s-md); }
+.dactive__muted { color: var(--muted); }
+.dactive--empty { align-items: center; text-align: center; gap: var(--s-md); padding-top: var(--s-xl); }
+.dactive__empty-orb {
+  width: 96px; height: 96px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--muted); background: var(--dough); border: 2px solid var(--beige);
+}
+.dactive__card {
+  background: var(--cream);
+  border: 1px solid var(--beige);
+  border-radius: var(--r-lg, 20px);
+  box-shadow: var(--sh-raised);
+  padding: var(--s-lg);
+}
+.dactive__stage {
+  display: inline-block;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--cream); background: var(--gold, #b8862b);
+  padding: 4px 10px; border-radius: var(--r-pill);
+  margin-bottom: var(--s-sm);
+}
+.dactive__stage[data-stage="out_for_delivery"] { background: var(--basil); }
+.dactive__restaurant { font-size: 1.4rem; color: var(--ink); margin: 0; }
+.dactive__meta { color: var(--muted); margin: 4px 0 0; }
+.dactive__payout { color: var(--basil); font-weight: 700; margin: 2px 0 0; }
+.dactive__dest {
+  margin: var(--s-md) 0 0; color: var(--ink); line-height: 1.4;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.dactive__dest-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.dactive__customer { color: var(--muted); margin: var(--s-xs, 4px) 0 0; }
+.dactive__links { display: flex; gap: var(--s-sm); margin-top: var(--s-md); }
+.dactive__nav { flex: 1; text-align: center; text-decoration: none; }
+.dactive__call {
+  flex: 0 0 auto; padding: 12px 20px;
+  border-radius: var(--r-pill); border: 1px solid var(--beige);
+  color: var(--navy); font-weight: 700; text-decoration: none;
+}
+.dactive__primary { width: 100%; }
+.dactive__deliver { display: flex; flex-direction: column; gap: var(--s-sm); }
+.dactive__note-label { font-size: 0.8rem; color: var(--muted); }
+.dactive__note {
+  width: 100%; resize: vertical; font: inherit;
+  padding: 10px; border-radius: var(--r-md, 12px); border: 1px solid var(--beige);
+  background: var(--cream); color: var(--ink);
+}
+.dactive__unable {
+  align-self: center; background: none; border: none;
+  color: var(--tomato); font: inherit; font-weight: 600; cursor: pointer;
+  text-decoration: underline; padding: var(--s-sm);
+}
+.dactive__unable:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* ---- Assignment offer modal ---- */
 .doffer {
   position: fixed;
