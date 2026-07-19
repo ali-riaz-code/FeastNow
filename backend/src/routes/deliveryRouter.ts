@@ -1,0 +1,65 @@
+import { Router } from "express";
+import type { DeliveryRepository, PartnerView } from "../repositories/deliveryRepository";
+import { createRequirePartner, type PartnerRequest } from "../middleware/requirePartner";
+import { asyncHandler } from "../middleware/asyncHandler";
+import { toPartnerDTO } from "../lib/deliveryDTO";
+import { LOCATION_STALE_MS } from "../lib/deliveryConfig";
+
+export interface DeliveryRouterDeps {
+  deliveryRepo: DeliveryRepository;
+  jwtSecret: string;
+}
+
+const VEHICLES = ["bike", "motorcycle", "car"];
+
+export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
+  const router = Router();
+  const requirePartner = createRequirePartner(deps.jwtSecret, deps.deliveryRepo);
+
+  router.get("/me", requirePartner, asyncHandler(async (req: PartnerRequest, res) =>
+    res.status(200).json({ partner: toPartnerDTO(req.partner!) })));
+
+  router.patch("/me", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const { name, phone, vehicleType } = req.body ?? {};
+    if (typeof name !== "string" || !name.trim() || typeof phone !== "string" || !phone.trim() ||
+        typeof vehicleType !== "string" || !VEHICLES.includes(vehicleType)) {
+      return res.status(400).json({ error: "Name, phone, and vehicle type are required." });
+    }
+    const updated = await deps.deliveryRepo.updateProfile(req.partner!.userId,
+      { name: name.trim(), phone: phone.trim(), vehicleType: vehicleType as PartnerView["vehicleType"] });
+    return res.status(200).json({ partner: toPartnerDTO(updated) });
+  }));
+
+  router.post("/location", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const { lat, lng } = req.body ?? {};
+    if (typeof lat !== "number" || typeof lng !== "number" || Number.isNaN(lat) || Number.isNaN(lng)) {
+      return res.status(400).json({ error: "lat and lng must be numbers." });
+    }
+    const updated = await deps.deliveryRepo.updateLocation(req.partner!.userId, lat, lng, new Date());
+    return res.status(200).json({ partner: toPartnerDTO(updated) });
+  }));
+
+  router.post("/availability", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const { status } = req.body ?? {};
+    if (status !== "online" && status !== "offline") {
+      return res.status(400).json({ error: "status must be online or offline." });
+    }
+    if (status === "online") {
+      const fresh = req.partner!.locationUpdatedAt &&
+        Date.now() - req.partner!.locationUpdatedAt.getTime() < LOCATION_STALE_MS;
+      if (!fresh) {
+        return res.status(409).json({ error: "location_required", message: "Share your location before going online." });
+      }
+    }
+    if (status === "offline") {
+      const active = await deps.deliveryRepo.findActiveForPartner(req.partner!.userId);
+      if (active) {
+        return res.status(409).json({ error: "delivery_in_progress", message: "Finish your active delivery before going offline." });
+      }
+    }
+    const updated = await deps.deliveryRepo.setAvailability(req.partner!.userId, status);
+    return res.status(200).json({ partner: toPartnerDTO(updated) });
+  }));
+
+  return router;
+}
