@@ -11,6 +11,7 @@ import "./styles/search.css";
 import "./styles/orders.css";
 import "./styles/rshell.css";
 import "./styles/delivery.css";
+import "./styles/admin.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

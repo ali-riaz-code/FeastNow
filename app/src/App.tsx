@@ -3,12 +3,13 @@ import { AuthGate, useMe } from "./AuthGate";
 import { CustomerShell } from "./shells/CustomerShell";
 import { RestaurantShell } from "./shells/RestaurantShell";
 import { DeliveryShell } from "./shells/DeliveryShell";
+import { AdminShell } from "./shells/AdminShell";
 
 function RoleShell() {
   const me = useMe();
-  // The admin shell arrives in a later phase; anything unknown falls back to
-  // the customer experience (SRS §4.1).
-  return me.role === "restaurant" ? <RestaurantShell />
+  // Anything unknown falls back to the customer experience (SRS §4.1).
+  return me.role === "admin" ? <AdminShell />
+    : me.role === "restaurant" ? <RestaurantShell />
     : me.role === "delivery_partner" ? <DeliveryShell />
     : <CustomerShell />;
 }

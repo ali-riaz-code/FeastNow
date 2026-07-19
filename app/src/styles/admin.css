@@ -1,0 +1,44 @@
+/* Full-width back-office — overrides the phone-frame cap for admins only. */
+#root.admin-root { max-width: none; box-shadow: none; background: var(--cream); }
+
+.admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100dvh; }
+
+.admin-sidebar {
+  display: flex; flex-direction: column; gap: var(--s-md);
+  background: var(--off-white); border-right: 1px solid var(--dough);
+  padding: var(--s-lg) var(--s-md);
+}
+.admin-sidebar__brand { font-size: 22px; color: var(--navy); padding: 0 var(--s-sm) var(--s-sm); }
+.admin-sidebar__nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.admin-navlink {
+  padding: 10px 12px; border-radius: var(--r-sm); color: var(--brown); font-weight: 600;
+  transition: background var(--dur-fast) var(--ease-out-quart), color var(--dur-fast) var(--ease-out-quart);
+}
+.admin-navlink:hover { background: var(--dough); }
+.admin-navlink--active { background: var(--navy); color: var(--cream); }
+.admin-sidebar__foot { display: flex; flex-direction: column; gap: var(--s-sm); }
+.admin-sidebar__who { font-size: 12px; color: var(--brown); word-break: break-all; }
+
+.admin-main { padding: var(--s-xl) var(--gutter); max-width: var(--maxw); width: 100%; }
+.admin-screen { color: var(--navy); }
+.admin-screen__title { font-family: var(--font-display); font-size: 28px; color: var(--navy); margin: 0 0 var(--s-lg); }
+
+/* Cards, shared by admin screens — same radius/shadow/tap-feel as restaurant-card. */
+.admin-card { background: var(--off-white); border-radius: var(--r-md); box-shadow: var(--sh-raised); padding: var(--s-lg); }
+
+/* Destructive action — tomato outline (matches .btn-logout family). */
+.btn-danger { background: none; border: 1px solid var(--tomato); color: var(--tomato); border-radius: var(--r-pill); padding: 10px 22px; font-weight: 600; }
+
+/* Status pill: color + label (color-blind safe). */
+.admin-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; border-radius: var(--r-pill); padding: 3px 10px; }
+.admin-pill--ok { background: var(--basil-deep); color: var(--cream); }
+.admin-pill--warn { background: var(--butter); color: var(--gold-deep); }
+.admin-pill--bad { background: var(--tomato); color: var(--cream); }
+
+/* Responsive: stack the sidebar on top on narrow screens. */
+@media (max-width: 720px) {
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; border-right: none; border-bottom: 1px solid var(--dough); }
+  .admin-sidebar__nav { flex-direction: row; flex-wrap: wrap; }
+  .admin-main { padding: var(--s-lg) var(--s-md); }
+}

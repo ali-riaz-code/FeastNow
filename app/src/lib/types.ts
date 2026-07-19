@@ -103,3 +103,16 @@ export interface EarningsDTO {
   week: { cents: number; count: number };
   deliveries: { id: string; orderNumber: number; restaurantName: string; payoutCents: number; deliveredAt: string }[];
 }
+
+// ---- Admin ----
+export interface AdminMetrics { activeOrders: number; newSignups24h: number; pendingApprovals: number; }
+export interface AdminApprovalRow { id: string; name: string; cuisines: string[]; address: string; createdAt: string; }
+export interface AdminRestaurantDetail {
+  id: string; name: string; description: string; address: string; cuisines: string[];
+  opensAt: string; closesAt: string; approvalStatus: "pending" | "approved" | "rejected";
+  adminNote: string | null; createdAt: string;
+}
+export interface AdminUserRow { id: string; name: string; email: string; phone: string; role: UserRole; suspended: boolean; createdAt: string; }
+export interface AdminReviewRow { id: string; stars: number; reviewText: string; authorName: string; createdAt: string; restaurantId: string; restaurantName: string; }
+export type DiscountType = "percentage" | "fixed";
+export interface AdminPromo { id: string; code: string; discountType: DiscountType; discountValue: number; active: boolean; expiresAt: string | null; }
