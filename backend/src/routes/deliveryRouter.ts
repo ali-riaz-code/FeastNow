@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { DeliveryRepository, PartnerView } from "../repositories/deliveryRepository";
 import { createRequirePartner, type PartnerRequest } from "../middleware/requirePartner";
 import { asyncHandler } from "../middleware/asyncHandler";
-import { toActiveDeliveryDTO, toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
+import { toActiveDeliveryDTO, toEarningsDTO, toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
 import { toOrderDTO } from "../lib/orderDTO";
 import { LOCATION_STALE_MS } from "../lib/deliveryConfig";
 import { runAssignmentTick, acceptOffer, declineOffer, releaseOrder } from "../lib/deliveryAssignment";
@@ -123,6 +123,11 @@ export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
     const released = await releaseOrder(deps.deliveryRepo, req.params.id, req.partner!.userId, new Date());
     if (!released) return res.status(409).json({ error: "no_active_delivery" });
     return res.status(200).json({ order: toOrderDTO(released) });
+  }));
+
+  router.get("/earnings", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
+    const rows = await deps.deliveryRepo.listDeliveredForPartner(req.partner!.userId);
+    return res.status(200).json(toEarningsDTO(rows, new Date()));
   }));
 
   return router;

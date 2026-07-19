@@ -37,6 +37,24 @@ export function toOfferDTO(offer: OfferRecord, ctx: {
   };
 }
 
+export function toEarningsDTO(
+  rows: { id: string; orderNumber: number; restaurantName: string; payoutCents: number; deliveredAt: Date }[],
+  now: Date,
+) {
+  const startOfDay = new Date(now); startOfDay.setHours(0, 0, 0, 0);
+  const startOfWeek = new Date(startOfDay);
+  startOfWeek.setDate(startOfDay.getDate() - ((startOfDay.getDay() + 6) % 7)); // Monday
+  const sum = (since: Date) => rows.filter((r) => r.deliveredAt >= since)
+    .reduce((a, r) => ({ cents: a.cents + r.payoutCents, count: a.count + 1 }), { cents: 0, count: 0 });
+  return {
+    today: sum(startOfDay), week: sum(startOfWeek),
+    deliveries: rows.map((r) => ({
+      id: r.id, orderNumber: r.orderNumber, restaurantName: r.restaurantName,
+      payoutCents: r.payoutCents, deliveredAt: r.deliveredAt.toISOString(),
+    })),
+  };
+}
+
 export function toActiveDeliveryDTO(order: DeliveryOrder) {
   return {
     order: toOrderDTO(order),

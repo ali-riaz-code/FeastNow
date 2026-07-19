@@ -184,3 +184,18 @@ describe("active delivery flow", () => {
     expect(deliveryRepo.orders[0].deliveryPartnerId).toBe(null);
   });
 });
+
+describe("GET /api/delivery/earnings", () => {
+  it("totals today and this week and lists completed deliveries", async () => {
+    const today = makeOrder({ id: "d1", status: "delivered", deliveryPartnerId: "p1",
+      payoutCents: 10000, deliveredAt: new Date() });
+    const { app } = buildApp([makePartner({ userId: "p1" })], [], [today]);
+    const res = await request(app).get("/api/delivery/earnings").set(auth("p1"));
+    expect(res.status).toBe(200);
+    expect(res.body.today.count).toBe(1);
+    expect(res.body.today.cents).toBe(10000);
+    expect(res.body.week.count).toBe(1);
+    expect(res.body.deliveries).toHaveLength(1);
+    expect(res.body.deliveries[0]).toMatchObject({ orderNumber: today.orderNumber, payoutCents: 10000 });
+  });
+});
