@@ -32,3 +32,23 @@ describe("GET /api/admin/metrics", () => {
     expect(res.body.metrics).toMatchObject({ activeOrders: 2, newSignups24h: 1, pendingApprovals: 1 });
   });
 });
+
+describe("approvals", () => {
+  it("lists, approves, and rejects", async () => {
+    const { app } = buildAdminApp();
+    const list = await request(app).get("/api/admin/approvals").set(adminAuth);
+    expect(list.status).toBe(200);
+    expect(list.body.approvals[0]).toMatchObject({ id: "r1", name: "Nonna's" });
+
+    const detail = await request(app).get("/api/admin/approvals/r1").set(adminAuth);
+    expect(detail.status).toBe(200);
+    expect((await request(app).get("/api/admin/approvals/nope").set(adminAuth)).status).toBe(404);
+
+    const appr = await request(app).post("/api/admin/approvals/r1/approve").set(adminAuth).send({ note: "ok" });
+    expect(appr.status).toBe(200);
+    expect(appr.body.restaurant.approvalStatus).toBe("approved");
+
+    const rej = await request(app).post("/api/admin/approvals/r1/reject").set(adminAuth).send({ note: "bad address" });
+    expect(rej.body.restaurant.approvalStatus).toBe("rejected");
+  });
+});

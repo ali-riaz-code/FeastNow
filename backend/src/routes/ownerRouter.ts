@@ -3,7 +3,6 @@ import type { RestaurantProfile } from "@prisma/client";
 import type { OwnerRepository } from "../repositories/ownerRepository";
 import { createRequireOwner, type OwnerRequest } from "../middleware/requireOwner";
 import { asyncHandler } from "../middleware/asyncHandler";
-import { AUTO_APPROVE_AFTER_MS } from "../lib/orderStateMachine";
 
 export interface OwnerRouterDeps {
   ownerRepo: OwnerRepository;
@@ -27,13 +26,7 @@ export function createOwnerRouter(deps: OwnerRouterDeps): Router {
   const requireOwner = createRequireOwner(deps.jwtSecret, deps.ownerRepo);
 
   router.get("/me", requireOwner, asyncHandler(async (req: OwnerRequest, res) => {
-    let profile = req.ownerProfile!;
-    // Lazy auto-approve (spec §3): stands in for the Admin review until that phase ships.
-    if (profile.approvalStatus === "pending" &&
-        Date.now() - profile.createdAt.getTime() >= AUTO_APPROVE_AFTER_MS) {
-      profile = await deps.ownerRepo.approve(profile.id, new Date());
-    }
-    return res.status(200).json({ profile: toOwnerProfileDTO(profile) });
+    return res.status(200).json({ profile: toOwnerProfileDTO(req.ownerProfile!) });
   }));
 
   router.patch("/profile", requireOwner, asyncHandler(async (req: OwnerRequest, res) => {

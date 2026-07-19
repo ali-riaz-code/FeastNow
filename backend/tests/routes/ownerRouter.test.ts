@@ -34,19 +34,6 @@ describe("GET /api/restaurant/me", () => {
     expect(res.body.profile.cuisines).toEqual(repo.data[0].profile.cuisines);
   });
 
-  it("auto-approves a pending profile older than 60s, not a fresh one", async () => {
-    const fresh = makeOwnedRestaurant();
-    fresh.profile.approvalStatus = "pending";
-    fresh.profile.createdAt = new Date(Date.now() - 10_000);
-    const { app: appFresh } = buildApp([fresh]);
-    expect((await request(appFresh).get("/api/restaurant/me").set(ownerAuth)).body.profile.approvalStatus).toBe("pending");
-
-    const due = makeOwnedRestaurant();
-    due.profile.approvalStatus = "pending";
-    due.profile.createdAt = new Date(Date.now() - 90_000);
-    const { app: appDue } = buildApp([due]);
-    expect((await request(appDue).get("/api/restaurant/me").set(ownerAuth)).body.profile.approvalStatus).toBe("approved");
-  });
 });
 
 describe("PATCH /api/restaurant/profile", () => {
