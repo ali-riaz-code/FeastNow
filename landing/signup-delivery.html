@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deliver with FeastNow</title>
+  <meta name="description" content="Create a FeastNow delivery partner account and earn on your schedule.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+<body class="theme-cream">
+  <main class="authpage">
+    <a class="authpage__home logo-lockup" href="index.html" data-transition-link>
+      <svg class="logo-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+        <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+              fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+              fill="var(--gold)"/>
+      </svg>
+      <span class="wordmark">FeastNow</span>
+    </a>
+
+    <div class="authsplit">
+      <div class="authsplit__form">
+        <span class="authsplit__flap" aria-hidden="true"></span>
+        <span class="authsplit__seal num" aria-hidden="true">FN</span>
+
+        <form id="signup-form" novalidate>
+          <h1 class="authsplit__title">Deliver with FeastNow</h1>
+          <p class="authsplit__sub">Earn on your schedule — sign up and start accepting deliveries.</p>
+
+          <div class="field">
+            <label class="field__label" for="signup-name">Name</label>
+            <input class="field__input" type="text" id="signup-name" name="name" autocomplete="name" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="signup-email">Email</label>
+            <input class="field__input" type="email" id="signup-email" name="email" autocomplete="email" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="signup-phone">Phone</label>
+            <input class="field__input" type="tel" id="signup-phone" name="phone" autocomplete="tel" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="signup-vehicle">Vehicle type</label>
+            <select class="field__input" id="signup-vehicle" name="vehicleType" required>
+              <option value="bike">Bicycle</option>
+              <option value="motorcycle" selected>Motorcycle</option>
+              <option value="car">Car</option>
+            </select>
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="signup-id-document">Upload ID document</label>
+            <input class="field__input" type="file" id="signup-id-document" name="idDocument" accept="image/*,.pdf">
+            <span class="field__error" role="alert"></span>
+          </div>
+          <div class="field">
+            <label class="field__label" for="signup-password">Password</label>
+            <input class="field__input" type="password" id="signup-password" name="password" autocomplete="new-password" required>
+            <span class="field__error" role="alert"></span>
+          </div>
+
+          <button class="btn btn--gold authsplit__submit" type="submit">
+            <span class="btn__roll"><span>Send verification code</span><span aria-hidden="true">Send verification code</span></span>
+          </button>
+        </form>
+
+        <form id="otp-form" novalidate hidden>
+          <h1 class="authsplit__title">Check your email</h1>
+          <p class="authsplit__sub">Enter the 6-digit code we just sent you.</p>
+
+          <div class="otp-boxes" role="group" aria-label="Verification code">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 1">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 2">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 3">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 4">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 5">
+            <input class="otp-boxes__input num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="Digit 6">
+          </div>
+          <span class="otp-error" id="otp-error" role="alert"></span>
+
+          <button class="btn btn--gold authsplit__submit" type="submit">
+            <span class="btn__roll"><span>Verify &amp; create account</span><span aria-hidden="true">Verify &amp; create account</span></span>
+          </button>
+
+          <p class="otp-resend">
+            Didn't get it?
+            <button type="button" id="otp-resend" disabled>Resend code</button>
+            <span class="num" id="otp-resend-countdown"></span>
+          </p>
+        </form>
+
+        <div class="authsplit__links">
+          <a class="authlink" href="login.html" data-transition-link>Already have an account?</a>
+        </div>
+      </div>
+
+      <div class="authsplit__art">
+        <div class="authsplit__cart" aria-hidden="true" data-cart-mount></div>
+        <ul class="authsplit__stats" role="list">
+          <li class="statchip statchip--basil"><span class="num">Flexible</span> hours</li>
+          <li class="statchip statchip--gold">Weekly <span class="num">payouts</span></li>
+          <li class="statchip statchip--navy"><span>Deliver near <span class="num">you</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <span class="authpage__watermark" aria-hidden="true">buon appetito</span>
+  </main>
+
+  <script>
+    fetch("assets/svg/cart.svg").then((r) => r.text()).then((svg) => {
+      document.querySelector("[data-cart-mount]").innerHTML = svg;
+    });
+  </script>
+  <script type="module" src="assets/js/signup-delivery.js"></script>
+  <script type="module" src="assets/js/transitions.js"></script>
+</body>
+</html>
