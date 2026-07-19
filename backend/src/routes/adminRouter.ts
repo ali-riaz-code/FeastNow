@@ -18,6 +18,10 @@ function userRow(u: { id: string; name: string; email: string; phone: string; ro
   return { id: u.id, name: u.name, email: u.email, phone: u.phone, role: u.role, suspended: u.suspendedAt != null, createdAt: u.createdAt.toISOString() };
 }
 
+function promoRow(p: { id: string; code: string; discountType: string; discountValue: number; active: boolean; expiresAt: Date | null }) {
+  return { id: p.id, code: p.code, discountType: p.discountType, discountValue: p.discountValue, active: p.active, expiresAt: p.expiresAt ? p.expiresAt.toISOString() : null };
+}
+
 export function createAdminRouter(deps: AdminRouterDeps): Router {
   const router = Router();
   const requireAdmin = createRequireAdmin(deps.jwtSecret, deps.userRepo);
@@ -95,6 +99,33 @@ export function createAdminRouter(deps: AdminRouterDeps): Router {
     if (!review) return res.status(404).json({ error: "Review not found." });
     await deps.adminRepo.removeReview(req.params.id);
     return res.status(204).send();
+  }));
+
+  router.get("/promos", ...requireAdmin, asyncHandler(async (_req: AdminRequest, res) => {
+    const promos = await deps.adminRepo.listPromos();
+    return res.status(200).json({ promos: promos.map(promoRow) });
+  }));
+
+  router.post("/promos", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const { code, discountType, discountValue, expiresAt } = req.body ?? {};
+    const validType = discountType === "percentage" || discountType === "fixed";
+    const valueOk = Number.isInteger(discountValue) &&
+      (discountType === "percentage" ? discountValue >= 1 && discountValue <= 100 : discountValue > 0);
+    if (typeof code !== "string" || !code.trim() || !validType || !valueOk) {
+      return res.status(400).json({ error: "Invalid promo code details." });
+    }
+    const normalizedCode = code.trim().toUpperCase();
+    const existing = await deps.adminRepo.findPromoByCode(normalizedCode);
+    if (existing) return res.status(409).json({ error: "A promo code with this code already exists." });
+    const expiry = typeof expiresAt === "string" && expiresAt ? new Date(expiresAt) : null;
+    if (expiry && Number.isNaN(expiry.getTime())) return res.status(400).json({ error: "Invalid expiry date." });
+    const promo = await deps.adminRepo.createPromo({ code: normalizedCode, discountType, discountValue, expiresAt: expiry });
+    return res.status(201).json({ promo: promoRow(promo) });
+  }));
+
+  router.post("/promos/:id/deactivate", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const promo = await deps.adminRepo.deactivatePromo(req.params.id);
+    return res.status(200).json({ promo: promoRow(promo) });
   }));
 
   return router;

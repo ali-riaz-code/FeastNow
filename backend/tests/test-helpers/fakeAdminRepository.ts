@@ -15,6 +15,8 @@ export function createFakeAdminRepository(): AdminRepository {
     { id: "rev1", stars: 1, reviewText: "bad", authorName: "X", createdAt: new Date(), restaurantId: "r1", restaurantName: "Nonna's" },
   ];
 
+  const promos: any[] = [];
+
   return {
     async metrics() { return { activeOrders: 2, newSignups24h: 1, pendingApprovals: 1 }; },
     async listPendingApprovals() { return pending as any; },
@@ -28,9 +30,9 @@ export function createFakeAdminRepository(): AdminRepository {
     async searchReviews(q) { return reviews.filter((r) => !q || r.restaurantName.includes(q)); },
     async findReviewById(id) { return (reviews.find((r) => r.id === id) as any) ?? null; },
     async removeReview(id) { const i = reviews.findIndex((r) => r.id === id); if (i >= 0) reviews.splice(i, 1); },
-    async listPromos() { return []; },
-    async findPromoByCode() { return null; },
-    async createPromo() { throw new Error("not seeded"); },
-    async deactivatePromo() { throw new Error("not seeded"); },
+    async listPromos() { return promos as any; },
+    async findPromoByCode(code) { return (promos.find((p) => p.code === code) as any) ?? null; },
+    async createPromo(data) { const p = { id: `p${promos.length + 1}`, active: true, createdAt: new Date(), ...data }; promos.push(p); return p as any; },
+    async deactivatePromo(id) { const p = promos.find((x) => x.id === id); p.active = false; return p as any; },
   };
 }

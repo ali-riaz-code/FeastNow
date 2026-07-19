@@ -83,3 +83,21 @@ describe("moderation", () => {
     expect((await request(app).get("/api/admin/reviews").set(adminAuth)).body.reviews.length).toBe(0);
   });
 });
+
+describe("promotions", () => {
+  it("validates, creates, rejects duplicates, deactivates", async () => {
+    const { app } = buildAdminApp();
+    expect((await request(app).post("/api/admin/promos").set(adminAuth).send({ code: "", discountType: "percentage", discountValue: 10 })).status).toBe(400);
+    expect((await request(app).post("/api/admin/promos").set(adminAuth).send({ code: "X", discountType: "percentage", discountValue: 150 })).status).toBe(400); // >100
+    expect((await request(app).post("/api/admin/promos").set(adminAuth).send({ code: "X", discountType: "fixed", discountValue: 0 })).status).toBe(400); // not >0
+
+    const c = await request(app).post("/api/admin/promos").set(adminAuth).send({ code: "welcome10", discountType: "percentage", discountValue: 10 });
+    expect(c.status).toBe(201);
+    expect(c.body.promo.code).toBe("WELCOME10"); // uppercased
+
+    expect((await request(app).post("/api/admin/promos").set(adminAuth).send({ code: "welcome10", discountType: "percentage", discountValue: 10 })).status).toBe(409);
+
+    const d = await request(app).post(`/api/admin/promos/${c.body.promo.id}/deactivate`).set(adminAuth);
+    expect(d.body.promo.active).toBe(false);
+  });
+});
