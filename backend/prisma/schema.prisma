@@ -21,6 +21,8 @@ model User {
   phone        String   @unique
   passwordHash String
   role         UserRole @default(customer)
+  suspendedAt      DateTime?
+  suspensionReason String?
   createdAt    DateTime @default(now())
   orders        Order[] @relation("CustomerOrders")
   partnerOrders Order[] @relation("PartnerOrders")
@@ -58,6 +60,7 @@ model RestaurantProfile {
   isActive       Boolean        @default(true)
   isDemo         Boolean        @default(false)
   approvalStatus ApprovalStatus @default(pending)
+  adminNote      String?
   isOnline       Boolean        @default(true)
   createdAt      DateTime       @default(now())
   menuItems      MenuItem[]
@@ -214,4 +217,21 @@ model DeliveryOffer {
 
   @@index([partnerId, status])
   @@index([orderId, status])
+}
+
+enum DiscountType {
+  percentage
+  fixed
+}
+
+model PromoCode {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  discountType  DiscountType
+  discountValue Int
+  active        Boolean      @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime     @default(now())
+
+  @@index([active])
 }
