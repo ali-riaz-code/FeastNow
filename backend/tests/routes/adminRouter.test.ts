@@ -72,3 +72,14 @@ describe("users", () => {
     expect((await request(app).post("/api/admin/users/cust1/reinstate").set(adminAuth)).status).toBe(409); // not suspended
   });
 });
+
+describe("moderation", () => {
+  it("lists reviews and removes one", async () => {
+    const { app } = buildAdminApp();
+    const list = await request(app).get("/api/admin/reviews").set(adminAuth);
+    expect(list.body.reviews[0]).toMatchObject({ id: "rev1", restaurantName: "Nonna's" });
+    expect((await request(app).delete("/api/admin/reviews/nope").set(adminAuth)).status).toBe(404);
+    expect((await request(app).delete("/api/admin/reviews/rev1").set(adminAuth)).status).toBe(204);
+    expect((await request(app).get("/api/admin/reviews").set(adminAuth)).body.reviews.length).toBe(0);
+  });
+});

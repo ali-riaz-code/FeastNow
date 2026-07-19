@@ -81,5 +81,21 @@ export function createAdminRouter(deps: AdminRouterDeps): Router {
     return res.status(200).json({ user: userRow(user) });
   }));
 
+  router.get("/reviews", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const q = typeof req.query.q === "string" && req.query.q.trim() ? req.query.q.trim() : undefined;
+    const rows = await deps.adminRepo.searchReviews(q);
+    return res.status(200).json({ reviews: rows.map((r) => ({
+      id: r.id, stars: r.stars, reviewText: r.reviewText, authorName: r.authorName,
+      createdAt: r.createdAt.toISOString(), restaurantId: r.restaurantId, restaurantName: r.restaurantName,
+    })) });
+  }));
+
+  router.delete("/reviews/:id", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const review = await deps.adminRepo.findReviewById(req.params.id);
+    if (!review) return res.status(404).json({ error: "Review not found." });
+    await deps.adminRepo.removeReview(req.params.id);
+    return res.status(204).send();
+  }));
+
   return router;
 }

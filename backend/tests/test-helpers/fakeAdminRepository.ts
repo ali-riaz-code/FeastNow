@@ -11,6 +11,10 @@ export function createFakeAdminRepository(): AdminRepository {
     { id: "admin1", name: "Root", email: "root@x.co", phone: "1", role: "admin", suspendedAt: null, suspensionReason: null, createdAt: new Date() } as any,
   ];
 
+  const reviews = [
+    { id: "rev1", stars: 1, reviewText: "bad", authorName: "X", createdAt: new Date(), restaurantId: "r1", restaurantName: "Nonna's" },
+  ];
+
   return {
     async metrics() { return { activeOrders: 2, newSignups24h: 1, pendingApprovals: 1 }; },
     async listPendingApprovals() { return pending as any; },
@@ -21,9 +25,9 @@ export function createFakeAdminRepository(): AdminRepository {
     async findUserById(id) { return (users.find((u) => u.id === id) as any) ?? null; },
     async suspendUser(id, now, reason) { const u = users.find((x) => x.id === id) as any; u.suspendedAt = now; u.suspensionReason = reason; return u; },
     async reinstateUser(id) { const u = users.find((x) => x.id === id) as any; u.suspendedAt = null; u.suspensionReason = null; return u; },
-    async searchReviews() { return []; },
-    async findReviewById() { return null; },
-    async removeReview() { /* no-op */ },
+    async searchReviews(q) { return reviews.filter((r) => !q || r.restaurantName.includes(q)); },
+    async findReviewById(id) { return (reviews.find((r) => r.id === id) as any) ?? null; },
+    async removeReview(id) { const i = reviews.findIndex((r) => r.id === id); if (i >= 0) reviews.splice(i, 1); },
     async listPromos() { return []; },
     async findPromoByCode() { return null; },
     async createPromo() { throw new Error("not seeded"); },
