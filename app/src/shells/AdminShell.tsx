@@ -5,6 +5,7 @@ import { useMe } from "../AuthGate";
 import { ADashboardScreen } from "../screens/admin/ADashboardScreen";
 import { AApprovalsScreen } from "../screens/admin/AApprovalsScreen";
 import { AUsersScreen } from "../screens/admin/AUsersScreen";
+import { AModerationScreen } from "../screens/admin/AModerationScreen";
 
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
@@ -51,7 +52,7 @@ export function AdminShell() {
           <Route path="/" element={<ADashboardScreen />} />
           <Route path="/approvals" element={<AApprovalsScreen />} />
           <Route path="/users" element={<AUsersScreen />} />
-          <Route path="/moderation" element={<div className="admin-screen">Moderation</div>} />
+          <Route path="/moderation" element={<AModerationScreen />} />
           <Route path="/promotions" element={<div className="admin-screen">Promotions</div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

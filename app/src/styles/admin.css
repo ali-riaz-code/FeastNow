@@ -69,6 +69,13 @@
 .admin-userrow { display: flex; align-items: center; justify-content: space-between; gap: var(--s-md); }
 .admin-userrow__right { display: flex; align-items: center; gap: var(--s-md); }
 
+/* ---- Moderation ---- */
+.admin-reviewrow { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-md); }
+.admin-reviewrow__body { display: flex; flex-direction: column; gap: 4px; }
+.admin-reviewrow__head { display: flex; align-items: center; gap: var(--s-sm); }
+.admin-reviewrow__stars { color: var(--gold-deep); letter-spacing: 1px; }
+.admin-reviewrow__text { margin: 0; color: var(--ink); }
+
 /* Responsive: stack the sidebar on top on narrow screens. */
 @media (max-width: 720px) {
   .admin-shell { grid-template-columns: 1fr; }
