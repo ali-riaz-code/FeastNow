@@ -17,7 +17,25 @@ export function AApprovalsScreen() {
 
   const open = async (id: string) => {
     setNote("");
+    setLatInput("");
+    setLngInput("");
     setSelected(await apiGet<{ restaurant: AdminRestaurantDetail }>(`/api/admin/approvals/${id}`).then((r) => r.restaurant));
+  };
+
+  const setLocation = async () => {
+    if (!selected) return;
+    const lat = Number(latInput);
+    const lng = Number(lngInput);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    setBusy(true);
+    try {
+      const { restaurant } = await apiSend<{ restaurant: AdminRestaurantDetail }>(
+        "PATCH", `/api/admin/approvals/${selected.id}/location`, { lat, lng });
+      setSelected(restaurant);
+      setLatInput("");
+      setLngInput("");
+    } catch { window.alert("Couldn't update this restaurant. Check your connection."); }
+    finally { setBusy(false); }
   };
 
   const decide = async (verb: "approve" | "reject") => {
@@ -62,20 +80,10 @@ export function AApprovalsScreen() {
               ) : (
                 <p className="admin-muted">Location: {selected.lat.toFixed(5)}, {selected.lng.toFixed(5)}</p>
               )}
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  const lat = Number(latInput);
-                  const lng = Number(lngInput);
-                  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
-                  const { restaurant } = await apiSend<{ restaurant: AdminRestaurantDetail }>(
-                    "PATCH", `/api/admin/approvals/${selected.id}/location`, { lat, lng });
-                  setSelected(restaurant);
-                }}
-              >
+              <form onSubmit={(e) => { e.preventDefault(); void setLocation(); }}>
                 <input inputMode="decimal" placeholder="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} />
                 <input inputMode="decimal" placeholder="lng" value={lngInput} onChange={(e) => setLngInput(e.target.value)} />
-                <button type="submit" className="btn-secondary">Set location</button>
+                <button type="submit" className="btn-secondary" disabled={busy}>Set location</button>
               </form>
             </div>
             <label className="admin-field">
