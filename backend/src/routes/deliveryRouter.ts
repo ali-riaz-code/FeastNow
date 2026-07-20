@@ -48,6 +48,9 @@ export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
       return res.status(400).json({ error: "status must be online or offline." });
     }
     if (status === "online") {
+      if (req.partner!.approvedAt == null) {
+        return res.status(403).json({ error: "not_approved", message: "Your rider account is pending approval." });
+      }
       const fresh = req.partner!.locationUpdatedAt &&
         Date.now() - req.partner!.locationUpdatedAt.getTime() < LOCATION_STALE_MS;
       if (!fresh) {

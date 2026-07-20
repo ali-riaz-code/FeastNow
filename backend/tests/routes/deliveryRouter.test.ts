@@ -85,6 +85,18 @@ describe("availability + location", () => {
     const { app } = buildApp();
     expect((await request(app).post("/api/delivery/availability").set(auth("p1")).send({ status: "away" })).status).toBe(400);
   });
+  it("blocks a pending (unapproved) rider from going online with 403", async () => {
+    const { app } = buildApp([makePartner({ userId: "p1", approvedAt: null })]);
+    const res = await request(app).post("/api/delivery/availability").set(auth("p1")).send({ status: "online" });
+    expect(res.status).toBe(403);
+    expect(res.body.error).toBe("not_approved");
+  });
+  it("allows an approved rider with a fresh location to go online", async () => {
+    const { app } = buildApp([makePartner({ userId: "p1", approvedAt: new Date() })]);
+    const res = await request(app).post("/api/delivery/availability").set(auth("p1")).send({ status: "online" });
+    expect(res.status).toBe(200);
+    expect(res.body.partner.availabilityStatus).toBe("online");
+  });
 });
 
 describe("offers", () => {
