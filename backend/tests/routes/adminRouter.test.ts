@@ -114,6 +114,35 @@ describe("PATCH /api/admin/approvals/:id/location", () => {
   });
 });
 
+describe("rider approvals", () => {
+  it("lists pending riders", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app).get("/api/admin/rider-approvals").set(adminAuth);
+    expect(res.status).toBe(200);
+    expect(res.body.riders.length).toBeGreaterThan(0);
+    expect(res.body.riders[0]).toHaveProperty("vehicleType");
+  });
+
+  it("approves a pending rider", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app).post("/api/admin/rider-approvals/rider1/approve").set(adminAuth);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ ok: true });
+  });
+
+  it("returns 404 approving an unknown rider", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app).post("/api/admin/rider-approvals/nope/approve").set(adminAuth);
+    expect(res.status).toBe(404);
+  });
+
+  it("requires admin auth", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app).get("/api/admin/rider-approvals");
+    expect(res.status).toBe(401);
+  });
+});
+
 describe("promotions", () => {
   it("validates, creates, rejects duplicates, deactivates", async () => {
     const { app } = buildAdminApp();

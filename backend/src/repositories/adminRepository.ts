@@ -10,6 +10,10 @@ export interface AdminReviewRow {
   createdAt: Date; restaurantId: string; restaurantName: string;
 }
 export interface CreatePromoInput { code: string; discountType: "percentage" | "fixed"; discountValue: number; expiresAt: Date | null; }
+export interface AdminRiderRow {
+  id: string; name: string; email: string; phone: string;
+  vehicleType: string; createdAt: Date;
+}
 
 export interface AdminRepository {
   metrics(now: Date): Promise<AdminMetrics>;
@@ -29,6 +33,9 @@ export interface AdminRepository {
   findPromoByCode(code: string): Promise<PromoCode | null>;
   createPromo(data: CreatePromoInput): Promise<PromoCode>;
   deactivatePromo(id: string): Promise<PromoCode>;
+  listPendingRiders(): Promise<AdminRiderRow[]>;
+  findPendingRiderById(userId: string): Promise<AdminRiderRow | null>;
+  approveRider(userId: string, now: Date): Promise<void>;
 }
 
 const NON_TERMINAL = ["placed", "accepted", "preparing", "ready", "assigned", "out_for_delivery"] as const;
@@ -128,5 +135,35 @@ export function createAdminRepository(prisma: PrismaClient): AdminRepository {
     findPromoByCode(code) { return prisma.promoCode.findUnique({ where: { code } }); },
     createPromo(data) { return prisma.promoCode.create({ data }); },
     deactivatePromo(id) { return prisma.promoCode.update({ where: { id }, data: { active: false } }); },
+    // No Prisma relation exists between User and DeliveryPartnerProfile
+    // (DeliveryPartnerProfile.userId is a bare @unique, not a @relation),
+    // so join manually with two queries instead of `include`.
+    async listPendingRiders() {
+      const profiles = await prisma.deliveryPartnerProfile.findMany({
+        where: { approvedAt: null }, orderBy: { createdAt: "asc" },
+      });
+      if (profiles.length === 0) return [];
+      const users = await prisma.user.findMany({
+        where: { id: { in: profiles.map((p) => p.userId) }, suspendedAt: null },
+        select: { id: true, name: true, email: true, phone: true },
+      });
+      const byId = new Map(users.map((u) => [u.id, u]));
+      return profiles.flatMap((p) => {
+        const u = byId.get(p.userId);
+        return u ? [{ id: u.id, name: u.name, email: u.email, phone: u.phone, vehicleType: p.vehicleType, createdAt: p.createdAt }] : [];
+      });
+    },
+    async findPendingRiderById(userId) {
+      const p = await prisma.deliveryPartnerProfile.findUnique({ where: { userId } });
+      if (!p || p.approvedAt != null) return null;
+      const u = await prisma.user.findUnique({
+        where: { id: userId }, select: { id: true, name: true, email: true, phone: true, suspendedAt: true },
+      });
+      if (!u || u.suspendedAt != null) return null;
+      return { id: u.id, name: u.name, email: u.email, phone: u.phone, vehicleType: p.vehicleType, createdAt: p.createdAt };
+    },
+    async approveRider(userId, now) {
+      await prisma.deliveryPartnerProfile.update({ where: { userId }, data: { approvedAt: now } });
+    },
   };
 }

@@ -22,6 +22,10 @@ function promoRow(p: { id: string; code: string; discountType: string; discountV
   return { id: p.id, code: p.code, discountType: p.discountType, discountValue: p.discountValue, active: p.active, expiresAt: p.expiresAt ? p.expiresAt.toISOString() : null };
 }
 
+function riderRow(r: { id: string; name: string; email: string; phone: string; vehicleType: string; createdAt: Date }) {
+  return { id: r.id, name: r.name, email: r.email, phone: r.phone, vehicleType: r.vehicleType, createdAt: r.createdAt.toISOString() };
+}
+
 export function createAdminRouter(deps: AdminRouterDeps): Router {
   const router = Router();
   const requireAdmin = createRequireAdmin(deps.jwtSecret, deps.userRepo);
@@ -137,6 +141,24 @@ export function createAdminRouter(deps: AdminRouterDeps): Router {
   router.post("/promos/:id/deactivate", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
     const promo = await deps.adminRepo.deactivatePromo(req.params.id);
     return res.status(200).json({ promo: promoRow(promo) });
+  }));
+
+  router.get("/rider-approvals", ...requireAdmin, asyncHandler(async (_req: AdminRequest, res) => {
+    const riders = await deps.adminRepo.listPendingRiders();
+    return res.status(200).json({ riders: riders.map(riderRow) });
+  }));
+
+  router.get("/rider-approvals/:id", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const rider = await deps.adminRepo.findPendingRiderById(req.params.id);
+    if (!rider) return res.status(404).json({ error: "Rider not found." });
+    return res.status(200).json({ rider: riderRow(rider) });
+  }));
+
+  router.post("/rider-approvals/:id/approve", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const rider = await deps.adminRepo.findPendingRiderById(req.params.id);
+    if (!rider) return res.status(404).json({ error: "Rider not found." });
+    await deps.adminRepo.approveRider(req.params.id, new Date());
+    return res.status(200).json({ ok: true });
   }));
 
   return router;

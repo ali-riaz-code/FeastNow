@@ -17,6 +17,11 @@ export function createFakeAdminRepository(): AdminRepository {
 
   const promos: any[] = [];
 
+  const riders = [
+    { id: "rider1", name: "Rana", email: "rana@x.co", phone: "0300", vehicleType: "motorcycle",
+      createdAt: new Date("2026-07-20"), approvedAt: null as Date | null, suspendedAt: null as Date | null },
+  ];
+
   return {
     async metrics() { return { activeOrders: 2, newSignups24h: 1, pendingApprovals: 1 }; },
     async listPendingApprovals() { return pending as any; },
@@ -35,5 +40,16 @@ export function createFakeAdminRepository(): AdminRepository {
     async findPromoByCode(code) { return (promos.find((p) => p.code === code) as any) ?? null; },
     async createPromo(data) { const p = { id: `p${promos.length + 1}`, active: true, createdAt: new Date(), ...data }; promos.push(p); return p as any; },
     async deactivatePromo(id) { const p = promos.find((x) => x.id === id); p.active = false; return p as any; },
+    async listPendingRiders() {
+      return riders.filter((r) => r.approvedAt == null && r.suspendedAt == null)
+        .map(({ id, name, email, phone, vehicleType, createdAt }) => ({ id, name, email, phone, vehicleType, createdAt }));
+    },
+    async findPendingRiderById(userId) {
+      const r = riders.find((x) => x.id === userId && x.approvedAt == null && x.suspendedAt == null);
+      return r ? { id: r.id, name: r.name, email: r.email, phone: r.phone, vehicleType: r.vehicleType, createdAt: r.createdAt } : null;
+    },
+    async approveRider(userId, now) {
+      const r = riders.find((x) => x.id === userId); if (r) r.approvedAt = now;
+    },
   };
 }
