@@ -84,6 +84,36 @@ describe("moderation", () => {
   });
 });
 
+describe("PATCH /api/admin/approvals/:id/location", () => {
+  it("sets restaurant coordinates", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app)
+      .patch("/api/admin/approvals/r1/location")
+      .set(adminAuth)
+      .send({ lat: 24.86, lng: 67.0 });
+    expect(res.status).toBe(200);
+    expect(res.body.restaurant).toMatchObject({ lat: 24.86, lng: 67.0 });
+  });
+
+  it("rejects non-finite coordinates with 400", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app)
+      .patch("/api/admin/approvals/r1/location")
+      .set(adminAuth)
+      .send({ lat: "x", lng: null });
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 404 for an unknown restaurant", async () => {
+    const { app } = buildAdminApp();
+    const res = await request(app)
+      .patch("/api/admin/approvals/nope/location")
+      .set(adminAuth)
+      .send({ lat: 1, lng: 2 });
+    expect(res.status).toBe(404);
+  });
+});
+
 describe("promotions", () => {
   it("validates, creates, rejects duplicates, deactivates", async () => {
     const { app } = buildAdminApp();

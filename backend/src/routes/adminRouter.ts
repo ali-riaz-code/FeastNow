@@ -58,6 +58,17 @@ export function createAdminRouter(deps: AdminRouterDeps): Router {
     return res.status(200).json({ restaurant: updated });
   }));
 
+  router.patch("/approvals/:id/location", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
+    const { lat, lng } = req.body ?? {};
+    if (typeof lat !== "number" || typeof lng !== "number" || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return res.status(400).json({ error: "lat and lng must be finite numbers." });
+    }
+    const existing = await deps.adminRepo.findRestaurantById(req.params.id);
+    if (!existing) return res.status(404).json({ error: "Restaurant not found." });
+    const updated = await deps.adminRepo.setRestaurantLocation(req.params.id, lat, lng);
+    return res.status(200).json({ restaurant: updated });
+  }));
+
   router.get("/users", ...requireAdmin, asyncHandler(async (req: AdminRequest, res) => {
     const q = typeof req.query.q === "string" && req.query.q.trim() ? req.query.q.trim() : undefined;
     const role = typeof req.query.role === "string" && req.query.role ? req.query.role : undefined;

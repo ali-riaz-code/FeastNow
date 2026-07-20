@@ -23,6 +23,7 @@ export function createFakeAdminRepository(): AdminRepository {
     async findRestaurantById(id) { return (pending.find((r) => r.id === id) as any) ?? null; },
     async approveRestaurant(id, now, note) { const r = pending.find((x) => x.id === id) as any; r.approvalStatus = "approved"; r.approvedAt = now; r.adminNote = note; return r; },
     async rejectRestaurant(id, note) { const r = pending.find((x) => x.id === id) as any; r.approvalStatus = "rejected"; r.adminNote = note; return r; },
+    async setRestaurantLocation(id, lat, lng) { const r = pending.find((x) => x.id === id) as any; r.lat = lat; r.lng = lng; return r; },
     async searchUsers(q, role) { return users.filter((u) => (!role || u.role === role) && (!q || u.name.includes(q))) as any; },
     async findUserById(id) { return (users.find((u) => u.id === id) as any) ?? null; },
     async suspendUser(id, now, reason) { const u = users.find((x) => x.id === id) as any; u.suspendedAt = now; u.suspensionReason = reason; return u; },

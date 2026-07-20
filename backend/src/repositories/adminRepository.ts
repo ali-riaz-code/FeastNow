@@ -17,6 +17,7 @@ export interface AdminRepository {
   findRestaurantById(id: string): Promise<RestaurantProfile | null>;
   approveRestaurant(id: string, now: Date, note: string | null): Promise<RestaurantProfile>;
   rejectRestaurant(id: string, note: string | null): Promise<RestaurantProfile>;
+  setRestaurantLocation(id: string, lat: number, lng: number): Promise<RestaurantProfile>;
   searchUsers(q: string | undefined, role: string | undefined): Promise<AdminUserRow[]>;
   findUserById(id: string): Promise<User | null>;
   suspendUser(id: string, now: Date, reason: string | null): Promise<User>;
@@ -58,6 +59,9 @@ export function createAdminRepository(prisma: PrismaClient): AdminRepository {
       return prisma.restaurantProfile.update({
         where: { id }, data: { approvalStatus: "rejected", adminNote: note },
       });
+    },
+    setRestaurantLocation(id, lat, lng) {
+      return prisma.restaurantProfile.update({ where: { id }, data: { lat, lng } });
     },
     searchUsers(q, role) {
       return prisma.user.findMany({
