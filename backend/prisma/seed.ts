@@ -67,7 +67,7 @@ async function main() {
   });
   await prisma.deliveryPartnerProfile.upsert({
     where: { userId: partnerUser.id },
-    update: {},
+    update: { approvedAt: new Date() },
     create: { userId: partnerUser.id, vehicleType: "motorcycle", availabilityStatus: "offline", approvedAt: new Date() },
   });
   console.log(`Demo partner: rider@demo.feastnow / Demo1234!`);

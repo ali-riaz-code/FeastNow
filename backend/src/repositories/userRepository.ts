@@ -23,7 +23,7 @@ export interface UserRepository {
   create(data: { name: string; email: string; phone: string; passwordHash: string }): Promise<User>;
   /** User (role restaurant) + pending RestaurantProfile in one transaction (FR-2). */
   createRestaurantOwner(data: RestaurantOwnerSignup): Promise<User>;
-  /** User (role delivery_partner) + auto-approved DeliveryPartnerProfile in one transaction (FR-23). */
+  /** User (role delivery_partner) + pending (awaits admin approval) DeliveryPartnerProfile in one transaction (FR-23). */
   createDeliveryPartner(data: DeliveryPartnerSignup): Promise<User>;
 }
 
@@ -74,7 +74,7 @@ export function createUserRepository(prisma: PrismaClient): UserRepository {
       return prisma.$transaction(async (tx) => {
         const created = await tx.user.create({ data: { ...user, role: "delivery_partner" } });
         await tx.deliveryPartnerProfile.create({
-          data: { userId: created.id, vehicleType, availabilityStatus: "offline", approvedAt: new Date() },
+          data: { userId: created.id, vehicleType, availabilityStatus: "offline", approvedAt: null },
         });
         return created;
       });
