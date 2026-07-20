@@ -110,7 +110,7 @@ export interface AdminApprovalRow { id: string; name: string; cuisines: string[]
 export interface AdminRestaurantDetail {
   id: string; name: string; description: string; address: string; cuisines: string[];
   opensAt: string; closesAt: string; approvalStatus: "pending" | "approved" | "rejected";
-  adminNote: string | null; createdAt: string;
+  adminNote: string | null; createdAt: string; lat: number | null; lng: number | null;
 }
 export interface AdminUserRow { id: string; name: string; email: string; phone: string; role: UserRole; suspended: boolean; createdAt: string; }
 export interface AdminReviewRow { id: string; stars: number; reviewText: string; authorName: string; createdAt: string; restaurantId: string; restaurantName: string; }

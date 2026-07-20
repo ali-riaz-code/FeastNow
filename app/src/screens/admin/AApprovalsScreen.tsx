@@ -7,6 +7,8 @@ export function AApprovalsScreen() {
   const [selected, setSelected] = useState<AdminRestaurantDetail | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [latInput, setLatInput] = useState("");
+  const [lngInput, setLngInput] = useState("");
 
   const load = useCallback(async () => {
     setRows(await apiGet<{ approvals: AdminApprovalRow[] }>("/api/admin/approvals").then((r) => r.approvals));
@@ -51,6 +53,31 @@ export function AApprovalsScreen() {
             <p className="admin-detail__line">{selected.cuisines.join(", ")}</p>
             <p className="admin-detail__line">Hours: {selected.opensAt}–{selected.closesAt}</p>
             <p className="admin-detail__desc">{selected.description || "No description provided."}</p>
+            {/* Location */}
+            <div className="admin-detail__loc">
+              {selected.lat == null || selected.lng == null ? (
+                <p className="admin-warn" role="alert">
+                  No location set — deliveries can&rsquo;t be auto-assigned until you set coordinates.
+                </p>
+              ) : (
+                <p className="admin-muted">Location: {selected.lat.toFixed(5)}, {selected.lng.toFixed(5)}</p>
+              )}
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const lat = Number(latInput);
+                  const lng = Number(lngInput);
+                  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+                  const { restaurant } = await apiSend<{ restaurant: AdminRestaurantDetail }>(
+                    "PATCH", `/api/admin/approvals/${selected.id}/location`, { lat, lng });
+                  setSelected(restaurant);
+                }}
+              >
+                <input inputMode="decimal" placeholder="lat" value={latInput} onChange={(e) => setLatInput(e.target.value)} />
+                <input inputMode="decimal" placeholder="lng" value={lngInput} onChange={(e) => setLngInput(e.target.value)} />
+                <button type="submit" className="btn-secondary">Set location</button>
+              </form>
+            </div>
             <label className="admin-field">
               <span>Reason (optional)</span>
               <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note for approve/reject" />
