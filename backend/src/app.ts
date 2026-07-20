@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import type { PrismaClient } from "@prisma/client";
 import { createUserRepository } from "./repositories/userRepository";
+import { geocodeAddress } from "./lib/geocode";
 import { createOtpRepository } from "./repositories/otpRepository";
 import { createRestaurantRepository } from "./repositories/restaurantRepository";
 import { createOrderRepository } from "./repositories/orderRepository";
@@ -43,7 +44,7 @@ export function createApp(config: AppConfig) {
 
   app.get("/health", (_req, res) => res.status(200).json({ ok: true }));
   app.use("/api/auth", createAuthRouter({
-    userRepo, otpRepo, sendOtpEmail: config.sendOtpEmail, jwtSecret: config.jwtSecret,
+    userRepo, otpRepo, sendOtpEmail: config.sendOtpEmail, geocode: geocodeAddress, jwtSecret: config.jwtSecret,
   }));
   app.use("/api/me", createMeRouter({ userRepo, jwtSecret: config.jwtSecret }));
   app.use("/api/customer/orders", createCustomerOrdersRouter({ restaurantRepo, orderRepo, jwtSecret: config.jwtSecret }));

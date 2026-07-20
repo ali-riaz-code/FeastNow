@@ -8,6 +8,7 @@ const DEFAULT_HERO_IMAGE_URL =
 export interface RestaurantOwnerSignup {
   name: string; email: string; phone: string; passwordHash: string;
   businessName: string; businessAddress: string; cuisine: string;
+  lat?: number | null; lng?: number | null;
 }
 
 export interface DeliveryPartnerSignup {
@@ -43,7 +44,7 @@ export function createUserRepository(prisma: PrismaClient): UserRepository {
       return prisma.user.create({ data });
     },
     createRestaurantOwner(data) {
-      const { businessName, businessAddress, cuisine, ...user } = data;
+      const { businessName, businessAddress, cuisine, lat, lng, ...user } = data;
       return prisma.$transaction(async (tx) => {
         const created = await tx.user.create({ data: { ...user, role: "restaurant" } });
         await tx.restaurantProfile.create({
@@ -59,6 +60,8 @@ export function createUserRepository(prisma: PrismaClient): UserRepository {
             heroImageUrl: DEFAULT_HERO_IMAGE_URL,
             approvalStatus: "pending",
             approvedAt: null,
+            lat: lat ?? null,
+            lng: lng ?? null,
             isActive: true,
             isDemo: false,
           },

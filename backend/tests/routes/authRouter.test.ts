@@ -15,19 +15,47 @@ function buildApp(overrides: {
   userRepo?: ReturnType<typeof createFakeUserRepository>;
   otpRepo?: ReturnType<typeof createFakeOtpRepository>;
   sendOtpEmail?: (to: string, otp: string) => Promise<void>;
+  geocode?: (address: string) => Promise<{ lat: number; lng: number } | null>;
 } = {}) {
   const userRepo = overrides.userRepo ?? createFakeUserRepository();
   const otpRepo = overrides.otpRepo ?? createFakeOtpRepository();
   const sendOtpEmail = overrides.sendOtpEmail ?? vi.fn().mockResolvedValue(undefined);
+  const geocode = overrides.geocode ?? vi.fn().mockResolvedValue({ lat: 1, lng: 2 });
 
   const app = express();
   app.use(express.json());
-  app.use("/api/auth", createAuthRouter({ userRepo, otpRepo, sendOtpEmail, jwtSecret: JWT_SECRET }));
+  app.use("/api/auth", createAuthRouter({ userRepo, otpRepo, sendOtpEmail, geocode, jwtSecret: JWT_SECRET }));
   // Mirrors the terminal error middleware registered in createApp (app.ts),
   // so these tests can exercise the asyncHandler + error-handler safety net
   // without needing a real Prisma-backed createApp.
   app.use(errorHandler);
-  return { app, userRepo, otpRepo, sendOtpEmail };
+  return { app, userRepo, otpRepo, sendOtpEmail, geocode };
+}
+
+/**
+ * Seeds a verified-and-active OTP challenge for `email` (code "123456") and
+ * builds an app wired to it, optionally overriding other buildApp deps
+ * (e.g. `geocode`). Mirrors the OTP arrangement used throughout the
+ * "POST /api/auth/signup/verify-otp" suite below.
+ */
+async function buildAppWithChallenge(overrides: {
+  email: string;
+  userRepo?: ReturnType<typeof createFakeUserRepository>;
+  sendOtpEmail?: (to: string, otp: string) => Promise<void>;
+  geocode?: (address: string) => Promise<{ lat: number; lng: number } | null>;
+}) {
+  const otpRepo = createFakeOtpRepository();
+  await otpRepo.create({
+    email: overrides.email,
+    otpHash: await hashOtp("123456"),
+    expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+  });
+  return buildApp({
+    otpRepo,
+    userRepo: overrides.userRepo,
+    sendOtpEmail: overrides.sendOtpEmail,
+    geocode: overrides.geocode,
+  });
 }
 
 describe("POST /api/auth/signup/request-otp", () => {
@@ -319,6 +347,33 @@ describe("POST /api/auth/signup/verify-otp", () => {
     });
 
     expect(res.status).toBe(400);
+  });
+});
+
+describe("restaurant signup geocoding", () => {
+  it("geocodes the business address and persists lat/lng", async () => {
+    const geocode = vi.fn().mockResolvedValue({ lat: 24.86, lng: 67.0 });
+    const { app, userRepo } = await buildAppWithChallenge({ email: "owner@x.co", geocode });
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      email: "owner@x.co", otp: "123456", name: "Owner", phone: "03330000123",
+      password: "Passw0rd!", role: "restaurant",
+      businessName: "Nonna's", businessAddress: "12 Demo Lane, Karachi", cuisine: "Italian",
+    });
+    expect(res.status).toBe(200);
+    expect(geocode).toHaveBeenCalledWith("12 Demo Lane, Karachi");
+    expect(userRepo.lastRestaurantOwner).toMatchObject({ lat: 24.86, lng: 67.0 });
+  });
+
+  it("still creates the restaurant when geocoding returns null", async () => {
+    const geocode = vi.fn().mockResolvedValue(null);
+    const { app, userRepo } = await buildAppWithChallenge({ email: "owner2@x.co", geocode });
+    const res = await request(app).post("/api/auth/signup/verify-otp").send({
+      email: "owner2@x.co", otp: "123456", name: "Owner", phone: "03330000124",
+      password: "Passw0rd!", role: "restaurant",
+      businessName: "Trattoria", businessAddress: "Unknown place", cuisine: "Italian",
+    });
+    expect(res.status).toBe(200);
+    expect(userRepo.lastRestaurantOwner).toMatchObject({ lat: null, lng: null });
   });
 });
 

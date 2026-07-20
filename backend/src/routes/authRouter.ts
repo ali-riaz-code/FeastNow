@@ -1,6 +1,7 @@
 import { Router } from "express";
 import type { UserRepository } from "../repositories/userRepository";
 import type { OtpRepository } from "../repositories/otpRepository";
+import type { GeocodeFn } from "../lib/geocode";
 import { generateOtp, hashOtp, compareOtp } from "../lib/otp";
 import { hashPassword, comparePassword } from "../lib/password";
 import { signToken } from "../lib/jwt";
@@ -20,6 +21,7 @@ export interface AuthRouterDeps {
   userRepo: UserRepository;
   otpRepo: OtpRepository;
   sendOtpEmail: (to: string, otp: string) => Promise<void>;
+  geocode: GeocodeFn;
   jwtSecret: string;
 }
 
@@ -113,12 +115,14 @@ export function createAuthRouter(deps: AuthRouterDeps): Router {
     }
 
     const passwordHash = await hashPassword(password);
+    const coords = isRestaurant ? await deps.geocode(businessAddress.trim()) : null;
     let user;
     try {
       user = isRestaurant
         ? await deps.userRepo.createRestaurantOwner({
             name, email, phone, passwordHash,
             businessName: businessName.trim(), businessAddress: businessAddress.trim(), cuisine: cuisine.trim(),
+            lat: coords?.lat ?? null, lng: coords?.lng ?? null,
           })
         : isPartner
         ? await deps.userRepo.createDeliveryPartner({ name, email, phone, passwordHash, vehicleType })
