@@ -8,6 +8,9 @@ import { SectionRow } from "../components/SectionRow";
 import { SkeletonCard } from "../components/SkeletonCard";
 import { SearchBar } from "../components/SearchBar";
 import { usePullToRefresh } from "../hooks/usePullToRefresh";
+import { Screen } from "../components/Screen";
+import { AppHeader } from "../components/AppHeader";
+import { Reveal, RevealItem } from "../components/Reveal";
 
 const SORT_LABELS: Record<RestaurantSort, string> = {
   popular: "Most popular", rating: "Top rated", delivery_time: "Fastest delivery",
@@ -130,14 +133,18 @@ export function HomeScreen() {
   const cuisines = feed.status === "ready" ? feed.home.cuisines : [];
 
   return (
-    <main className="screen home" ref={mainRef}>
-      <header className="home__header">
-        <button className="location-pill" type="button" aria-label="Delivery address (demo)">
-          <span className="location-pill__label">Deliver to</span>
-          <span className="location-pill__value">· Demo Address</span>
-        </button>
+    <Screen className="home" ref={mainRef}>
+      <AppHeader
+        sticky
+        leading={
+          <button className="location-pill" type="button" aria-label="Delivery address (demo)">
+            <span className="location-pill__label">Deliver to</span>
+            <span className="location-pill__value">· Demo Address</span>
+          </button>
+        }
+      >
         <SearchBar readOnly onTap={() => navigate("/search")} />
-      </header>
+      </AppHeader>
 
       {refreshing && <p className="home__refreshing mono" role="status">Refreshing…</p>}
 
@@ -186,10 +193,14 @@ export function HomeScreen() {
               </div>
             ) : (
               <>
-                <div className="grid">
-                  {gridItems.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
+                <Reveal className="grid">
+                  {gridItems.map((r) => (
+                    <RevealItem key={r.id}>
+                      <RestaurantCardView restaurant={r} />
+                    </RevealItem>
+                  ))}
                   {gridLoading && Array.from({ length: 4 }, (_, i) => <SkeletonCard key={`s${i}`} />)}
-                </div>
+                </Reveal>
                 {loadMoreError && (
                   <div className="home__error">
                     <p>Couldn't load more restaurants.</p>
@@ -203,6 +214,6 @@ export function HomeScreen() {
           </section>
         </>
       )}
-    </main>
+    </Screen>
   );
 }
