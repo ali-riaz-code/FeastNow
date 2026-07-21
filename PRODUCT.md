@@ -29,7 +29,7 @@ The product exists to connect hungry customers with nearby restaurants and route
 
 ## Brand Personality
 
-**Appetizing, warm, hand-made.** The Customer experience should feel like a warm neighborhood trattoria — inviting, a little indulgent, food-forward — while the Restaurant and Delivery shells channel that same warmth into speed and calm during pressure. The visual identity is **rustic-premium Italian** (per `pizza-amici.nl`): a layered cream canvas hosts deep-navy structure, brass-gold accents, and Italian-tricolore status pops, with serif display, clean sans body, and monospace numerics. Warm and characterful, never cold-tech, never corporate, never a generic white-plus-one-accent app. The four shells must feel like one product: same color, type, motion, and component language, differing only in the tasks they surface (Customer most expressive, operators most legible).
+**Appetizing, warm, hand-made.** The Customer experience should feel like a warm neighborhood trattoria — inviting, a little indulgent, food-forward — while the Restaurant and Delivery shells channel that same warmth into speed and calm during pressure. The visual identity is **rustic-premium Italian** (per `pizza-amici.nl`): a layered cream canvas hosts deep-navy structure, brass-gold accents, and Italian-tricolore status pops, with serif display, clean sans body, and monospace numerics. Warm and characterful, never cold-tech, never corporate, never a generic white-plus-one-accent app. The four shells must feel like one product: same color, type, motion, and component language, differing only in the density of the tasks they surface — the same expressive language everywhere, tuned by how much each shell must pack in.
 
 ## Anti-references
 
@@ -42,7 +42,7 @@ The product exists to connect hungry customers with nearby restaurants and route
 ## Design Principles
 
 - **One product, four shells.** A single shared design system (color, type, components, motion) makes Customer, Restaurant, Delivery, and Admin feel like one brand. Fork presentation per role, never the visual language and never the business logic (shared API layer, single order state machine).
-- **Appetite first for the customer, clarity first for the operators.** The Customer shell earns extra polish and food-forward warmth; the Restaurant and Delivery shells spend that same brand equity on legibility, big targets, and the fewest taps to move an order.
+- **One expressive language, tuned by density.** All four shells share the full brand language — awning headers, serif display, gold accents, and motion — rather than reserving polish for Customer. Shells differ by *density*, not vocabulary: operator screens pack more per view and lean on that same warmth to stay legible, with big targets and the fewest taps to move an order.
 - **Status you can trust.** The order lifecycle is the spine of the product. Every state must be unambiguous at a glance — communicated by color *and* icon *and* label — and consistent across all three roles watching the same order.
 - **Works on the worst phone in the room.** Design for low-to-mid-range Android, outdoor glare, and one-handed use: large touch targets, high-contrast type, and cheap, purposeful motion that respects reduced-motion.
 - **Honest and plain.** Cash-only, no hidden fees, plain-language copy. The interface should never overpromise (no payment UI, no features out of scope) or dress up a simple marketplace as something it isn't.
