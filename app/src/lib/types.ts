@@ -113,6 +113,7 @@ export interface AdminRestaurantDetail {
   adminNote: string | null; createdAt: string; lat: number | null; lng: number | null;
 }
 export interface AdminUserRow { id: string; name: string; email: string; phone: string; role: UserRole; suspended: boolean; createdAt: string; }
+export interface AdminRiderRow { id: string; name: string; email: string; phone: string; vehicleType: string; createdAt: string; }
 export interface AdminReviewRow { id: string; stars: number; reviewText: string; authorName: string; createdAt: string; restaurantId: string; restaurantName: string; }
 export type DiscountType = "percentage" | "fixed";
 export interface AdminPromo { id: string; code: string; discountType: DiscountType; discountValue: number; active: boolean; expiresAt: string | null; }
