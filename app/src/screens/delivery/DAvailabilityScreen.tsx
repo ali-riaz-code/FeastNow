@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { m } from "motion/react";
 import { usePartner } from "../../PartnerContext";
 import { usePolling } from "../../hooks/usePolling";
 import { apiGet, apiSend, ApiError } from "../../lib/api";
 import { getPosition, LOCATION_PING_MS } from "../../lib/geolocation";
 import type { ActiveDeliveryDTO, PartnerProfile } from "../../lib/types";
+import { Screen } from "../../components/Screen";
+import { AppHeader } from "../../components/AppHeader";
 
 export function DAvailabilityScreen() {
   const { profile, setProfile } = usePartner();
@@ -72,41 +75,48 @@ export function DAvailabilityScreen() {
     void (online ? goOffline() : goOnline());
   };
 
+  const pulsing = online && !hasActive;
   return (
-    <section className="dscreen davail">
-      <header className="davail__head">
-        <h1 className="dscreen__title serif">You're {online ? "online" : "offline"}</h1>
-        <p className="davail__sub">
-          {online
-            ? hasActive ? "You have an active delivery in progress." : "Waiting for a delivery offer nearby…"
-            : "Go online to start receiving delivery offers."}
-        </p>
-      </header>
+    <Screen className="davail-screen">
+      <AppHeader title="Availability" />
+      <section className="davail">
+        <header className="davail__head">
+          <h1 className="dscreen__title serif">You're {online ? "online" : "offline"}</h1>
+          <p className="davail__sub">
+            {online
+              ? hasActive ? "You have an active delivery in progress." : "Waiting for a delivery offer nearby…"
+              : "Go online to start receiving delivery offers."}
+          </p>
+        </header>
 
-      <div className={`davail__orb${online ? " davail__orb--on" : ""}${online && !hasActive ? " davail__orb--pulse" : ""}`} aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" strokeWidth="1.6">
-          <path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" />
-        </svg>
-      </div>
+        <div className={`davail__orb${online ? " davail__orb--on" : ""}${pulsing ? " davail__orb--pulse" : ""}`} aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" strokeWidth="1.6">
+            <path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" />
+          </svg>
+        </div>
 
-      <button
-        type="button"
-        className={`dtoggle${online ? " dtoggle--on" : ""}`}
-        role="switch" aria-checked={online}
-        disabled={busy || hasActive}
-        onClick={toggle}
-      >
-        <span className="dtoggle__knob" aria-hidden="true" />
-        {busy ? "…" : online ? "Go offline" : "Go online"}
-      </button>
+        <span className={`dtoggle-wrap${pulsing ? " pulse-ring" : ""}`} style={pulsing ? { color: "var(--basil)" } : undefined}>
+          <m.button
+            type="button"
+            className={`dtoggle dtoggle--lg${online ? " dtoggle--on" : ""}`}
+            role="switch" aria-checked={online}
+            whileTap={{ scale: 0.96 }}
+            disabled={busy || hasActive}
+            onClick={toggle}
+          >
+            <span className="dtoggle__knob" aria-hidden="true" />
+            {busy ? "…" : online ? "Go offline" : "Go online"}
+          </m.button>
+        </span>
 
-      {hasActive ? (
-        <p className="davail__locked" role="status">
-          You're locked online during a delivery. <Link to="/">Open your active delivery →</Link>
-        </p>
-      ) : null}
+        {hasActive ? (
+          <p className="davail__locked" role="status">
+            You're locked online during a delivery. <Link to="/">Open your active delivery →</Link>
+          </p>
+        ) : null}
 
-      {error ? <p className="davail__error" role="alert">{error}</p> : null}
-    </section>
+        {error ? <p className="davail__error" role="alert">{error}</p> : null}
+      </section>
+    </Screen>
   );
 }
