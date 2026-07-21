@@ -5,6 +5,8 @@ import { formatClock, formatOrderNumber, formatPrice } from "../lib/format";
 import type { OrderDTO } from "../lib/types";
 import { usePolling } from "../hooks/usePolling";
 import { StatusTimeline } from "../components/OrderStatus";
+import { Screen } from "../components/Screen";
+import { AppHeader } from "../components/AppHeader";
 
 const POLL_MS = 5000;
 
@@ -41,22 +43,39 @@ export function OrderDetailScreen() {
 
   if (missing) {
     return (
-      <main className="screen restaurant--message">
+      <Screen className="restaurant--message">
         <p>This order doesn't exist.</p>
         <button className="btn-retry" onClick={() => navigate("/orders")}>Back to orders</button>
-      </main>
+      </Screen>
     );
   }
   if (!order) {
-    return <main className="screen orders"><div className="restaurant__hero-skeleton" role="status" aria-label="Loading" /></main>;
+    return (
+      <Screen className="orders">
+        <AppHeader
+          title="Order"
+          leading={
+            <button className="restaurant__back" aria-label="Go back" onClick={() => navigate(-1)}>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+          }
+        />
+        <div className="restaurant__hero-skeleton" role="status" aria-label="Loading" />
+      </Screen>
+    );
   }
 
   return (
-    <main className="screen order-detail">
+    <Screen className="order-detail">
+      <AppHeader
+        title="Order"
+        leading={
+          <button className="restaurant__back" aria-label="Go back" onClick={() => navigate(-1)}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+          </button>
+        }
+      />
       <header className="order-detail__head">
-        <button className="restaurant__back" aria-label="Go back" onClick={() => navigate(-1)}>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-        </button>
         <h1 className="serif">{order.restaurantName}</h1>
         <p className="mono">{formatOrderNumber(order.orderNumber)} · placed {formatClock(order.placedAt)}</p>
       </header>
@@ -86,6 +105,6 @@ export function OrderDetailScreen() {
           {cancelling ? "Cancelling…" : "Cancel order"}
         </button>
       )}
-    </main>
+    </Screen>
   );
 }

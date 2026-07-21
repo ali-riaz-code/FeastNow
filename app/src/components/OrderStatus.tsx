@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { m } from "motion/react";
 import type { OrderDTO, OrderStatus } from "../lib/types";
 
 const icon = (path: ReactElement) => (
@@ -52,25 +53,43 @@ export function StatusTimeline({ order }: { order: OrderDTO }) {
     );
   }
   const currentIdx = TIMELINE_STEPS.findIndex((s) => !STEP_TIME[s](order));
+  // Reuse the same index the component already computes above (no new status ordering/logic).
+  const progress = currentIdx === -1 ? 1 : currentIdx / (TIMELINE_STEPS.length - 1);
   return (
-    <ol className="timeline" aria-label="Order progress">
-      {TIMELINE_STEPS.map((step, i) => {
-        const done = STEP_TIME[step](order) !== null;
-        const current = i === (currentIdx === -1 ? TIMELINE_STEPS.length - 1 : currentIdx);
-        return (
-          <li key={step}
-            className={`timeline__step${done ? " timeline__step--done" : ""}${current && !done ? " timeline__step--current" : ""}`}>
-            {STATUS_META[step].icon}
-            <span>{STATUS_META[step].label}</span>
-          </li>
-        );
-      })}
-      {order.status === "ready" && !order.deliveryPartnerName && (
-        <li className="timeline__note">Finding a rider…</li>
-      )}
-      {order.deliveryPartnerName && order.status !== "delivered" && (
-        <li className="timeline__note">Your rider: {order.deliveryPartnerName}</li>
-      )}
-    </ol>
+    <>
+      <div className="ostatus__track">
+        <m.span
+          className="ostatus__fill"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: progress }}
+          style={{ transformOrigin: "left" }}
+        />
+      </div>
+      <ol className="timeline" aria-label="Order progress">
+        {TIMELINE_STEPS.map((step, i) => {
+          const done = STEP_TIME[step](order) !== null;
+          const current = i === (currentIdx === -1 ? TIMELINE_STEPS.length - 1 : currentIdx);
+          const isActive = current && !done;
+          return (
+            <li key={step}
+              className={`timeline__step${done ? " timeline__step--done" : ""}${isActive ? " timeline__step--current" : ""}`}>
+              <span
+                className={`timeline__icon${isActive ? " pulse-ring" : ""}`}
+                style={isActive ? { color: "var(--gold)" } : undefined}
+              >
+                {STATUS_META[step].icon}
+              </span>
+              <span>{STATUS_META[step].label}</span>
+            </li>
+          );
+        })}
+        {order.status === "ready" && !order.deliveryPartnerName && (
+          <li className="timeline__note">Finding a rider…</li>
+        )}
+        {order.deliveryPartnerName && order.status !== "delivered" && (
+          <li className="timeline__note">Your rider: {order.deliveryPartnerName}</li>
+        )}
+      </ol>
+    </>
   );
 }

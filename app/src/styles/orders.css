@@ -82,9 +82,13 @@
 .timeline__step { display: inline-flex; align-items: center; gap: var(--s-xs); font-size: 0.8125rem; color: var(--beige); }
 .timeline__step--done { color: var(--basil-deep); }
 .timeline__step--current { color: var(--gold-deep); font-weight: 600; }
+.timeline__icon { position: relative; display: inline-flex; }
 .timeline__note { flex-basis: 100%; color: var(--muted); font-size: 0.8125rem; list-style: none; }
 .timeline--closed { display: flex; flex-direction: column; gap: var(--s-xs); }
 .timeline__reason { margin: 0; color: var(--muted); font-size: 0.875rem; }
+
+.ostatus__track { position: relative; height: 3px; width: 100%; background: var(--beige); border-radius: 2px; overflow: hidden; margin-bottom: var(--s-xs); }
+.ostatus__fill { display: block; height: 3px; background: var(--gold); border-radius: 2px; width: 100%; }
 
 .order-detail { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md); }
 .order-detail__head h1 { margin: var(--s-sm) 0 0; }
