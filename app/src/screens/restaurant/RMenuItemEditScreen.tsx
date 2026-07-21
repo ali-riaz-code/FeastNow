@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import type { OwnerMenuItem } from "../../lib/types";
+import { Screen } from "../../components/Screen";
 
 export function RMenuItemEditScreen() {
   const { id } = useParams<{ id: string }>();
@@ -62,11 +64,11 @@ export function RMenuItemEditScreen() {
   };
 
   if (!loaded && !error) {
-    return <main className="screen rqueue"><div className="restaurant__hero-skeleton" role="status" aria-label="Loading" /></main>;
+    return <Screen className="rqueue"><div className="restaurant__hero-skeleton" role="status" aria-label="Loading" /></Screen>;
   }
 
   return (
-    <main className="screen rform">
+    <Screen className="rform">
       <h1>{isNew ? "Add item" : "Edit item"}</h1>
       <label className="rform__field">
         <span>Name</span>
@@ -95,9 +97,9 @@ export function RMenuItemEditScreen() {
       {error && <p className="cart__error" role="alert">{error}</p>}
       <div className="rform__actions">
         {!isNew && <button type="button" className="btn-danger" disabled={busy} onClick={() => void remove()}>Delete</button>}
-        <button type="button" className="btn-primary" disabled={busy} onClick={() => void save()}>{busy ? "Saving…" : "Save"}</button>
+        <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={busy} onClick={() => void save()}>{busy ? "Saving…" : "Save"}</m.button>
       </div>
       <button type="button" className="rsheet__cancel" onClick={() => navigate("/menu")}>Back to menu</button>
-    </main>
+    </Screen>
   );
 }

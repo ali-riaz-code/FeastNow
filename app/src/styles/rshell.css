@@ -6,6 +6,7 @@
 .pending { display: grid; place-items: center; align-content: center; gap: var(--s-md); min-height: 80dvh; text-align: center; padding: var(--s-lg); }
 .pending h1 { font-size: 1.5rem; margin: 0; }
 .pending p { color: var(--muted); max-width: 34ch; margin: 0; }
+.pending__waiting { display: grid; place-items: center; gap: var(--s-md); }
 .pending__spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--beige); border-top-color: var(--gold); animation: rspin 900ms linear infinite; }
 @keyframes rspin { to { transform: rotate(1turn); } }
 @media (prefers-reduced-motion: reduce) { .pending__spinner { animation: none; border-top-color: var(--beige); } }

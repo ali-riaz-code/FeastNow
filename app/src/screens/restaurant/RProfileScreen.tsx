@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { clearToken } from "../../lib/session";
 import { formatRating } from "../../lib/format";
 import type { OwnerProfile, OwnerReview } from "../../lib/types";
 import { useOwner } from "../../OwnerContext";
+import { Screen } from "../../components/Screen";
+import { Reveal, RevealItem } from "../../components/Reveal";
 
 export function RProfileScreen() {
   const { profile, setProfile } = useOwner();
@@ -56,7 +59,7 @@ export function RProfileScreen() {
   const maxCount = Math.max(1, ...starCounts.map((c) => c.n));
 
   return (
-    <main className="screen rform rprofile">
+    <Screen className="rform rprofile">
       <h1>Business info</h1>
       <label className="rform__field"><span>Business name</span>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
@@ -74,9 +77,9 @@ export function RProfileScreen() {
       </div>
       {error && <p className="cart__error" role="alert">{error}</p>}
       {saved && <p className="rprofile__saved" role="status">Saved.</p>}
-      <button type="button" className="btn-primary" disabled={saving} onClick={() => void save()}>
+      <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={saving} onClick={() => void save()}>
         {saving ? "Saving…" : "Save changes"}
-      </button>
+      </m.button>
 
       <h1>Ratings &amp; reviews</h1>
       <p className="rprofile__avg">
@@ -91,15 +94,19 @@ export function RProfileScreen() {
           </div>
         ))}
       </div>
-      {reviews.slice(0, 5).map((r) => (
-        <article key={r.id} className="rprofile__review">
-          <p className="rprofile__review-head"><span className="mono">{r.stars}★</span> {r.authorName}</p>
-          <p>{r.reviewText}</p>
-        </article>
-      ))}
+      <Reveal>
+        {reviews.slice(0, 5).map((r) => (
+          <RevealItem key={r.id}>
+            <article className="rprofile__review">
+              <p className="rprofile__review-head"><span className="mono">{r.stars}★</span> {r.authorName}</p>
+              <p>{r.reviewText}</p>
+            </article>
+          </RevealItem>
+        ))}
+      </Reveal>
       {reviews.length === 0 && <p className="rsearch__hint">Reviews from customers will appear here.</p>}
 
       <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
-    </main>
+    </Screen>
   );
 }

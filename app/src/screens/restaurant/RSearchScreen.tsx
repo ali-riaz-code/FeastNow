@@ -4,6 +4,8 @@ import { apiGet } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { OrderDTO, OrdersListResponse, OwnerMenuItem } from "../../lib/types";
 import { StatusBadge } from "../../components/OrderStatus";
+import { Screen } from "../../components/Screen";
+import { Reveal, RevealItem } from "../../components/Reveal";
 
 const RECENT_KEY = "feastnow_rsearch_recent";
 const RECENT_MAX = 8;
@@ -53,7 +55,7 @@ export function RSearchScreen() {
     : [];
 
   return (
-    <main className="screen rsearch">
+    <Screen className="rsearch">
       <input className="rmenu__search" type="search" value={q} autoFocus
         placeholder="Order # or customer name" aria-label="Search orders and menu"
         onChange={(e) => setQ(e.target.value)} />
@@ -80,30 +82,38 @@ export function RSearchScreen() {
             <h2>Orders</h2>
             {orders === null && <p className="rsearch__hint">Searching…</p>}
             {orders !== null && orders.length === 0 && <p className="rsearch__hint">No orders match “{q}”.</p>}
-            {orders?.map((o) => (
-              <Link key={o.id} to={`/orders/${o.id}`} className="rorder-card rsearch__hit">
-                <span className="mono">{formatOrderNumber(o.orderNumber)}</span>
-                <span>{o.customerName}</span>
-                <StatusBadge status={o.status} />
-                <span className="mono">{formatPrice(o.totalCents)}</span>
-              </Link>
-            ))}
+            <Reveal>
+              {orders?.map((o) => (
+                <RevealItem key={o.id}>
+                  <Link to={`/orders/${o.id}`} className="rorder-card rsearch__hit">
+                    <span className="mono">{formatOrderNumber(o.orderNumber)}</span>
+                    <span>{o.customerName}</span>
+                    <StatusBadge status={o.status} />
+                    <span className="mono">{formatPrice(o.totalCents)}</span>
+                  </Link>
+                </RevealItem>
+              ))}
+            </Reveal>
           </section>
           <section aria-label="Matching menu items">
             <h2>Menu items</h2>
             {menuHits.length === 0 && <p className="rsearch__hint">No menu items match “{q}”.</p>}
-            {menuHits.map((m) => (
-              <Link key={m.id} to={`/menu/${m.id}`} className="rorder-card rsearch__hit">
-                <span>{m.name}</span>
-                <span className="mono">{formatPrice(m.priceCents)}</span>
-                <span className={m.isAvailable ? "status status--basil" : "status status--tomato"}>
-                  {m.isAvailable ? "Available" : "Sold out"}
-                </span>
-              </Link>
-            ))}
+            <Reveal>
+              {menuHits.map((m) => (
+                <RevealItem key={m.id}>
+                  <Link to={`/menu/${m.id}`} className="rorder-card rsearch__hit">
+                    <span>{m.name}</span>
+                    <span className="mono">{formatPrice(m.priceCents)}</span>
+                    <span className={m.isAvailable ? "status status--basil" : "status status--tomato"}>
+                      {m.isAvailable ? "Available" : "Sold out"}
+                    </span>
+                  </Link>
+                </RevealItem>
+              ))}
+            </Reveal>
           </section>
         </>
       )}
-    </main>
+    </Screen>
   );
 }
