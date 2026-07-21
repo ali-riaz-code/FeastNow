@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
-import { m } from "motion/react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { m, AnimatePresence } from "motion/react";
 import { OwnerProvider, useOwner } from "../OwnerContext";
 import { apiSend } from "../lib/api";
 import type { OwnerProfile } from "../lib/types";
@@ -93,21 +93,24 @@ function OfflineBanner() {
 }
 
 function RestaurantRoutes() {
+  const location = useLocation();
   return (
     <>
       <RTopBar />
       <OfflineBanner />
       <NewOrderWatcher />
-      <Routes>
-        <Route path="/" element={<ROrdersScreen />} />
-        <Route path="/orders/:id" element={<ROrderDetailScreen />} />
-        <Route path="/menu" element={<RMenuScreen />} />
-        <Route path="/menu/new" element={<RMenuItemEditScreen />} />
-        <Route path="/menu/:id" element={<RMenuItemEditScreen />} />
-        <Route path="/search" element={<RSearchScreen />} />
-        <Route path="/profile" element={<RProfileScreen />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<ROrdersScreen />} />
+          <Route path="/orders/:id" element={<ROrderDetailScreen />} />
+          <Route path="/menu" element={<RMenuScreen />} />
+          <Route path="/menu/new" element={<RMenuItemEditScreen />} />
+          <Route path="/menu/:id" element={<RMenuItemEditScreen />} />
+          <Route path="/search" element={<RSearchScreen />} />
+          <Route path="/profile" element={<RProfileScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
       <TabBar tabs={RESTAURANT_TABS} />
     </>
   );
