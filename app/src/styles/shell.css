@@ -46,7 +46,7 @@
 .orders-empty h1 { margin: var(--s-sm) 0 0; color: var(--navy); }
 .orders-empty p { margin: 0 0 var(--s-md); color: var(--brown); }
 
-.profile { display: flex; flex-direction: column; align-items: center; padding-top: var(--s-xl); }
+.profile { display: flex; flex-direction: column; align-items: center; }
 .profile__avatar {
   width: 72px; height: 72px; border-radius: 50%;
   background: var(--navy); color: var(--cream);
