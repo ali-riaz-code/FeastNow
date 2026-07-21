@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
+import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { SearchBar } from "../../components/SearchBar";
 import { Chip } from "../../components/Chip";
+import { staggerParent, staggerChild } from "../../lib/motion";
 import type { AdminUserRow, UserRole } from "../../lib/types";
 
 const ROLES: { key: "" | UserRole; label: string }[] = [
@@ -41,9 +43,9 @@ export function AUsersScreen() {
       <div className="admin-chips">
         {ROLES.map((r) => <Chip key={r.key} label={r.label} selected={role === r.key} onClick={() => setRole(r.key)} />)}
       </div>
-      <ul className="admin-list admin-list--wide">
+      <m.ul className="admin-list admin-list--wide" variants={staggerParent} initial="hidden" animate="show">
         {users.map((u) => (
-          <li key={u.id} className="admin-card admin-userrow">
+          <m.li key={u.id} className="admin-card admin-userrow" variants={staggerChild}>
             <div>
               <span className="admin-row__title">{u.name}</span>
               <span className="admin-row__sub">{u.role} · {u.email} · joined {new Date(u.createdAt).toLocaleDateString()}</span>
@@ -51,14 +53,14 @@ export function AUsersScreen() {
             <div className="admin-userrow__right">
               <span className={`admin-pill ${u.suspended ? "admin-pill--bad" : "admin-pill--ok"}`}>{u.suspended ? "Suspended" : "Active"}</span>
               {u.role !== "admin" && (
-                <button className={u.suspended ? "btn-primary" : "btn-danger"} disabled={busyId === u.id} onClick={() => void toggle(u)}>
+                <m.button whileTap={{ scale: 0.99 }} className={u.suspended ? "btn-primary" : "btn-danger"} disabled={busyId === u.id} onClick={() => void toggle(u)}>
                   {u.suspended ? "Reinstate" : "Suspend"}
-                </button>
+                </m.button>
               )}
             </div>
-          </li>
+          </m.li>
         ))}
-      </ul>
+      </m.ul>
       {users.length === 0 && <p className="admin-muted">No matching accounts.</p>}
     </div>
   );

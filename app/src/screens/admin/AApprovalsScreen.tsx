@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
+import { staggerParent, staggerChild, revealUp } from "../../lib/motion";
 import type { AdminApprovalRow, AdminRestaurantDetail, AdminRiderRow } from "../../lib/types";
 
 export function AApprovalsScreen() {
@@ -60,7 +62,9 @@ export function AApprovalsScreen() {
           className={`admin-tab${tab === "restaurants" ? " admin-tab--active" : ""}`}
           onClick={() => setTab("restaurants")}
         >
-          Restaurants
+          {tab === "restaurants" && <m.span className="admin-tab__bar" layoutId="adminTab"
+            transition={{ type: "spring", stiffness: 520, damping: 38 }} aria-hidden="true" />}
+          <span className="admin-tab__label">Restaurants</span>
         </button>
         <button
           role="tab"
@@ -68,25 +72,27 @@ export function AApprovalsScreen() {
           className={`admin-tab${tab === "riders" ? " admin-tab--active" : ""}`}
           onClick={() => setTab("riders")}
         >
-          Riders
+          {tab === "riders" && <m.span className="admin-tab__bar" layoutId="adminTab"
+            transition={{ type: "spring", stiffness: 520, damping: 38 }} aria-hidden="true" />}
+          <span className="admin-tab__label">Riders</span>
         </button>
       </div>
       {tab === "restaurants" ? (
         <>
           {rows.length === 0 && <p className="admin-muted">No restaurants awaiting review.</p>}
           <div className="admin-split">
-            <ul className="admin-list">
+            <m.ul className="admin-list" variants={staggerParent} initial="hidden" animate="show">
               {rows.map((r) => (
-                <li key={r.id}>
-                  <button className={`admin-row${selected?.id === r.id ? " admin-row--active" : ""}`} onClick={() => void open(r.id)}>
+                <m.li key={r.id} variants={staggerChild}>
+                  <m.button whileTap={{ scale: 0.99 }} className={`admin-row${selected?.id === r.id ? " admin-row--active" : ""}`} onClick={() => void open(r.id)}>
                     <span className="admin-row__title">{r.name}</span>
                     <span className="admin-row__sub">{r.cuisines.join(", ")} · {r.address}</span>
-                  </button>
-                </li>
+                  </m.button>
+                </m.li>
               ))}
-            </ul>
+            </m.ul>
             {selected && (
-              <div className="admin-card admin-detail">
+              <m.div className="admin-card admin-detail" key={selected.id} variants={revealUp} initial="hidden" animate="show">
                 <h2 className="admin-detail__name serif">{selected.name}</h2>
                 <p className="admin-detail__line">{selected.address}</p>
                 <p className="admin-detail__line">{selected.cuisines.join(", ")}</p>
@@ -112,10 +118,10 @@ export function AApprovalsScreen() {
                   <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Note for approve/reject" />
                 </label>
                 <div className="admin-actions">
-                  <button className="btn-primary" disabled={busy} onClick={() => void decide("approve")}>Approve</button>
-                  <button className="btn-danger" disabled={busy} onClick={() => void decide("reject")}>Reject</button>
+                  <m.button whileTap={{ scale: 0.99 }} className="btn-primary" disabled={busy} onClick={() => void decide("approve")}>Approve</m.button>
+                  <m.button whileTap={{ scale: 0.99 }} className="btn-danger" disabled={busy} onClick={() => void decide("reject")}>Reject</m.button>
                 </div>
-              </div>
+              </m.div>
             )}
           </div>
         </>
@@ -147,19 +153,19 @@ function RidersPanel() {
   return (
     <div className="admin-screen">
       {riders.length === 0 && <p className="admin-muted">No riders awaiting approval.</p>}
-      <ul className="admin-list">
+      <m.ul className="admin-list" variants={staggerParent} initial="hidden" animate="show">
         {riders.map((r) => (
-          <li key={r.id} className="admin-row">
+          <m.li key={r.id} className="admin-row" variants={staggerChild}>
             <div>
               <div className="admin-row__title">{r.name} · {r.vehicleType}</div>
               <div className="admin-muted">{r.email} · {r.phone}</div>
             </div>
-            <button className="btn-primary" disabled={approvingId === r.id} onClick={() => void approve(r.id)}>
+            <m.button whileTap={{ scale: 0.99 }} className="btn-primary" disabled={approvingId === r.id} onClick={() => void approve(r.id)}>
               {approvingId === r.id ? "Approving…" : "Approve"}
-            </button>
-          </li>
+            </m.button>
+          </m.li>
         ))}
-      </ul>
+      </m.ul>
     </div>
   );
 }

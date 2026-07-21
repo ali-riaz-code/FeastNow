@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { m } from "motion/react";
 import { apiGet, apiSend, ApiError } from "../../lib/api";
+import { staggerParent, staggerChild } from "../../lib/motion";
 import type { AdminPromo, DiscountType } from "../../lib/types";
 
 export function APromotionsScreen() {
@@ -49,12 +51,12 @@ export function APromotionsScreen() {
         </div>
         <div className="admin-field"><span>Value</span><input inputMode="numeric" value={value} onChange={(e) => setValue(e.target.value)} placeholder={discountType === "percentage" ? "1–100" : "cents"} /></div>
         <div className="admin-field"><span>Expiry (optional)</span><input type="date" value={expiry} onChange={(e) => setExpiry(e.target.value)} /></div>
-        <button className="btn-primary" disabled={busy} onClick={() => void create()}>Create Promo Code</button>
+        <m.button whileTap={{ scale: 0.99 }} className="btn-primary" disabled={busy} onClick={() => void create()}>Create Promo Code</m.button>
         {error && <p className="admin-error">{error}</p>}
       </div>
-      <ul className="admin-list admin-list--wide">
+      <m.ul className="admin-list admin-list--wide" variants={staggerParent} initial="hidden" animate="show">
         {promos.map((p) => (
-          <li key={p.id} className="admin-card admin-promorow">
+          <m.li key={p.id} className="admin-card admin-promorow" variants={staggerChild}>
             <div>
               <span className="admin-promorow__code mono">{p.code}</span>
               <span className="admin-row__sub">
@@ -64,11 +66,11 @@ export function APromotionsScreen() {
             </div>
             <div className="admin-userrow__right">
               <span className={`admin-pill ${p.active ? "admin-pill--ok" : "admin-pill--warn"}`}>{p.active ? "Active" : "Inactive"}</span>
-              {p.active && <button className="btn-danger" onClick={() => void deactivate(p)}>Deactivate</button>}
+              {p.active && <m.button whileTap={{ scale: 0.99 }} className="btn-danger" onClick={() => void deactivate(p)}>Deactivate</m.button>}
             </div>
-          </li>
+          </m.li>
         ))}
-      </ul>
+      </m.ul>
       {promos.length === 0 && <p className="admin-muted">No promo codes yet.</p>}
     </div>
   );

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { SearchBar } from "../../components/SearchBar";
+import { staggerParent, staggerChild } from "../../lib/motion";
 import type { AdminReviewRow } from "../../lib/types";
 
 export function AModerationScreen() {
@@ -27,9 +29,9 @@ export function AModerationScreen() {
     <div className="admin-screen">
       <h1 className="admin-screen__title">Moderation</h1>
       <SearchBar value={q} onChange={setQ} placeholder="Search reviews by restaurant" />
-      <ul className="admin-list admin-list--wide">
+      <m.ul className="admin-list admin-list--wide" variants={staggerParent} initial="hidden" animate="show">
         {reviews.map((r) => (
-          <li key={r.id} className="admin-card admin-reviewrow">
+          <m.li key={r.id} className="admin-card admin-reviewrow" variants={staggerChild}>
             <div className="admin-reviewrow__body">
               <span className="admin-reviewrow__head">
                 <span className="admin-reviewrow__stars mono">{"★".repeat(r.stars)}{"☆".repeat(5 - r.stars)}</span>
@@ -37,10 +39,10 @@ export function AModerationScreen() {
               </span>
               <p className="admin-reviewrow__text">{r.reviewText}</p>
             </div>
-            <button className="btn-danger" disabled={busyId === r.id} onClick={() => void remove(r)}>Remove</button>
-          </li>
+            <m.button whileTap={{ scale: 0.99 }} className="btn-danger" disabled={busyId === r.id} onClick={() => void remove(r)}>Remove</m.button>
+          </m.li>
         ))}
-      </ul>
+      </m.ul>
       {reviews.length === 0 && <p className="admin-muted">No reviews found.</p>}
     </div>
   );

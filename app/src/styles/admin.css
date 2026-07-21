@@ -53,12 +53,16 @@
 /* ---- Tabs (Approvals: Restaurants | Riders) ---- */
 .admin-tabs { display: flex; gap: var(--s-sm); margin-bottom: var(--s-lg); }
 .admin-tab {
+  position: relative; overflow: hidden;
   padding: 8px 18px; border-radius: var(--r-pill); border: 1px solid var(--beige);
   background: var(--off-white); color: var(--brown); font-weight: 600;
-  transition: background var(--dur-fast) var(--ease-out-quart), color var(--dur-fast) var(--ease-out-quart);
+  transition: color var(--dur-fast) var(--ease-out-quart);
 }
 .admin-tab:hover { background: var(--dough); }
-.admin-tab--active { background: var(--navy); color: var(--cream); border-color: var(--navy); }
+.admin-tab--active { background: none; color: var(--cream); border-color: var(--navy); }
+.admin-tab--active:hover { background: none; }
+.admin-tab__bar { position: absolute; inset: 0; border-radius: var(--r-pill); background: var(--navy); z-index: 0; }
+.admin-tab__label { position: relative; z-index: 1; }
 
 /* ---- Shared master/detail list (Approvals, Users, Moderation, Promotions) ---- */
 .admin-split { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: var(--s-lg); align-items: start; }
