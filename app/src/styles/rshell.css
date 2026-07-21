@@ -46,6 +46,7 @@
 }
 .rtabs__tab--active .rtabs__count { background: var(--gold); color: var(--navy); }
 
+.rqueue__list { display: flex; flex-direction: column; gap: var(--s-md); }
 .rqueue__empty { display: grid; place-items: center; min-height: 40dvh; color: var(--muted); }
 
 .rorder-card {

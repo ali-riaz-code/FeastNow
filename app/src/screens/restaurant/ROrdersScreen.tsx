@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { m, AnimatePresence } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { formatClock, formatOrderNumber, formatPrice } from "../../lib/format";
 import type { OrderDTO, OrdersListResponse } from "../../lib/types";
 import { usePolling } from "../../hooks/usePolling";
 import { useCountdown } from "../../hooks/useCountdown";
 import { StatusBadge } from "../../components/OrderStatus";
+import { Screen } from "../../components/Screen";
+import { Reveal } from "../../components/Reveal";
+import { staggerChild } from "../../lib/motion";
 
 const POLL_MS = 5000;
 const REJECT_REASONS = ["Item unavailable", "Store too busy", "Closing soon", "Other"];
@@ -83,7 +87,7 @@ export function ROrdersScreen() {
 
   const counts = data?.counts;
   return (
-    <main className="screen rqueue">
+    <Screen className="rqueue">
       <div className="rtabs" role="tablist" aria-label="Order queues">
         {TABS.map((t) => (
           <button key={t.key} type="button" role="tab" aria-selected={tab === t.key}
@@ -104,8 +108,11 @@ export function ROrdersScreen() {
         </div>
       )}
 
+      <Reveal className="rqueue__list">
+      <AnimatePresence>
       {data?.orders.map((o) => (
-        <article key={o.id} className="rorder-card">
+        <m.article key={o.id} className="rorder-card" layout
+          variants={staggerChild} exit={{ opacity: 0, scale: 0.97 }}>
           <header>
             <Link to={`/orders/${o.id}`} className="rorder-card__id mono">{formatOrderNumber(o.orderNumber)}</Link>
             <span className="rorder-card__time">{formatClock(o.placedAt)}</span>
@@ -122,7 +129,7 @@ export function ROrdersScreen() {
             {o.status === "placed" && (
               <span className="rorder-card__actions">
                 <button type="button" className="btn-danger" onClick={() => setRejecting(o)}>Reject</button>
-                <button type="button" className="btn-primary" onClick={() => void act(o, "accept")}>Accept</button>
+                <button type="button" className="btn-primary attn-pulse" onClick={() => void act(o, "accept")}>Accept</button>
               </span>
             )}
             {o.status === "accepted" && (
@@ -133,8 +140,10 @@ export function ROrdersScreen() {
             )}
             {o.status === "ready" && <span className="rorder-card__waiting">Waiting for pickup</span>}
           </footer>
-        </article>
+        </m.article>
       ))}
+      </AnimatePresence>
+      </Reveal>
 
       {rejecting && (
         <RejectSheet
@@ -142,6 +151,6 @@ export function ROrdersScreen() {
           onClose={() => setRejecting(null)}
         />
       )}
-    </main>
+    </Screen>
   );
 }
