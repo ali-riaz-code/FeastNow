@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { m, AnimatePresence } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { OrderDTO, OrdersListResponse } from "../../lib/types";
 import { usePolling } from "../../hooks/usePolling";
 import { useCountdown } from "../../hooks/useCountdown";
 import { playChime, unlockChime } from "../../lib/chime";
+import { slideUp, popIn } from "../../lib/motion";
 import { RejectSheet } from "./ROrdersScreen";
 
 const POLL_MS = 5000;
@@ -51,7 +53,9 @@ export function NewOrderWatcher() {
     return () => window.clearInterval(id);
   }, [alertOrder]);
 
-  if (!alertOrder) return null;
+  // Keep an AnimatePresence mounted even with no alert so a just-dismissed
+  // alert can play its slide-out exit before the node leaves the tree.
+  if (!alertOrder) return <AnimatePresence />;
 
   const act = async (path: string, body?: unknown) => {
     setBusy(true);
@@ -64,8 +68,15 @@ export function NewOrderWatcher() {
   };
 
   return (
-    <div className="ralert" role="alertdialog" aria-modal="true" aria-label="New incoming order">
-      <p className="ralert__eyebrow">New order</p>
+    <AnimatePresence>
+      <m.div key={alertOrder.id} className="ralert" role="alertdialog" aria-modal="true" aria-label="New incoming order"
+        variants={slideUp} initial="hidden" animate="show" exit="exit">
+        <m.span className="ralert__icon" variants={popIn} aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" />
+          </svg>
+        </m.span>
+        <p className="ralert__eyebrow">New order</p>
       <p className="ralert__id mono">{formatOrderNumber(alertOrder.orderNumber)}</p>
       <AlertCountdown expiresAt={alertOrder.expiresAt} />
       <ul className="ralert__items">
@@ -79,10 +90,11 @@ export function NewOrderWatcher() {
         <button type="button" className="btn-danger" disabled={busy} onClick={() => setRejecting(true)}>Reject</button>
         <button type="button" className="btn-primary ralert__accept" disabled={busy} onClick={() => void act("accept")}>Accept order</button>
       </div>
-      <button type="button" className="ralert__dismiss" onClick={() => setAlertOrder(null)}>Decide from the queue</button>
-      {rejecting && (
-        <RejectSheet onPick={(reason) => void act("reject", { reason })} onClose={() => setRejecting(false)} />
-      )}
-    </div>
+        <button type="button" className="ralert__dismiss" onClick={() => setAlertOrder(null)}>Decide from the queue</button>
+        {rejecting && (
+          <RejectSheet onPick={(reason) => void act("reject", { reason })} onClose={() => setRejecting(false)} />
+        )}
+      </m.div>
+    </AnimatePresence>
   );
 }

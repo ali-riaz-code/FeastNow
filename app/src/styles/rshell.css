@@ -96,10 +96,10 @@
   background: var(--navy-deep); color: var(--cream);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--s-md); padding: var(--s-xl); text-align: center;
-  animation: ralert-in var(--dur) var(--ease-out-expo);
 }
-@keyframes ralert-in { from { opacity: 0; transform: translateY(12px); } }
-@media (prefers-reduced-motion: reduce) { .ralert { animation: none; } }
+/* Entrance is now driven by motion (slideUp) in IncomingOrderAlert.tsx;
+   reduced motion is handled globally by MotionConfig. */
+.ralert__icon { color: var(--gold); }
 .ralert__eyebrow { margin: 0; font-weight: 600; font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
 .ralert__id { margin: 0; font-size: 1.5rem; }
 .ralert__count { font-size: 2.25rem; color: var(--gold); }
