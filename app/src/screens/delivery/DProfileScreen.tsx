@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { m } from "motion/react";
 import { apiSend } from "../../lib/api";
 import { clearToken, redirectToLogin } from "../../lib/session";
 import type { PartnerProfile, VehicleType } from "../../lib/types";
 import { usePartner } from "../../PartnerContext";
+import { Screen } from "../../components/Screen";
+import { AppHeader } from "../../components/AppHeader";
 
 const VEHICLES: { value: VehicleType; label: string }[] = [
   { value: "bike", label: "Bicycle" },
@@ -46,7 +49,8 @@ export function DProfileScreen() {
   };
 
   return (
-    <main className="screen rform dprofile">
+    <Screen className="rform dprofile">
+      <AppHeader title="Profile" />
       <h1>Rider profile</h1>
       <label className="rform__field"><span>Full name</span>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
@@ -62,11 +66,11 @@ export function DProfileScreen() {
 
       {error && <p className="cart__error" role="alert">{error}</p>}
       {saved && <p className="rprofile__saved" role="status">Saved.</p>}
-      <button type="button" className="btn-primary" disabled={saving} onClick={() => void save()}>
+      <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={saving} onClick={() => void save()}>
         {saving ? "Saving…" : "Save changes"}
-      </button>
+      </m.button>
 
       <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
-    </main>
+    </Screen>
   );
 }

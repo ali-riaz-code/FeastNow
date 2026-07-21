@@ -1,9 +1,12 @@
 import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { m } from "motion/react";
 import { apiGet, apiSend, ApiError } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { ActiveDeliveryDTO } from "../../lib/types";
 import { usePolling } from "../../hooks/usePolling";
+import { Screen } from "../../components/Screen";
+import { AppHeader } from "../../components/AppHeader";
 
 const POLL_MS = 5000;
 
@@ -28,21 +31,29 @@ export function DActiveDeliveryScreen() {
   usePolling(poll, POLL_MS);
 
   if (!loaded) {
-    return <section className="dscreen"><p className="dactive__muted">Loading…</p></section>;
+    return (
+      <Screen>
+        <AppHeader title="Active delivery" />
+        <section className="dactive"><p className="dactive__muted">Loading…</p></section>
+      </Screen>
+    );
   }
 
   if (!active) {
     return (
-      <section className="dscreen dactive dactive--empty">
-        <div className="dactive__empty-orb" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.6">
-            <path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" />
-          </svg>
-        </div>
-        <h1 className="dscreen__title serif">No active delivery</h1>
-        <p className="dactive__muted">Go online to start receiving offers.</p>
-        <Link className="btn-primary" to="/availability">Availability</Link>
-      </section>
+      <Screen>
+        <AppHeader title="Active delivery" />
+        <section className="dactive dactive--empty">
+          <div className="dactive__empty-orb" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <path d="M3 6h11v9H3z" /><path d="M14 9h4l3 3v3h-7z" /><circle cx="7" cy="18" r="1.6" /><circle cx="17" cy="18" r="1.6" />
+            </svg>
+          </div>
+          <h1 className="dscreen__title serif">No active delivery</h1>
+          <p className="dactive__muted">Go online to start receiving offers.</p>
+          <Link className="btn-primary" to="/availability">Availability</Link>
+        </section>
+      </Screen>
     );
   }
 
@@ -74,9 +85,11 @@ export function DActiveDeliveryScreen() {
   };
 
   return (
-    <section className="dscreen dactive">
+    <Screen>
+      <AppHeader title="Active delivery" />
+      <section className="dactive">
       <div className="dactive__card">
-        <div className="dactive__stage" data-stage={order.status}>
+        <div className="dactive__stage attn-pulse" data-stage={order.status}>
           {beforePickup ? "Head to the restaurant" : "Deliver to the customer"}
         </div>
         <h1 className="dactive__restaurant serif">{order.restaurantName}</h1>
@@ -98,9 +111,9 @@ export function DActiveDeliveryScreen() {
       </div>
 
       {beforePickup ? (
-        <button type="button" className="btn-primary dactive__primary" disabled={busy} onClick={() => void act("pickup")}>
+        <m.button type="button" className="btn-primary dactive__primary" whileTap={{ scale: 0.97 }} disabled={busy} onClick={() => void act("pickup")}>
           Confirm pickup
-        </button>
+        </m.button>
       ) : (
         <div className="dactive__deliver">
           <label className="dactive__note-label" htmlFor="proof-note">Delivery note (optional)</label>
@@ -109,15 +122,16 @@ export function DActiveDeliveryScreen() {
             placeholder="e.g. Left at the door with the guard"
             value={note} onChange={(e) => setNote(e.target.value)}
           />
-          <button type="button" className="btn-primary dactive__primary" disabled={busy}
+          <m.button type="button" className="btn-primary dactive__primary" whileTap={{ scale: 0.97 }} disabled={busy}
             onClick={() => void act("deliver", { note: note.trim() || undefined }, () => navigate("/availability"))}>
             Mark as delivered
-          </button>
+          </m.button>
         </div>
       )}
 
       <button type="button" className="dactive__unable" disabled={busy} onClick={unable}>Unable to complete</button>
       {error ? <p className="davail__error" role="alert">{error}</p> : null}
-    </section>
+      </section>
+    </Screen>
   );
 }
