@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
 import { TabBar, type TabDef } from "../components/TabBar";
 import { cartCount, useCart } from "../lib/cart";
 import { CartScreen } from "../screens/CartScreen";
@@ -32,6 +33,7 @@ const ProfileIcon = (
 
 export function CustomerShell() {
   const cart = useCart();
+  const location = useLocation();
   const tabs: TabDef[] = [
     { to: "/", label: "Home", icon: HomeIcon, end: true },
     { to: "/cart", label: "Cart", icon: CartIcon, end: false, badge: cartCount(cart) },
@@ -40,15 +42,17 @@ export function CustomerShell() {
   ];
   return (
     <div className="shell">
-      <Routes>
-        <Route path="/" element={<HomeScreen />} />
-        <Route path="/restaurant/:id" element={<RestaurantScreen />} />
-        <Route path="/search" element={<SearchScreen />} />
-        <Route path="/cart" element={<CartScreen />} />
-        <Route path="/orders" element={<OrdersScreen />} />
-        <Route path="/orders/:id" element={<OrderDetailScreen />} />
-        <Route path="/profile" element={<ProfileScreen />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/restaurant/:id" element={<RestaurantScreen />} />
+          <Route path="/search" element={<SearchScreen />} />
+          <Route path="/cart" element={<CartScreen />} />
+          <Route path="/orders" element={<OrdersScreen />} />
+          <Route path="/orders/:id" element={<OrderDetailScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
+        </Routes>
+      </AnimatePresence>
       <TabBar tabs={tabs} />
     </div>
   );
