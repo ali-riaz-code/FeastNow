@@ -128,6 +128,7 @@ export function AApprovalsScreen() {
 
 function RidersPanel() {
   const [riders, setRiders] = useState<AdminRiderRow[]>([]);
+  const [approvingId, setApprovingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setRiders(await apiGet<{ riders: AdminRiderRow[] }>("/api/admin/rider-approvals").then((r) => r.riders));
@@ -135,10 +136,12 @@ function RidersPanel() {
   useEffect(() => { void load(); }, [load]);
 
   const approve = async (id: string) => {
+    setApprovingId(id);
     try {
       await apiSend("POST", `/api/admin/rider-approvals/${id}/approve`, {});
       await load();
     } catch { window.alert("Couldn't update this rider. Check your connection."); }
+    finally { setApprovingId(null); }
   };
 
   return (
@@ -151,7 +154,9 @@ function RidersPanel() {
               <div className="admin-row__title">{r.name} · {r.vehicleType}</div>
               <div className="admin-muted">{r.email} · {r.phone}</div>
             </div>
-            <button className="btn-primary" onClick={() => void approve(r.id)}>Approve</button>
+            <button className="btn-primary" disabled={approvingId === r.id} onClick={() => void approve(r.id)}>
+              {approvingId === r.id ? "Approving…" : "Approve"}
+            </button>
           </li>
         ))}
       </ul>
