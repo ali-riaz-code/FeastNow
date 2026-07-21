@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { m } from "motion/react";
 import { OwnerProvider, useOwner } from "../OwnerContext";
 import { apiSend } from "../lib/api";
 import type { OwnerProfile } from "../lib/types";
 import { TabBar, type TabDef } from "../components/TabBar";
+import { AppHeader } from "../components/AppHeader";
+import { slideUp } from "../lib/motion";
 import { ROrdersScreen } from "../screens/restaurant/ROrdersScreen";
 import { ROrderDetailScreen } from "../screens/restaurant/ROrderDetailScreen";
 import { RMenuScreen } from "../screens/restaurant/RMenuScreen";
@@ -59,18 +62,20 @@ function RTopBar() {
   };
 
   return (
-    <header className="rtopbar">
-      <span className="rtopbar__name">{profile.name}</span>
-      <button
-        type="button"
-        className={`rtoggle${profile.isOnline ? " rtoggle--on" : ""}`}
-        role="switch" aria-checked={profile.isOnline} disabled={busy}
-        onClick={() => void toggle()}
-      >
-        <span className="rtoggle__knob" aria-hidden="true" />
-        {profile.isOnline ? "Online" : "Offline"}
-      </button>
-    </header>
+    <AppHeader
+      title={profile.name}
+      actions={
+        <button
+          type="button"
+          className={`rtoggle${profile.isOnline ? " rtoggle--on" : ""}`}
+          role="switch" aria-checked={profile.isOnline} disabled={busy}
+          onClick={() => void toggle()}
+        >
+          <m.span className="rtoggle__knob" layout aria-hidden="true" />
+          {profile.isOnline ? "Online" : "Offline"}
+        </button>
+      }
+    />
   );
 }
 
@@ -78,12 +83,12 @@ function OfflineBanner() {
   const { profile } = useOwner();
   if (profile.isOnline) return null;
   return (
-    <p className="rbanner" role="status">
+    <m.p className="rbanner" role="status" variants={slideUp} initial="hidden" animate="show">
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
         <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
       </svg>
       You're offline — new orders are paused.
-    </p>
+    </m.p>
   );
 }
 

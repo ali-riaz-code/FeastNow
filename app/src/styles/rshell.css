@@ -10,12 +10,9 @@
 @keyframes rspin { to { transform: rotate(1turn); } }
 @media (prefers-reduced-motion: reduce) { .pending__spinner { animation: none; border-top-color: var(--beige); } }
 
-.rtopbar {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--s-md);
-  padding: var(--s-md); background: var(--navy-deep); color: var(--cream);
-  position: sticky; top: 0; z-index: var(--z-nav);
-}
-.rtopbar__name { font-weight: 600; font-size: 1.0625rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The restaurant header now uses the shared navy .appbar (see AppHeader).
+   The online toggle lives in the header's actions slot; its cream/basil/tomato
+   colors already read against the navy awning surface. */
 .rtoggle {
   display: inline-flex; align-items: center; gap: var(--s-sm);
   min-height: 44px; padding: 0 var(--s-md) 0 var(--s-sm);
@@ -132,7 +129,7 @@
   body * { visibility: hidden; }
   .printable, .printable * { visibility: visible; }
   .printable { position: absolute; inset: 0 auto auto 0; width: 100%; padding: 0; }
-  .rdetail__back, .rdetail__print, .tab-bar, .rtopbar, .rbanner { display: none !important; }
+  .rdetail__back, .rdetail__print, .tab-bar, .appbar, .rbanner { display: none !important; }
 }
 
 .rmenu { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md) var(--s-md) 96px; }
