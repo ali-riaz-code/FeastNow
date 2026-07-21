@@ -11,7 +11,7 @@
 .admin-sidebar__brand { font-size: 22px; color: var(--navy); padding: 0 var(--s-sm) var(--s-sm); }
 .admin-sidebar__nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .admin-navlink {
-  position: relative;
+  position: relative; isolation: isolate; /* contain the -1 bar above the sidebar bg */
   padding: 10px 12px; border-radius: var(--r-sm); color: var(--brown); font-weight: 600;
   transition: color var(--dur-fast) var(--ease-out-quart);
 }
