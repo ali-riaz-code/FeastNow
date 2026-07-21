@@ -73,7 +73,7 @@ spacing:
 
 FeastNow borrows the soul of a warm, family-run Italian pizzeria — cream tablecloths, a deep-navy awning, brass-gold signage, and the red-and-green of the tricolore — and rebuilds it as a fast, four-shell product app. The mood is *appetizing and hand-made*, never sterile-tech. A layered warm-cream canvas does the hosting; deep navy carries every piece of structure (headers, nav, primary actions, body ink); gold is the brass accent that marks what matters (prices, ratings, the current step); and tomato-red / basil-green appear as deliberate tricolore signals, most importantly across the order lifecycle. Reference DNA: [pizza-amici.nl](https://www.pizza-amici.nl/) — Webflow-editorial warmth, serif-and-mono type mixing, pill buttons, smooth motion.
 
-This is a **product**, not a marketing page, so the trattoria warmth is adapted, not transplanted whole. The Customer shell earns the most expressive typography and food-forward color; the Restaurant, Delivery, and Admin shells spend the same palette on speed and legibility under pressure. Warmth is carried by **color, type, and imagery** — not by decoration that stutters on a cheap Android phone.
+This is a **product**, not a marketing page, so the trattoria warmth is adapted, not transplanted whole. All four shells share the same expressive language — awning headers, serif display, gold accents, and motion — tuned by *density* rather than reserved for one shell: operator screens pack more per view but wear the same warmth. Warmth is carried by **color, type, and imagery** — not by decoration that stutters on a cheap Android phone.
 
 What this system explicitly rejects: the generic AI food-app look (flat white + one hot-pink accent + rounded-everything), cold enterprise-dashboard chrome even in the operator shells, and monospace-everywhere body text that runs wide and tires the eye on dense menus. Cream here is a *committed identity choice* (navy + gold + tricolore make it read as trattoria, not as the default warm-near-white AI canvas), not a reflex.
 
@@ -82,7 +82,7 @@ What this system explicitly rejects: the generic AI food-app look (flat white + 
 - Tricolore (tomato / basil) reserved for meaning — above all, order status.
 - Expressive serif + variable-sans headings; clean sans body; **mono for numerics only**.
 - Pill buttons, softly-rounded cards, warm and mostly-flat elevation.
-- One product across four shells: Customer = most expressive, operators = most legible.
+- One product across four shells: the same expressive, animated language everywhere, tuned by density.
 
 ## 2. Colors
 
@@ -134,7 +134,7 @@ A warm, layered palette: cream neutrals ranging from bright to biscuit, anchored
 ### Named Rules
 **The Mono-for-Numbers Rule.** Monospace is reserved for numerals and receipt-like summaries where alignment and the printed-ticket feel earn it. Never set paragraphs, labels, or navigation in mono — it runs wide and tires the eye on dense menus and cheap screens.
 
-**The Operator-Restraint Rule.** Serif and script are Customer-shell privileges. Restaurant, Delivery, and Admin shells stay sans-dominant so speed and legibility win during a rush.
+**The One-Language-Tuned-By-Density Rule.** All four shells share the full expressive language — serif display, awning headers, gold accents, and motion — rather than reserving expressiveness for Customer. Shells differ by *density*, not vocabulary: operator screens pack more per view and lean on the same system to stay scannable during a rush. Script stays a rare garnish everywhere. Low-end-Android performance remains a hard constraint (transform/opacity/filter only, `LazyMotion` bundle, reduced-motion fallbacks) — expressiveness never buys itself with jank.
 
 ## 4. Elevation
 
@@ -177,8 +177,42 @@ Warm and mostly flat. Surfaces are layered by tone (cream → off-white → doug
 - The order-lifecycle indicator shared by Customer, Restaurant, and Delivery. Each state = a fixed **color + icon + label** triple (e.g. Preparing = gold + skillet icon + "Preparing"; Delivered = basil + check icon + "Delivered"; Rejected = tomato + x icon + "Rejected"). One source of truth, identical across all three shells watching the same order.
 
 ### Navigation
-- **Customer:** Bottom tab bar, navy icons on cream, gold active indicator; serif screen titles allowed.
-- **Operators:** Same bottom-tab pattern, sans titles, denser; Admin (web) uses a navy side nav.
+- **Customer / Restaurant / Delivery:** Animated bottom `TabBar` — navy icons on cream with a **sliding gold indicator** (`layoutId="tabPill"` spring) that glides between tabs, plus an icon pop on activation. Serif screen titles allowed on all three.
+- **Admin:** Animated navy **side nav** — the active item is marked by a sliding navy indicator (`layoutId="adminNav"` spring) rather than a static fill; content fades on route change. Full-width back-office layout.
+
+## 5b. Motion
+
+Motion is a first-class part of the system, shared across all four shells and implemented with the **`motion`** library (Framer Motion's successor). It is loaded via **`LazyMotion` + `domAnimation`** with `strict` mode, so only the `m.*` components ship and the bundle stays small for low-end Android. Reduced motion is handled globally by `<MotionConfig reducedMotion="user">` plus the CSS keyframe block in `motion.css` — every animation degrades to instant/crossfade under `prefers-reduced-motion`.
+
+### Shared variants (`app/src/lib/motion.ts`)
+- `screenVariants` — whole-screen fade + rise that orchestrates staggered children (`when: "beforeChildren"`).
+- `staggerParent` / `staggerChild` — list/row stagger reveal.
+- `revealUp` — single-element reveal-up (detail panels, empty states).
+- `popIn` — spring pop for badges, avatars, modal icons.
+- `slideUp` — bottom-sheet / offer / banner slide-up with an `exit`.
+- Presets: `easeExpo` (`cubic-bezier(0.16,1,0.3,1)`), `spring`, `springSoft`.
+
+### Shared components
+- **`Screen`** — animated `<m.main className="screen">`; drop-in for the old `<main>`, adds the fade+rise entrance and orchestrates children.
+- **`AppHeader`** — the navy "awning" top bar (see below) with an animated entrance; `children` slot houses a search bar or extras.
+- **`TabBar`** — bottom nav with the sliding gold indicator (`layoutId="tabPill"`) + icon pop.
+- **`Reveal` / `RevealItem`** — in-view stagger primitive for sections/lists (content visible by default; motion only enhances).
+- **`BootIntro`** — one-time-per-session intro curtain echoing the landing site; self-removes, skipped under reduced motion.
+- Route transitions: each shell wraps `<Routes>` in `AnimatePresence mode="wait"` keyed on `location.pathname` for a clean cross-fade between screens (Admin fades its `<m.main>` content on route change).
+
+### Awning-header surface
+The navy gradient header (`--awning-grad`, cream `--awning-ink` on navy, AA) is the shared top surface across shells, replacing per-shell cream headers. A search bar placed inside it adapts to the dark surface (translucent fill, gold focus ring).
+
+### Section-canvas rhythm
+Screens layer warm bands (`--canvas-warm`/`--butter`, `--canvas-plain`) behind sections for vertical rhythm, so a long feed reads as grouped movements rather than one flat scroll.
+
+### Signature motion moments
+- **Living order timeline** — the active status step carries a gold `pulse-ring`; the connector fills via an animated `scaleX` (color + icon + label triple unchanged).
+- **Count-ups** — earnings and admin metrics animate 0 → value via `useMotionValue` + `animate` (mono, formatting preserved).
+- **Countdown bars** — the delivery offer window shrinks as a gold `scaleX` bar (compositor-only, no layout thrash).
+- **Attention pulse** — `attn-pulse` (a gentle 1.035 scale loop) marks "action needed" affordances (e.g. restaurant accept/reject), never whole cards.
+
+All motion obeys the reduced-motion, contrast, color-blind-safe, and low-end-Android rules in §6.
 
 ## 6. Do's and Don'ts
 
@@ -186,7 +220,7 @@ Warm and mostly flat. Surfaces are layered by tone (cream → off-white → doug
 - **Do** let deep navy (`#0F2C56`) carry structure and body ink; it's the ~12:1-on-cream contrast backbone and the reason the app stays legible in glare.
 - **Do** reserve mono (`Azeret Mono`) for prices, order numbers, timers, and receipt-style summaries — never body, labels, or nav (**The Mono-for-Numbers Rule**).
 - **Do** pair every red/green status with an icon *and* a text label (**The Tricolore-Means-Status Rule**; color-blind safe per PRODUCT.md).
-- **Do** keep serif and script to the Customer shell; operators stay sans-dominant (**The Operator-Restraint Rule**).
+- **Do** give all four shells the same expressive language (serif, awning headers, gold, motion), tuned by density rather than restraint; keep script a rare garnish everywhere (**The One-Language-Tuned-By-Density Rule**).
 - **Do** use gold for the single most important thing on a screen, with navy text on any gold fill (**The Gold-Is-Rare Rule**).
 - **Do** use pill buttons ≥48px tall and large touch targets for one-handed, outdoor, cheap-screen use.
 
