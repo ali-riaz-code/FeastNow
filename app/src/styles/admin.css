@@ -43,6 +43,11 @@
 .admin-metric { display: flex; flex-direction: column; gap: var(--s-xs); }
 .admin-metric__value { font-size: 40px; color: var(--navy); line-height: 1; }
 .admin-metric__label { font-size: 13px; color: var(--brown); }
+/* Subtle full-surface tints, rotated across tiles (no side-stripes). */
+.admin-metric--tint-0 { background: var(--cream); }
+.admin-metric--tint-1 { background: var(--butter); }
+.admin-metric--tint-2 { background: var(--off-white); }
+.admin-metric--tint-3 { background: var(--sky); }
 .admin-error { color: var(--tomato); display: flex; align-items: center; gap: var(--s-sm); }
 
 /* ---- Tabs (Approvals: Restaurants | Riders) ---- */
