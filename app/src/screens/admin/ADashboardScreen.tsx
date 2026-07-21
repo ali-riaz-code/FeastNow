@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { m, useMotionValue, useTransform, animate } from "motion/react";
+import { m, useMotionValue, useTransform, animate, useReducedMotion } from "motion/react";
 import { apiGet } from "../../lib/api";
 import type { AdminMetrics } from "../../lib/types";
 import { Reveal, RevealItem } from "../../components/Reveal";
@@ -14,13 +14,16 @@ const CARDS: { key: keyof AdminMetrics; label: string }[] = [
 /** Count-up metric value. Shows an em-dash until the number arrives, then
  *  animates 0 → value. Reads the existing metric number only (no new data). */
 function MetricValue({ value }: { value: number | null }) {
+  const reduce = useReducedMotion();
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => Math.round(v).toLocaleString());
   useEffect(() => {
     if (value == null) return;
+    // Respect reduced motion — imperative animate() isn't governed by MotionConfig.
+    if (reduce) { count.set(value); return; }
     const c = animate(count, value, { duration: 0.9, ease: easeExpo });
     return () => c.stop();
-  }, [value, count]);
+  }, [value, count, reduce]);
   if (value == null) return <span className="admin-metric__value mono">—</span>;
   return <m.span className="admin-metric__value mono">{rounded}</m.span>;
 }
