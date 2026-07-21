@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { m } from "motion/react";
 import { apiGet } from "../lib/api";
 import type { SearchResponse } from "../lib/types";
 import { SearchBar } from "../components/SearchBar";
 import { RestaurantCardView } from "../components/RestaurantCard";
 import { formatPrice } from "../lib/format";
+import { Screen } from "../components/Screen";
+import { AppHeader } from "../components/AppHeader";
+import { Reveal, RevealItem } from "../components/Reveal";
+import { revealUp } from "../lib/motion";
 
 const RECENT_KEY = "feastnow_recent_searches";
 const MAX_RECENT = 8;
@@ -65,18 +70,22 @@ export function SearchScreen() {
     && results.restaurants.length === 0 && results.dishes.length === 0;
 
   return (
-    <main className="screen search">
-      <header className="search__header">
-        <button className="search__back" aria-label="Go back" onClick={() => navigate(-1)}>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
-            <path d="M15 5l-7 7 7 7" />
-          </svg>
-        </button>
+    <Screen className="search">
+      <AppHeader
+        sticky
+        leading={
+          <button className="search__back" aria-label="Go back" onClick={() => navigate(-1)}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+          </button>
+        }
+      >
         <SearchBar value={query} onChange={setQuery} autoFocus />
-      </header>
+      </AppHeader>
 
       {results === null && recent.length > 0 && (
-        <section className="recent">
+        <m.div className="recent" variants={revealUp} initial="hidden" animate="show">
           <div className="recent__head">
             <h2 className="serif">Recent searches</h2>
             <button className="recent__clear" onClick={() => {
@@ -92,46 +101,57 @@ export function SearchScreen() {
               {term}
             </button>
           ))}
-        </section>
+        </m.div>
       )}
 
       {searching && <p className="search__status mono" role="status">Searching…</p>}
       {searchError && !searching && (
         <p className="search__status" role="status">Search isn't working right now. Check your connection and try again.</p>
       )}
-      {noMatches && <p className="search__status">No matches for "{query.trim()}".</p>}
+      {noMatches && (
+        <m.p className="search__status" variants={revealUp} initial="hidden" animate="show">
+          No matches for "{query.trim()}".
+        </m.p>
+      )}
 
       {results && results.restaurants.length > 0 && (
         <section className="search__group">
           <h2 className="serif">Restaurants</h2>
-          <div className="grid">
-            {results.restaurants.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
-          </div>
+          <Reveal className="grid">
+            {results.restaurants.map((r) => (
+              <RevealItem key={r.id}>
+                <RestaurantCardView restaurant={r} />
+              </RevealItem>
+            ))}
+          </Reveal>
         </section>
       )}
 
       {results && results.dishes.length > 0 && (
         <section className="search__group">
           <h2 className="serif">Dishes</h2>
-          {results.dishes.map((dish) => (
-            <Link
-              key={dish.id}
-              to={`/restaurant/${dish.restaurantId}`}
-              className={`dish-hit${dish.isAvailable ? "" : " dish-hit--unavailable"}`}
-            >
-              {dish.imageUrl
-                ? <img className="dish-hit__thumb" src={dish.imageUrl} alt="" loading="lazy" />
-                : <div className="dish-hit__thumb dish-hit__thumb--empty" aria-hidden="true" />}
-              <div className="dish-hit__text">
-                <h3>{dish.name}</h3>
-                <p>{dish.restaurantName}</p>
-                {!dish.isAvailable && <span className="dish-hit__unavailable-label">Unavailable</span>}
-              </div>
-              <span className="dish-hit__price mono">{formatPrice(dish.priceCents)}</span>
-            </Link>
-          ))}
+          <Reveal>
+            {results.dishes.map((dish) => (
+              <RevealItem key={dish.id}>
+                <Link
+                  to={`/restaurant/${dish.restaurantId}`}
+                  className={`dish-hit${dish.isAvailable ? "" : " dish-hit--unavailable"}`}
+                >
+                  {dish.imageUrl
+                    ? <img className="dish-hit__thumb" src={dish.imageUrl} alt="" loading="lazy" />
+                    : <div className="dish-hit__thumb dish-hit__thumb--empty" aria-hidden="true" />}
+                  <div className="dish-hit__text">
+                    <h3>{dish.name}</h3>
+                    <p>{dish.restaurantName}</p>
+                    {!dish.isAvailable && <span className="dish-hit__unavailable-label">Unavailable</span>}
+                  </div>
+                  <span className="dish-hit__price mono">{formatPrice(dish.priceCents)}</span>
+                </Link>
+              </RevealItem>
+            ))}
+          </Reveal>
         </section>
       )}
-    </main>
+    </Screen>
   );
 }

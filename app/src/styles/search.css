@@ -1,13 +1,10 @@
-.search__header {
-  position: sticky; top: 0; z-index: var(--z-sticky);
-  display: flex; align-items: center; gap: var(--s-sm);
-  background: var(--bg); padding: var(--s-md) 0 var(--s-sm);
-}
-.search__header .search-bar { flex: 1; }
+/* .search__back now sits in the AppHeader's leading slot, on the navy
+   "awning" surface — ink flips to cream/gold for AA contrast there. */
 .search__back {
-  border: none; background: none; color: var(--navy);
+  border: none; background: none; color: var(--awning-ink);
   width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
 }
+.search__back:hover, .search__back:focus-visible { color: var(--gold); }
 .search__status { color: var(--brown); text-align: center; padding: var(--s-lg) 0; }
 
 .recent__head { display: flex; justify-content: space-between; align-items: center; }
