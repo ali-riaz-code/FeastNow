@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { LazyMotion, MotionConfig } from "motion/react";
 import { AuthGate, useMe } from "./AuthGate";
+import { BootIntro } from "./components/BootIntro";
 import { domMax } from "./lib/motion";
 import { CustomerShell } from "./shells/CustomerShell";
 import { RestaurantShell } from "./shells/RestaurantShell";
@@ -20,6 +21,7 @@ export default function App() {
   return (
     <LazyMotion features={domMax} strict>
       <MotionConfig reducedMotion="user">
+        <BootIntro />
         <AuthGate>
           <BrowserRouter basename="/app">
             <RoleShell />
