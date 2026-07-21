@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { m, useScroll, useTransform } from "motion/react";
 import { apiGet, ApiError, NetworkError } from "../lib/api";
 import type { MenuItem, RestaurantDetail } from "../lib/types";
 import { formatPrice, formatRating } from "../lib/format";
 import { loadCart, saveCart, setLineQuantity, useCart, cartCount, cartSubtotal } from "../lib/cart";
+import { Screen } from "../components/Screen";
+import { Reveal, RevealItem } from "../components/Reveal";
 
 const INITIAL_REVIEWS_SHOWN = 3;
 
@@ -21,6 +24,9 @@ export function RestaurantScreen() {
   const [allReviews, setAllReviews] = useState(false);
   const categoryRefs = useRef(new Map<string, HTMLElement>());
   const cart = useCart();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 240], [0, 60]);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,22 +46,22 @@ export function RestaurantScreen() {
   }, [id]);
 
   if (state.status === "loading") {
-    return <main className="screen restaurant"><div className="restaurant__hero-skeleton" aria-label="Loading" role="status" /></main>;
+    return <Screen className="restaurant"><div className="restaurant__hero-skeleton" aria-label="Loading" role="status" /></Screen>;
   }
   if (state.status === "missing") {
     return (
-      <main className="screen restaurant restaurant--message">
+      <Screen className="restaurant restaurant--message">
         <p>This restaurant is no longer available.</p>
         <button className="btn-retry" onClick={() => navigate("/")}>Back to Home</button>
-      </main>
+      </Screen>
     );
   }
   if (state.status === "error") {
     return (
-      <main className="screen restaurant restaurant--message">
+      <Screen className="restaurant restaurant--message">
         <p>{state.message}</p>
         <button className="btn-retry" onClick={() => navigate(0)}>Try again</button>
-      </main>
+      </Screen>
     );
   }
 
@@ -86,9 +92,9 @@ export function RestaurantScreen() {
   };
 
   return (
-    <main className="screen restaurant">
-      <div className="restaurant__hero">
-        <img src={r.heroImageUrl} alt="" />
+    <Screen className="restaurant">
+      <div className="restaurant__hero" ref={heroRef}>
+        <m.img src={r.heroImageUrl} alt="" style={{ y: heroY }} />
         <button className="restaurant__back" aria-label="Go back" onClick={() => navigate(-1)}>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
             <path d="M15 5l-7 7 7 7" />
@@ -133,32 +139,37 @@ export function RestaurantScreen() {
       {r.menu.map((group) => (
         <section key={group.category} className="menu-category"
           ref={(el) => { if (el) categoryRefs.current.set(group.category, el); }}>
-          <h2 className="serif">{group.category}</h2>
-          {group.items.map((item) => (
-            <article key={item.id} className={`menu-row${item.isAvailable ? "" : " menu-row--unavailable"}`}>
-              <div className="menu-row__text">
-                <h3>{item.name}</h3>
-                <p>{item.description}</p>
-                <p className="menu-row__price mono">{formatPrice(item.priceCents)}</p>
-                {!item.isAvailable && <span className="menu-row__unavailable-label">Unavailable</span>}
-              </div>
-              <div className="menu-row__actions">
-                {qtyOf(item.id) === 0 ? (
-                  <button type="button" className="stepper__add"
-                    disabled={!item.isAvailable || !r.isOpenNow}
-                    aria-label={`Add ${item.name} to basket`}
-                    onClick={() => changeQty(item, +1)}>+</button>
-                ) : (
-                  <div className="stepper" role="group" aria-label={`${item.name} quantity`}>
-                    <button type="button" className="stepper__btn" aria-label="Remove one" onClick={() => changeQty(item, -1)}>−</button>
-                    <span className="stepper__qty mono">{qtyOf(item.id)}</span>
-                    <button type="button" className="stepper__btn" aria-label="Add one" onClick={() => changeQty(item, +1)}>+</button>
+          <h2 className="serif menu-category__title">{group.category}</h2>
+          <Reveal>
+            {group.items.map((item) => (
+              <RevealItem key={item.id}>
+                <article className={`menu-row${item.isAvailable ? "" : " menu-row--unavailable"}`}>
+                  <div className="menu-row__text">
+                    <h3>{item.name}</h3>
+                    <p>{item.description}</p>
+                    <p className="menu-row__price mono">{formatPrice(item.priceCents)}</p>
+                    {!item.isAvailable && <span className="menu-row__unavailable-label">Unavailable</span>}
                   </div>
-                )}
-              </div>
-              {item.imageUrl && <img className="menu-row__thumb" src={item.imageUrl} alt="" loading="lazy" />}
-            </article>
-          ))}
+                  <div className="menu-row__actions">
+                    {qtyOf(item.id) === 0 ? (
+                      <m.button type="button" className="stepper__add"
+                        disabled={!item.isAvailable || !r.isOpenNow}
+                        aria-label={`Add ${item.name} to basket`}
+                        whileTap={{ scale: 0.94 }}
+                        onClick={() => changeQty(item, +1)}>+</m.button>
+                    ) : (
+                      <div className="stepper" role="group" aria-label={`${item.name} quantity`}>
+                        <button type="button" className="stepper__btn" aria-label="Remove one" onClick={() => changeQty(item, -1)}>−</button>
+                        <span className="stepper__qty mono">{qtyOf(item.id)}</span>
+                        <button type="button" className="stepper__btn" aria-label="Add one" onClick={() => changeQty(item, +1)}>+</button>
+                      </div>
+                    )}
+                  </div>
+                  {item.imageUrl && <img className="menu-row__thumb" src={item.imageUrl} alt="" loading="lazy" />}
+                </article>
+              </RevealItem>
+            ))}
+          </Reveal>
         </section>
       ))}
 
@@ -194,6 +205,6 @@ export function RestaurantScreen() {
           <span className="basket-bar__total mono">{formatPrice(cartSubtotal(cartForThis))}</span>
         </Link>
       )}
-    </main>
+    </Screen>
   );
 }

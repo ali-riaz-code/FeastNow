@@ -3,7 +3,7 @@
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--s-md); padding: var(--s-2xl) var(--s-lg); text-align: center; color: var(--brown);
 }
-.restaurant__hero { position: relative; aspect-ratio: 16 / 9; background: var(--dough); }
+.restaurant__hero { position: relative; aspect-ratio: 16 / 9; background: var(--dough); overflow: hidden; }
 .restaurant__hero img { width: 100%; height: 100%; object-fit: cover; }
 .restaurant__hero-skeleton {
   aspect-ratio: 16 / 9;
@@ -46,6 +46,12 @@
 
 .menu-category { padding: var(--s-md); scroll-margin-top: 48px; }
 .menu-category h2 { margin: 0 0 var(--s-sm); font-size: 18px; color: var(--navy); }
+/* Sticks just below the .category-tabs bar (which owns top:0 / --z-sticky) so the
+   active section's title stays visible while scrolling without overlapping the tabs. */
+.menu-category__title {
+  position: sticky; top: 48px; z-index: var(--z-sticky);
+  background: var(--bg); padding: var(--s-sm) 0;
+}
 .menu-row {
   display: flex; gap: var(--s-md); align-items: flex-start;
   padding: var(--s-sm) 0; border-bottom: 1px solid var(--dough);
