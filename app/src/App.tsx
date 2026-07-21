@@ -1,5 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
+import { LazyMotion, MotionConfig } from "motion/react";
 import { AuthGate, useMe } from "./AuthGate";
+import { domMax } from "./lib/motion";
 import { CustomerShell } from "./shells/CustomerShell";
 import { RestaurantShell } from "./shells/RestaurantShell";
 import { DeliveryShell } from "./shells/DeliveryShell";
@@ -16,10 +18,14 @@ function RoleShell() {
 
 export default function App() {
   return (
-    <AuthGate>
-      <BrowserRouter basename="/app">
-        <RoleShell />
-      </BrowserRouter>
-    </AuthGate>
+    <LazyMotion features={domMax} strict>
+      <MotionConfig reducedMotion="user">
+        <AuthGate>
+          <BrowserRouter basename="/app">
+            <RoleShell />
+          </BrowserRouter>
+        </AuthGate>
+      </MotionConfig>
+    </LazyMotion>
   );
 }
