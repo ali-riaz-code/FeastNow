@@ -1,1 +1,25 @@
 /* motion component styles */
+
+/* Screen wrapper keeps the existing .screen padding from shell.css; nothing
+   extra needed here yet. Placeholder anchor for future screen-level rules. */
+.screen { will-change: opacity; }
+
+/* --- AppHeader (awning) --- */
+.appbar {
+  background: var(--awning-grad); color: var(--awning-ink);
+  padding: calc(env(safe-area-inset-top) + var(--s-md)) var(--s-md) var(--s-md);
+  box-shadow: var(--sh-header); position: relative; z-index: var(--z-sticky);
+}
+.appbar--sticky { position: sticky; top: 0; }
+.appbar__row { display: flex; align-items: center; gap: var(--s-sm); min-height: 40px; }
+.appbar__leading { display: flex; align-items: center; }
+.appbar__titles { flex: 1; min-width: 0; }
+.appbar__title { margin: 0; font-size: 22px; color: var(--awning-ink); line-height: 1.1; }
+.appbar__subtitle { margin: 2px 0 0; font-size: 13px; color: var(--awning-ink-dim); }
+.appbar__actions { display: flex; align-items: center; gap: var(--s-sm); }
+.appbar__extra { margin-top: var(--s-md); }
+/* Search bar sitting inside a navy header adapts to the dark surface. */
+.appbar__extra .search-bar { background: rgba(255,252,240,0.14); border-color: transparent; color: var(--awning-ink); }
+.appbar__extra .search-bar input { color: var(--awning-ink); }
+.appbar__extra .search-bar input::placeholder { color: var(--awning-ink-dim); opacity: 1; }
+.appbar__extra .search-bar:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227,175,4,0.35); }
