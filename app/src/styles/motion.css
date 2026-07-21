@@ -1,0 +1,41 @@
+/* Additive surface + motion tokens layered on tokens.css — no token value edits. */
+:root {
+  /* awning header surface (navy gradient) */
+  --awning-grad: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 62%);
+  --awning-ink: var(--cream);
+  --awning-ink-dim: rgba(255, 252, 240, 0.72);
+
+  /* section canvases for rhythm */
+  --canvas-warm: var(--butter);
+  --canvas-plain: var(--off-white);
+
+  /* header elevation */
+  --sh-header: 0 6px 22px rgba(15, 44, 86, 0.16);
+
+  /* motion presets (mirror landing eases) */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-enter: 420ms;
+}
+
+/* Utility: a subtle live pulse ring (online / active states). Compositor-only. */
+@keyframes pulse-ring {
+  0%   { transform: scale(1);    opacity: 0.55; }
+  70%  { transform: scale(1.9);  opacity: 0; }
+  100% { transform: scale(1.9);  opacity: 0; }
+}
+.pulse-ring::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: currentColor; opacity: 0.5; z-index: -1;
+  animation: pulse-ring 1800ms var(--ease-out-quart) infinite;
+}
+
+/* Utility: gentle attention pulse for "action needed". */
+@keyframes soft-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
+}
+.attn-pulse { animation: soft-pulse 1600ms var(--ease-out-quart) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring::after, .attn-pulse { animation: none !important; }
+}
