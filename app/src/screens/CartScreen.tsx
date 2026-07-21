@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AnimatePresence, m } from "motion/react";
 import { apiSend, ApiError, NetworkError } from "../lib/api";
 import { cartSubtotal, DELIVERY_FEE_CENTS, loadCart, saveCart, setLineQuantity, useCart } from "../lib/cart";
 import { formatPrice } from "../lib/format";
+import { staggerChild } from "../lib/motion";
 import type { OrderDTO } from "../lib/types";
+import { AppHeader } from "../components/AppHeader";
+import { Screen } from "../components/Screen";
 
 const ADDRESS_KEY = "feastnow_address";
 
@@ -23,14 +27,15 @@ export function CartScreen() {
 
   if (!cart) {
     return (
-      <main className="screen orders-empty">
+      <Screen className="orders-empty">
+        <AppHeader title="Your cart" />
         <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--brown)" strokeWidth="1.2" aria-hidden="true">
           <path d="M5 7h14l-1.5 12h-11Z" /><path d="M9 7a3 3 0 0 1 6 0" />
         </svg>
         <h1 className="serif">Your basket is empty</h1>
         <p>Add something delicious from a restaurant.</p>
         <Link to="/" className="btn-primary">Browse restaurants</Link>
-      </main>
+      </Screen>
     );
   }
 
@@ -90,26 +95,38 @@ export function CartScreen() {
   };
 
   const subtotal = cartSubtotal(cart);
+  const total = subtotal + DELIVERY_FEE_CENTS;
   return (
-    <main className="screen cart">
+    <Screen className="cart">
+      <AppHeader title="Your cart" />
       <h1 className="serif">Your basket</h1>
       <p className="cart__from">from <Link to={`/restaurant/${cart.restaurantId}`}>{cart.restaurantName}</Link></p>
 
       <section className="cart__lines" aria-label="Basket items">
-        {cart.lines.map((l) => (
-          <div key={l.menuItemId} className={`cart-line${unavailableIds.includes(l.menuItemId) ? " cart-line--unavailable" : ""}`}>
-            <div className="cart-line__text">
-              <p>{l.name}</p>
-              {unavailableIds.includes(l.menuItemId) && <span className="cart-line__flag">No longer available</span>}
-            </div>
-            <div className="stepper" role="group" aria-label={`${l.name} quantity`}>
-              <button type="button" className="stepper__btn" aria-label="Remove one" onClick={() => changeQty(l.menuItemId, -1)}>−</button>
-              <span className="stepper__qty mono">{l.quantity}</span>
-              <button type="button" className="stepper__btn" aria-label="Add one" onClick={() => changeQty(l.menuItemId, +1)}>+</button>
-            </div>
-            <span className="cart-line__price mono">{formatPrice(l.priceCents * l.quantity)}</span>
-          </div>
-        ))}
+        <AnimatePresence>
+          {cart.lines.map((l) => (
+            <m.div
+              key={l.menuItemId}
+              layout
+              variants={staggerChild}
+              initial="hidden"
+              animate="show"
+              exit={{ opacity: 0, x: -24 }}
+              className={`cart-line${unavailableIds.includes(l.menuItemId) ? " cart-line--unavailable" : ""}`}
+            >
+              <div className="cart-line__text">
+                <p>{l.name}</p>
+                {unavailableIds.includes(l.menuItemId) && <span className="cart-line__flag">No longer available</span>}
+              </div>
+              <div className="stepper" role="group" aria-label={`${l.name} quantity`}>
+                <button type="button" className="stepper__btn" aria-label="Remove one" onClick={() => changeQty(l.menuItemId, -1)}>−</button>
+                <span className="stepper__qty mono">{l.quantity}</span>
+                <button type="button" className="stepper__btn" aria-label="Add one" onClick={() => changeQty(l.menuItemId, +1)}>+</button>
+              </div>
+              <span className="cart-line__price mono">{formatPrice(l.priceCents * l.quantity)}</span>
+            </m.div>
+          ))}
+        </AnimatePresence>
       </section>
 
       <label className="cart__field">
@@ -127,7 +144,12 @@ export function CartScreen() {
       <section className="cart__totals" aria-label="Price breakdown">
         <div><span>Subtotal</span><span className="mono">{formatPrice(subtotal)}</span></div>
         <div><span>Delivery fee</span><span className="mono">{formatPrice(DELIVERY_FEE_CENTS)}</span></div>
-        <div className="cart__totals-total"><span>Total (cash)</span><span className="mono">{formatPrice(subtotal + DELIVERY_FEE_CENTS)}</span></div>
+        <div className="cart__totals-total">
+          <span>Total (cash)</span>
+          <m.span key={total} className="mono" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>
+            {formatPrice(total)}
+          </m.span>
+        </div>
       </section>
 
       {serverError && (
@@ -139,9 +161,15 @@ export function CartScreen() {
         </p>
       )}
 
-      <button type="button" className="btn-primary cart__place" disabled={placing} onClick={() => void placeOrder()}>
+      <m.button
+        type="button"
+        className="btn-primary cart__place"
+        disabled={placing}
+        whileTap={{ scale: 0.97 }}
+        onClick={() => void placeOrder()}
+      >
         {placing ? "Placing your order…" : "Place order — cash on delivery"}
-      </button>
-    </main>
+      </m.button>
+    </Screen>
   );
 }
