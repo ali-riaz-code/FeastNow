@@ -24,6 +24,13 @@
   transition: color var(--dur-fast) var(--ease-out-quart);
 }
 .tab-bar__tab--active { color: var(--navy); font-weight: 600; }
+.tab-bar__tab { position: relative; }
+.tab-bar__pill {
+  position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 34px; border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--gold) 22%, transparent); z-index: 0;
+}
+.tab-bar__icon, .tab-bar__tab > span:last-child { position: relative; z-index: 1; }
 
 .btn-primary {
   display: inline-block; background: var(--navy); color: var(--cream);
