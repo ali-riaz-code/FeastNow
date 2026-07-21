@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence } from "motion/react";
 import { PartnerProvider } from "../PartnerContext";
 import { TabBar, type TabDef } from "../components/TabBar";
 import { DActiveDeliveryScreen } from "../screens/delivery/DActiveDeliveryScreen";
@@ -36,16 +37,19 @@ export const DELIVERY_TABS: TabDef[] = [
 ];
 
 function DeliveryRoutes() {
+  const location = useLocation();
   return (
     <>
       <AssignmentOfferWatcher />
-      <Routes>
-        <Route path="/" element={<DActiveDeliveryScreen />} />
-        <Route path="/availability" element={<DAvailabilityScreen />} />
-        <Route path="/earnings" element={<DEarningsScreen />} />
-        <Route path="/profile" element={<DProfileScreen />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<DActiveDeliveryScreen />} />
+          <Route path="/availability" element={<DAvailabilityScreen />} />
+          <Route path="/earnings" element={<DEarningsScreen />} />
+          <Route path="/profile" element={<DProfileScreen />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
       <TabBar tabs={DELIVERY_TABS} />
     </>
   );
