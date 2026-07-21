@@ -50,7 +50,8 @@ export function PartnerProvider({ children }: { children: ReactNode }) {
       <button className="btn-retry" onClick={() => { setState({ status: "loading" }); void refresh().catch(() => setState({ status: "error", message: "Couldn't load your rider account. Try again." })); }}>Try again</button>
     </div>;
   }
-  // Approval gate is wired but dormant this phase (partners auto-approve on signup).
+  // New riders start pending (approvedAt: null) until an admin approves them;
+  // this gate holds them on the pending screen until then.
   if (!state.profile.approved) {
     return <DPendingApprovalScreen refresh={refresh} />;
   }

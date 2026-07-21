@@ -2,8 +2,8 @@ import { useCallback, useState } from "react";
 import { clearToken, redirectToLogin } from "../../lib/session";
 import { usePolling } from "../../hooks/usePolling";
 
-/** Dormant this phase (partners auto-approve on signup), but wired so the gate
- *  works once Admin approval ships. Polls quietly and offers a manual refresh. */
+/** Shown to riders whose account is still pending admin approval. Polls quietly
+ *  (so it advances as soon as an admin approves) and offers a manual refresh. */
 export function DPendingApprovalScreen({ refresh }: { refresh: () => Promise<void> }) {
   const [busy, setBusy] = useState(false);
 
