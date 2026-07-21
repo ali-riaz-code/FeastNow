@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { m, AnimatePresence } from "motion/react";
 import { apiGet, apiSend, ApiError } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { DeliveryOfferDTO } from "../../lib/types";
 import { usePolling } from "../../hooks/usePolling";
 import { useCountdown } from "../../hooks/useCountdown";
 import { playChime, unlockChime } from "../../lib/chime";
+import { slideUp } from "../../lib/motion";
 
 const POLL_MS = 4000;
 const OFFER_WINDOW_MS = 45_000; // mirrors backend OFFER_WINDOW_MS
@@ -13,10 +15,11 @@ const OFFER_WINDOW_MS = 45_000; // mirrors backend OFFER_WINDOW_MS
 function OfferCountdownBar({ expiresAt }: { expiresAt: string }) {
   const left = useCountdown(expiresAt);
   const total = Math.max(1, Math.round(OFFER_WINDOW_MS / 1000));
-  const pct = Math.min(100, Math.max(0, (left / total) * 100));
+  const frac = Math.min(1, Math.max(0, left / total));
   return (
     <div className="doffer__bar" aria-hidden="true">
-      <span className="doffer__bar-fill" style={{ width: `${pct}%` }} />
+      <m.span className="doffer__bar-fill" style={{ transformOrigin: "left" }}
+        animate={{ scaleX: frac }} transition={{ ease: "linear", duration: 0.5 }} />
     </div>
   );
 }
@@ -49,9 +52,8 @@ export function AssignmentOfferWatcher() {
     if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
   }, [offer?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!offer) return null;
-
   const accept = async () => {
+    if (!offer) return;
     setBusy(true);
     try {
       await apiSend("POST", `/api/delivery/offers/${offer.id}/accept`);
@@ -66,6 +68,7 @@ export function AssignmentOfferWatcher() {
   };
 
   const decline = async () => {
+    if (!offer) return;
     setBusy(true);
     try { await apiSend("POST", `/api/delivery/offers/${offer.id}/decline`); }
     catch { /* already gone — poll will reconcile */ }
@@ -75,21 +78,30 @@ export function AssignmentOfferWatcher() {
 
   return (
     <>
-      <div className="doffer" role="alertdialog" aria-modal="true" aria-label="New delivery offer">
-        <p className="doffer__eyebrow">New delivery offer</p>
-        <p className="doffer__restaurant serif">{offer.restaurantName}</p>
-        <p className="doffer__id mono">{formatOrderNumber(offer.orderNumber)}</p>
-        <OfferCountdownBar expiresAt={offer.expiresAt} />
-        <dl className="doffer__stats">
-          <div><dt>To pickup</dt><dd className="mono">{offer.pickupDistanceKm != null ? `${offer.pickupDistanceKm} km` : "—"}</dd></div>
-          <div><dt>To dropoff</dt><dd className="mono">{offer.dropoffDistanceKm != null ? `${offer.dropoffDistanceKm} km` : "—"}</dd></div>
-          <div><dt>Payout</dt><dd className="mono doffer__payout">{formatPrice(offer.payoutCents)}</dd></div>
-        </dl>
-        <div className="doffer__actions">
-          <button type="button" className="doffer__decline" disabled={busy} onClick={() => void decline()}>Decline</button>
-          <button type="button" className="btn-primary doffer__accept" disabled={busy} onClick={() => void accept()}>Accept</button>
-        </div>
-      </div>
+      <AnimatePresence>
+        {offer && (
+          <>
+            <m.div key="backdrop" className="doffer__backdrop" aria-hidden="true"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+            <m.div key="panel" className="doffer" role="alertdialog" aria-modal="true" aria-label="New delivery offer"
+              variants={slideUp} initial="hidden" animate="show" exit="exit">
+              <p className="doffer__eyebrow">New delivery offer</p>
+              <p className="doffer__restaurant serif">{offer.restaurantName}</p>
+              <p className="doffer__id mono">{formatOrderNumber(offer.orderNumber)}</p>
+              <OfferCountdownBar expiresAt={offer.expiresAt} />
+              <dl className="doffer__stats">
+                <div><dt>To pickup</dt><dd className="mono">{offer.pickupDistanceKm != null ? `${offer.pickupDistanceKm} km` : "—"}</dd></div>
+                <div><dt>To dropoff</dt><dd className="mono">{offer.dropoffDistanceKm != null ? `${offer.dropoffDistanceKm} km` : "—"}</dd></div>
+                <div><dt>Payout</dt><dd className="mono doffer__payout">{formatPrice(offer.payoutCents)}</dd></div>
+              </dl>
+              <div className="doffer__actions">
+                <button type="button" className="doffer__decline" disabled={busy} onClick={() => void decline()}>Decline</button>
+                <m.button type="button" className="btn-primary doffer__accept" whileTap={{ scale: 0.97 }} disabled={busy} onClick={() => void accept()}>Accept</m.button>
+              </div>
+            </m.div>
+          </>
+        )}
+      </AnimatePresence>
       {toast ? <p className="doffer__toast" role="status" onAnimationEnd={() => setToast(null)}>{toast}</p> : null}
     </>
   );

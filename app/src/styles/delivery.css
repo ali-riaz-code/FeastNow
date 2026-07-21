@@ -193,11 +193,19 @@
 .dearn__row-payout { color: var(--basil); font-weight: 700; }
 
 /* ---- Assignment offer modal ---- */
+/* Full-screen dim behind the offer panel. */
+.doffer__backdrop {
+  position: fixed; inset: 0;
+  z-index: var(--z-drawer, 60);
+  background: rgba(15, 44, 86, 0.35);
+}
 .doffer {
   position: fixed;
-  left: 50%;
+  /* Centred via auto margins (not translateX) so motion's y transform on the
+     panel entrance/exit doesn't fight the horizontal centring. */
+  left: 0; right: 0;
+  margin-inline: auto;
   bottom: calc(72px + var(--s-md));
-  transform: translateX(-50%);
   z-index: var(--z-drawer, 60);
   width: min(420px, calc(100% - 2 * var(--s-md)));
   background: var(--cream);
@@ -206,14 +214,6 @@
   box-shadow: var(--sh-overlay);
   padding: var(--s-lg);
   text-align: center;
-  animation: doffer-in 220ms var(--ease-out-quart, ease-out);
-}
-@keyframes doffer-in {
-  from { opacity: 0; transform: translate(-50%, 16px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .doffer { animation: none; }
 }
 .doffer__eyebrow {
   text-transform: uppercase;
@@ -235,8 +235,9 @@
 .doffer__bar-fill {
   display: block;
   height: 100%;
-  background: var(--tomato);
-  transition: width 500ms linear;
+  width: 100%;
+  background: var(--gold);
+  transform-origin: left;
 }
 .doffer__stats {
   display: flex;
