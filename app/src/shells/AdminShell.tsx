@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { NavLink, Navigate, Route, Routes } from "react-router-dom";
+import { NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { m } from "motion/react";
 import { clearToken, redirectToLogin } from "../lib/session";
 import { useMe } from "../AuthGate";
+import { easeExpo } from "../lib/motion";
 import { ADashboardScreen } from "../screens/admin/ADashboardScreen";
 import { AApprovalsScreen } from "../screens/admin/AApprovalsScreen";
 import { AUsersScreen } from "../screens/admin/AUsersScreen";
@@ -25,7 +27,15 @@ function AdminSidebar() {
         {NAV.map((n) => (
           <NavLink key={n.to} to={n.to} end={n.end}
             className={({ isActive }) => `admin-navlink${isActive ? " admin-navlink--active" : ""}`}>
-            {n.label}
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <m.span className="admin-navlink__bar" layoutId="adminNav"
+                    transition={{ type: "spring", stiffness: 520, damping: 38 }} aria-hidden="true" />
+                )}
+                {n.label}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
@@ -38,6 +48,7 @@ function AdminSidebar() {
 }
 
 export function AdminShell() {
+  const location = useLocation();
   // Break out of the 480px phone frame — this is a back-office.
   useEffect(() => {
     const root = document.getElementById("root");
@@ -48,8 +59,10 @@ export function AdminShell() {
   return (
     <div className="admin-shell">
       <AdminSidebar />
-      <main className="admin-main">
-        <Routes>
+      <m.main className="admin-main" key={location.pathname}
+        initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.32, ease: easeExpo }}>
+        <Routes location={location}>
           <Route path="/" element={<ADashboardScreen />} />
           <Route path="/approvals" element={<AApprovalsScreen />} />
           <Route path="/users" element={<AUsersScreen />} />
@@ -57,7 +70,7 @@ export function AdminShell() {
           <Route path="/promotions" element={<APromotionsScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </main>
+      </m.main>
     </div>
   );
 }
