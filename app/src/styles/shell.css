@@ -28,15 +28,14 @@
   transition: color var(--dur-fast) var(--ease-out-quart);
 }
 .tab-bar__tab--active { color: var(--navy); font-weight: 600; }
-/* relative (no z-index) so the tab does NOT create its own stacking context;
-   the pill and this tab's icon/label participate in .tab-bar's shared context. */
 .tab-bar__tab { position: relative; }
+/* The pill is a direct child of .tab-bar (not nested in a tab); `left` is
+   driven by Motion to the active tab's centre. z-index:0 keeps it above the
+   bar's cream background but below every label/icon (z-index:1). */
 .tab-bar__pill {
   position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
   width: 44px; height: 34px; border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--gold) 22%, transparent);
-  /* z-index:0 keeps it above the bar's cream background but below every
-     label/icon (z-index:1) in the shared context. */
   z-index: 0;
 }
 .tab-bar__icon, .tab-bar__tab > span:last-child { position: relative; z-index: 1; }
