@@ -2,7 +2,7 @@ import type { AvailabilityStatus, OfferStatus, PrismaClient, VehicleType } from 
 import type { OrderWithItems } from "./orderRepository";
 
 export interface PartnerView {
-  id: string; userId: string; name: string; phone: string;
+  id: string; userId: string; name: string; phone: string; avatarUrl: string | null;
   vehicleType: VehicleType; availabilityStatus: AvailabilityStatus;
   approvedAt: Date | null;
   currentLat: number | null; currentLng: number | null; locationUpdatedAt: Date | null;
@@ -18,7 +18,7 @@ export interface ReadyOrder { id: string; restaurantLat: number | null; restaura
 export interface DeliveryRepository {
   // profile
   findByUserId(userId: string): Promise<PartnerView | null>;
-  updateProfile(userId: string, data: { name: string; phone: string; vehicleType: VehicleType }): Promise<PartnerView>;
+  updateProfile(userId: string, data: { name: string; phone: string; vehicleType: VehicleType; avatarUrl?: string | null }): Promise<PartnerView>;
   setAvailability(userId: string, status: AvailabilityStatus): Promise<PartnerView>;
   updateLocation(userId: string, lat: number, lng: number, now: Date): Promise<PartnerView>;
   // assignment inputs
@@ -84,14 +84,14 @@ export function createDeliveryRepository(prisma: PrismaClient): DeliveryReposito
         // No Prisma relation exists between DeliveryPartnerProfile and User; fetch the user separately below.
       }).then(async (p) => p && {
         id: p.id, userId: p.userId,
-        ...(await prisma.user.findUnique({ where: { id: userId }, select: { name: true, phone: true } }))!,
+        ...(await prisma.user.findUnique({ where: { id: userId }, select: { name: true, phone: true, avatarUrl: true } }))!,
         vehicleType: p.vehicleType, availabilityStatus: p.availabilityStatus, approvedAt: p.approvedAt,
         currentLat: p.currentLat, currentLng: p.currentLng, locationUpdatedAt: p.locationUpdatedAt,
       });
     },
-    async updateProfile(userId, { name, phone, vehicleType }) {
+    async updateProfile(userId, { name, phone, vehicleType, avatarUrl }) {
       await prisma.$transaction([
-        prisma.user.update({ where: { id: userId }, data: { name, phone } }),
+        prisma.user.update({ where: { id: userId }, data: { name, phone, ...(avatarUrl !== undefined ? { avatarUrl } : {}) } }),
         prisma.deliveryPartnerProfile.update({ where: { userId }, data: { vehicleType } }),
       ]);
       return this.findByUserId(userId) as Promise<PartnerView>;

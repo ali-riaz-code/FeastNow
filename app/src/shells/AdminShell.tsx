@@ -9,6 +9,7 @@ import { AApprovalsScreen } from "../screens/admin/AApprovalsScreen";
 import { AUsersScreen } from "../screens/admin/AUsersScreen";
 import { AModerationScreen } from "../screens/admin/AModerationScreen";
 import { APromotionsScreen } from "../screens/admin/APromotionsScreen";
+import { ASettingsScreen } from "../screens/admin/ASettingsScreen";
 
 const NAV = [
   { to: "/", label: "Dashboard", end: true },
@@ -16,6 +17,7 @@ const NAV = [
   { to: "/users", label: "Users", end: false },
   { to: "/moderation", label: "Moderation", end: false },
   { to: "/promotions", label: "Promotions", end: false },
+  { to: "/settings", label: "Settings", end: false },
 ];
 
 function AdminSidebar() {
@@ -40,7 +42,14 @@ function AdminSidebar() {
         ))}
       </nav>
       <div className="admin-sidebar__foot">
-        <span className="admin-sidebar__who">{me.email}</span>
+        <NavLink to="/settings" className="admin-sidebar__me">
+          <span className="admin-sidebar__avatar" aria-hidden="true">
+            {me.avatarUrl
+              ? <img src={me.avatarUrl} alt="" />
+              : <span className="serif">{me.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase()}</span>}
+          </span>
+          <span className="admin-sidebar__who">{me.email}</span>
+        </NavLink>
         <button className="btn-logout" onClick={() => { clearToken(); redirectToLogin(); }}>Log out</button>
       </div>
     </aside>
@@ -68,6 +77,7 @@ export function AdminShell() {
           <Route path="/users" element={<AUsersScreen />} />
           <Route path="/moderation" element={<AModerationScreen />} />
           <Route path="/promotions" element={<APromotionsScreen />} />
+          <Route path="/settings" element={<ASettingsScreen />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </m.main>

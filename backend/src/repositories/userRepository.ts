@@ -21,6 +21,8 @@ export interface UserRepository {
   findByEmail(email: string): Promise<User | null>;
   findByEmailOrPhone(identifier: string): Promise<User | null>;
   create(data: { name: string; email: string; phone: string; passwordHash: string }): Promise<User>;
+  /** Set (string) or clear (null) the account's profile photo. Shared by customer & admin. */
+  updateAvatar(id: string, avatarUrl: string | null): Promise<User>;
   /** User (role restaurant) + pending RestaurantProfile in one transaction (FR-2). */
   createRestaurantOwner(data: RestaurantOwnerSignup): Promise<User>;
   /** User (role delivery_partner) + pending (awaits admin approval) DeliveryPartnerProfile in one transaction (FR-23). */
@@ -42,6 +44,9 @@ export function createUserRepository(prisma: PrismaClient): UserRepository {
     },
     create(data) {
       return prisma.user.create({ data });
+    },
+    updateAvatar(id, avatarUrl) {
+      return prisma.user.update({ where: { id }, data: { avatarUrl } });
     },
     createRestaurantOwner(data) {
       const { businessName, businessAddress, cuisine, lat, lng, ...user } = data;

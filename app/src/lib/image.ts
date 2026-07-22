@@ -57,6 +57,8 @@ export async function compressImage(file: File, opts: CompressOptions): Promise<
   return out;
 }
 
-// Presets: a wide hero/logo shot, and a small square-ish menu thumbnail.
+// Presets: a wide hero/logo shot, a small square-ish menu thumbnail, and a
+// small profile avatar (rendered at ~40–120px, so 400px covers retina).
 export const HERO_PRESET: CompressOptions = { maxDim: 1000, quality: 0.72 };
 export const THUMB_PRESET: CompressOptions = { maxDim: 640, quality: 0.72 };
+export const AVATAR_PRESET: CompressOptions = { maxDim: 400, quality: 0.8 };

@@ -28,6 +28,7 @@ export function createFakeUserRepository(
       phone: data.phone,
       passwordHash: data.passwordHash,
       role,
+      avatarUrl: null,
       createdAt: new Date(),
     } as User;
   }
@@ -52,6 +53,12 @@ export function createFakeUserRepository(
     async create(data) {
       const user = makeUser(data);
       users.push(user);
+      return user;
+    },
+    async updateAvatar(id, avatarUrl) {
+      const user = users.find((u) => u.id === id);
+      if (!user) throw new Error(`No user ${id}`);
+      user.avatarUrl = avatarUrl;
       return user;
     },
     async createRestaurantOwner(data) {

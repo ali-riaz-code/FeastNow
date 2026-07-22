@@ -3,6 +3,7 @@ import type { DeliveryRepository, PartnerView } from "../repositories/deliveryRe
 import { createRequirePartner, type PartnerRequest } from "../middleware/requirePartner";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { toActiveDeliveryDTO, toEarningsDTO, toOfferDTO, toPartnerDTO } from "../lib/deliveryDTO";
+import { isValidImageRef } from "../lib/imageRef";
 import { toOrderDTO } from "../lib/orderDTO";
 import { LOCATION_STALE_MS } from "../lib/deliveryConfig";
 import { runAssignmentTick, acceptOffer, declineOffer, releaseOrder } from "../lib/deliveryAssignment";
@@ -23,13 +24,18 @@ export function createDeliveryRouter(deps: DeliveryRouterDeps): Router {
     res.status(200).json({ partner: toPartnerDTO(req.partner!) })));
 
   router.patch("/me", requirePartner, asyncHandler(async (req: PartnerRequest, res) => {
-    const { name, phone, vehicleType } = req.body ?? {};
+    const { name, phone, vehicleType, avatarUrl } = req.body ?? {};
     if (typeof name !== "string" || !name.trim() || typeof phone !== "string" || !phone.trim() ||
         typeof vehicleType !== "string" || !VEHICLES.includes(vehicleType)) {
       return res.status(400).json({ error: "Name, phone, and vehicle type are required." });
     }
+    // avatarUrl is optional: undefined leaves it unchanged, null clears it, a string must be a valid image.
+    if (avatarUrl !== undefined && avatarUrl !== null && !(typeof avatarUrl === "string" && isValidImageRef(avatarUrl))) {
+      return res.status(400).json({ error: "Invalid image — upload a photo under 3 MB." });
+    }
     const updated = await deps.deliveryRepo.updateProfile(req.partner!.userId,
-      { name: name.trim(), phone: phone.trim(), vehicleType: vehicleType as PartnerView["vehicleType"] });
+      { name: name.trim(), phone: phone.trim(), vehicleType: vehicleType as PartnerView["vehicleType"],
+        ...(avatarUrl !== undefined ? { avatarUrl } : {}) });
     return res.status(200).json({ partner: toPartnerDTO(updated) });
   }));
 

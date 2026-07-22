@@ -1,5 +1,5 @@
 export type UserRole = "customer" | "restaurant" | "delivery_partner" | "admin";
-export interface Me { id: string; name: string; email: string; phone: string; role: UserRole; }
+export interface Me { id: string; name: string; email: string; phone: string; role: UserRole; avatarUrl: string | null; }
 
 export interface RestaurantCard {
   id: string; name: string; cuisines: string[]; avgRating: number;
@@ -82,7 +82,7 @@ export interface OwnerReview {
 export type VehicleType = "bike" | "motorcycle" | "car";
 
 export interface PartnerProfile {
-  id: string; name: string; phone: string; vehicleType: VehicleType;
+  id: string; name: string; phone: string; avatarUrl: string | null; vehicleType: VehicleType;
   availabilityStatus: "offline" | "online"; approved: boolean;
 }
 

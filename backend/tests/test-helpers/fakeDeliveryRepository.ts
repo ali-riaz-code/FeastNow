@@ -4,7 +4,7 @@ import type { OrderWithItems } from "../../src/repositories/orderRepository";
 let pSeq = 0, oSeq = 0;
 export function makePartner(o: Partial<PartnerView> = {}): PartnerView {
   pSeq += 1;
-  return { id: `dp-${pSeq}`, userId: `pu-${pSeq}`, name: "Rider", phone: "0300", vehicleType: "motorcycle",
+  return { id: `dp-${pSeq}`, userId: `pu-${pSeq}`, name: "Rider", phone: "0300", avatarUrl: null, vehicleType: "motorcycle",
     availabilityStatus: "online", approvedAt: new Date(), currentLat: 24.86, currentLng: 67.01,
     locationUpdatedAt: new Date(), ...o };
 }
@@ -37,10 +37,11 @@ export function createFakeDeliveryRepository(
     async findByUserId(userId) {
       return partners.find((p) => p.userId === userId) ?? null;
     },
-    async updateProfile(userId, { name, phone, vehicleType }) {
+    async updateProfile(userId, { name, phone, vehicleType, avatarUrl }) {
       const p = partners.find((x) => x.userId === userId);
       if (!p) throw new Error(`partner not found: ${userId}`);
       p.name = name; p.phone = phone; p.vehicleType = vehicleType;
+      if (avatarUrl !== undefined) p.avatarUrl = avatarUrl;
       return p;
     },
     async setAvailability(userId, status) {

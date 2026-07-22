@@ -4,11 +4,19 @@ import { getToken, redirectToLogin } from "./lib/session";
 import type { Me } from "./lib/types";
 
 const MeContext = createContext<Me | null>(null);
+const SetMeContext = createContext<((me: Me) => void) | null>(null);
 
 export function useMe(): Me {
   const me = useContext(MeContext);
   if (!me) throw new Error("useMe must be used inside AuthGate.");
   return me;
+}
+
+/** Update the cached account (e.g. after changing the profile photo). */
+export function useSetMe(): (me: Me) => void {
+  const setMe = useContext(SetMeContext);
+  if (!setMe) throw new Error("useSetMe must be used inside AuthGate.");
+  return setMe;
 }
 
 type AuthState =
@@ -53,5 +61,11 @@ export function AuthGate({ children }: { children: ReactNode }) {
       <button className="btn-retry" onClick={() => void boot()}>Try again</button>
     </div>;
   }
-  return <MeContext.Provider value={state.me}>{children}</MeContext.Provider>;
+  return (
+    <MeContext.Provider value={state.me}>
+      <SetMeContext.Provider value={(me) => setState({ status: "ready", me })}>
+        {children}
+      </SetMeContext.Provider>
+    </MeContext.Provider>
+  );
 }

@@ -13,6 +13,7 @@ export function toPartnerDTO(p: PartnerView) {
     id: p.id,
     name: p.name,
     phone: p.phone,
+    avatarUrl: p.avatarUrl ?? null,
     vehicleType: p.vehicleType,
     availabilityStatus: p.availabilityStatus,
     approved: p.approvedAt != null,

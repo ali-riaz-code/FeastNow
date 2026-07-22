@@ -4,8 +4,10 @@ import { apiSend } from "../../lib/api";
 import { clearToken, redirectToLogin } from "../../lib/session";
 import type { PartnerProfile, VehicleType } from "../../lib/types";
 import { usePartner } from "../../PartnerContext";
+import { useMe, useSetMe } from "../../AuthGate";
 import { Screen } from "../../components/Screen";
 import { AppHeader } from "../../components/AppHeader";
+import { AvatarUpload } from "../../components/AvatarUpload";
 
 const VEHICLES: { value: VehicleType; label: string }[] = [
   { value: "bike", label: "Bicycle" },
@@ -15,9 +17,12 @@ const VEHICLES: { value: VehicleType; label: string }[] = [
 
 export function DProfileScreen() {
   const { profile, setProfile } = usePartner();
+  const me = useMe();
+  const setMe = useSetMe();
   const [name, setName] = useState(profile.name);
   const [phone, setPhone] = useState(profile.phone);
   const [vehicleType, setVehicleType] = useState<VehicleType>(profile.vehicleType);
+  const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -31,9 +36,10 @@ export function DProfileScreen() {
     setSaving(true);
     try {
       const res = await apiSend<{ partner: PartnerProfile }>("PATCH", "/api/delivery/me", {
-        name: name.trim(), phone: phone.trim(), vehicleType,
+        name: name.trim(), phone: phone.trim(), vehicleType, avatarUrl,
       });
       setProfile(res.partner);
+      setMe({ ...me, name: res.partner.name, avatarUrl: res.partner.avatarUrl });
       setSaved(true);
     } catch {
       setError("Couldn't save. Check your connection and try again.");
@@ -52,6 +58,7 @@ export function DProfileScreen() {
     <Screen className="rform dprofile">
       <AppHeader title="Profile" />
       <h1>Rider profile</h1>
+      <AvatarUpload value={avatarUrl} name={name || me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
       <label className="rform__field"><span>Full name</span>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
       <label className="rform__field"><span>Phone</span>
