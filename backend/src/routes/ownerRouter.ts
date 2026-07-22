@@ -3,6 +3,7 @@ import type { RestaurantProfile } from "@prisma/client";
 import type { OwnerRepository } from "../repositories/ownerRepository";
 import { createRequireOwner, type OwnerRequest } from "../middleware/requireOwner";
 import { asyncHandler } from "../middleware/asyncHandler";
+import { isValidImageRef } from "../lib/imageRef";
 
 export interface OwnerRouterDeps {
   ownerRepo: OwnerRepository;
@@ -16,6 +17,7 @@ export function toOwnerProfileDTO(p: RestaurantProfile) {
   return {
     id: p.id, name: p.name, description: p.description, address: p.address,
     cuisines: p.cuisines, opensAt: p.opensAt, closesAt: p.closesAt,
+    heroImageUrl: p.heroImageUrl,
     isOnline: p.isOnline, approvalStatus: p.approvalStatus,
     avgRating: p.avgRating, ratingCount: p.ratingCount, estDeliveryMin: p.estDeliveryMin,
   };
@@ -30,7 +32,7 @@ export function createOwnerRouter(deps: OwnerRouterDeps): Router {
   }));
 
   router.patch("/profile", requireOwner, asyncHandler(async (req: OwnerRequest, res) => {
-    const { name, description, address, cuisines, opensAt, closesAt } = req.body ?? {};
+    const { name, description, address, cuisines, opensAt, closesAt, heroImageUrl } = req.body ?? {};
     if (
       typeof name !== "string" || !name.trim() ||
       typeof description !== "string" ||
@@ -41,9 +43,14 @@ export function createOwnerRouter(deps: OwnerRouterDeps): Router {
     ) {
       return res.status(400).json({ error: "Missing or invalid profile details." });
     }
+    // heroImageUrl is optional; when present it must be a valid image reference.
+    if (heroImageUrl !== undefined && !isValidImageRef(heroImageUrl)) {
+      return res.status(400).json({ error: "Invalid image — upload a photo under 3 MB." });
+    }
     const profile = await deps.ownerRepo.updateProfile(req.ownerProfile!.id, {
       name: name.trim(), description: description.trim(), address: address.trim(),
       cuisines: cuisines.map((c: string) => c.trim()), opensAt, closesAt,
+      ...(heroImageUrl !== undefined ? { heroImageUrl } : {}),
     });
     return res.status(200).json({ profile: toOwnerProfileDTO(profile) });
   }));

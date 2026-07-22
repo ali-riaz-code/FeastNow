@@ -3,6 +3,7 @@ import type { MenuItem } from "@prisma/client";
 import type { MenuItemInput, OwnerRepository } from "../repositories/ownerRepository";
 import { createRequireOwner, type OwnerRequest } from "../middleware/requireOwner";
 import { asyncHandler } from "../middleware/asyncHandler";
+import { isValidImageRef } from "../lib/imageRef";
 
 export interface OwnerMenuRouterDeps {
   ownerRepo: OwnerRepository;
@@ -45,6 +46,17 @@ function readItemInput(body: unknown, partial: boolean): Partial<MenuItemInput> 
   if (b.isAvailable !== undefined || !partial) {
     if (bad(typeof b.isAvailable !== "boolean")) return null;
     out.isAvailable = b.isAvailable as boolean;
+  }
+  // imageUrl is always optional: a valid image reference to set one, or null to
+  // clear it. Absent = leave unchanged (on PATCH) / no image (on create).
+  if (b.imageUrl !== undefined) {
+    if (b.imageUrl === null) {
+      out.imageUrl = null;
+    } else if (typeof b.imageUrl === "string" && isValidImageRef(b.imageUrl)) {
+      out.imageUrl = b.imageUrl;
+    } else {
+      return null;
+    }
   }
   return out;
 }

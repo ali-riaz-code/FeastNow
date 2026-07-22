@@ -2,10 +2,12 @@ import type { MenuItem, PrismaClient, Rating, RestaurantProfile } from "@prisma/
 
 export interface MenuItemInput {
   category: string; name: string; description: string; priceCents: number; isAvailable: boolean;
+  imageUrl?: string | null;
 }
 
 export interface ProfileUpdate {
   name: string; description: string; address: string; cuisines: string[]; opensAt: string; closesAt: string;
+  heroImageUrl?: string;
 }
 
 export interface OwnerRepository {

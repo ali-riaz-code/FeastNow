@@ -82,7 +82,7 @@ export function RSearchScreen() {
             <h2>Orders</h2>
             {orders === null && <p className="rsearch__hint">Searching…</p>}
             {orders !== null && orders.length === 0 && <p className="rsearch__hint">No orders match “{q}”.</p>}
-            <Reveal>
+            <Reveal inView={false}>
               {orders?.map((o) => (
                 <RevealItem key={o.id}>
                   <Link to={`/orders/${o.id}`} className="rorder-card rsearch__hit">
@@ -98,7 +98,7 @@ export function RSearchScreen() {
           <section aria-label="Matching menu items">
             <h2>Menu items</h2>
             {menuHits.length === 0 && <p className="rsearch__hint">No menu items match “{q}”.</p>}
-            <Reveal>
+            <Reveal inView={false}>
               {menuHits.map((m) => (
                 <RevealItem key={m.id}>
                   <Link to={`/menu/${m.id}`} className="rorder-card rsearch__hit">

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
+import { compressImage, THUMB_PRESET, ImageError } from "../../lib/image";
 import type { OwnerMenuItem } from "../../lib/types";
 import { Screen } from "../../components/Screen";
 
@@ -15,6 +16,10 @@ export function RMenuItemEditScreen() {
   const [category, setCategory] = useState("");
   const [priceRs, setPriceRs] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const [loaded, setLoaded] = useState(isNew);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -27,6 +32,7 @@ export function RMenuItemEditScreen() {
         if (!item) { setError("This item no longer exists."); return; }
         setName(item.name); setDescription(item.description); setCategory(item.category);
         setPriceRs(String(Math.round(item.priceCents / 100))); setIsAvailable(item.isAvailable);
+        setImageUrl(item.imageUrl);
       }
       setLoaded(true);
     }).catch(() => setError("Couldn't load the menu. Go back and retry."));
@@ -40,7 +46,7 @@ export function RMenuItemEditScreen() {
       return;
     }
     setBusy(true);
-    const body = { name: name.trim(), description: description.trim(), category: category.trim(), priceCents, isAvailable };
+    const body = { name: name.trim(), description: description.trim(), category: category.trim(), priceCents, isAvailable, imageUrl };
     try {
       if (isNew) await apiSend("POST", "/api/restaurant/menu-items", body);
       else await apiSend("PATCH", `/api/restaurant/menu-items/${id}`, body);
@@ -48,6 +54,21 @@ export function RMenuItemEditScreen() {
     } catch {
       setError("Couldn't save. Check the fields and try again.");
       setBusy(false);
+    }
+  };
+
+  const pickPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setPhotoError("");
+    setPhotoBusy(true);
+    try {
+      setImageUrl(await compressImage(file, THUMB_PRESET));
+    } catch (err) {
+      setPhotoError(err instanceof ImageError ? err.message : "Couldn't process that image.");
+    } finally {
+      setPhotoBusy(false);
     }
   };
 
@@ -90,6 +111,28 @@ export function RMenuItemEditScreen() {
         <span>Price (Rs)</span>
         <input type="number" inputMode="numeric" min="1" value={priceRs} onChange={(e) => setPriceRs(e.target.value)} />
       </label>
+      <div className="rform__field">
+        <span>Photo</span>
+        <div className="rphoto">
+          <div className="rphoto__preview rphoto__preview--thumb">
+            {imageUrl
+              ? <img src={imageUrl} alt="Current item photo" />
+              : <span className="rphoto__placeholder">No photo</span>}
+          </div>
+          <div className="rphoto__actions">
+            <input ref={fileRef} type="file" accept="image/*" className="rphoto__input" onChange={(e) => void pickPhoto(e)} />
+            <button type="button" className="btn-retry rphoto__btn" disabled={photoBusy}
+              onClick={() => fileRef.current?.click()}>
+              {photoBusy ? "Processing…" : imageUrl ? "Change photo" : "Upload photo"}
+            </button>
+            {imageUrl && (
+              <button type="button" className="rphoto__remove" disabled={photoBusy}
+                onClick={() => setImageUrl(null)}>Remove</button>
+            )}
+          </div>
+        </div>
+        {photoError && <span className="cart__error" role="alert">{photoError}</span>}
+      </div>
       <label className="rform__check">
         <input type="checkbox" checked={isAvailable} onChange={(e) => setIsAvailable(e.target.checked)} />
         <span>Available to order</span>

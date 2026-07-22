@@ -32,7 +32,9 @@ export interface AppConfig {
 export function createApp(config: AppConfig) {
   const app = express();
   app.use(cors({ origin: config.frontendOrigins }));
-  app.use(express.json());
+  // Raised from the 100kb default so owners can submit compressed base64
+  // profile/menu photos (stored inline in the existing image URL columns).
+  app.use(express.json({ limit: "4mb" }));
 
   const userRepo = createUserRepository(config.prisma);
   const otpRepo = createOtpRepository(config.prisma);

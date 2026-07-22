@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { m } from "motion/react";
 import { apiGet, apiSend } from "../../lib/api";
 import { clearToken } from "../../lib/session";
 import { formatRating } from "../../lib/format";
+import { compressImage, HERO_PRESET, ImageError } from "../../lib/image";
 import type { OwnerProfile, OwnerReview } from "../../lib/types";
 import { useOwner } from "../../OwnerContext";
 import { Screen } from "../../components/Screen";
@@ -16,6 +17,10 @@ export function RProfileScreen() {
   const [cuisines, setCuisines] = useState(profile.cuisines.join(", "));
   const [opensAt, setOpensAt] = useState(profile.opensAt);
   const [closesAt, setClosesAt] = useState(profile.closesAt);
+  const [heroImageUrl, setHeroImageUrl] = useState(profile.heroImageUrl);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -26,6 +31,21 @@ export function RProfileScreen() {
       .then((res) => setReviews(res.reviews))
       .catch(() => setReviews([]));
   }, []);
+
+  const pickPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    setPhotoError("");
+    setPhotoBusy(true);
+    try {
+      setHeroImageUrl(await compressImage(file, HERO_PRESET));
+    } catch (err) {
+      setPhotoError(err instanceof ImageError ? err.message : "Couldn't process that image.");
+    } finally {
+      setPhotoBusy(false);
+    }
+  };
 
   const save = async () => {
     setError(""); setSaved(false);
@@ -38,9 +58,10 @@ export function RProfileScreen() {
     try {
       const res = await apiSend<{ profile: OwnerProfile }>("PATCH", "/api/restaurant/profile", {
         name: name.trim(), description: description.trim(), address: address.trim(),
-        cuisines: cuisineList, opensAt, closesAt,
+        cuisines: cuisineList, opensAt, closesAt, heroImageUrl,
       });
       setProfile(res.profile);
+      setHeroImageUrl(res.profile.heroImageUrl);
       setSaved(true);
     } catch {
       setError("Couldn't save. Check the hours format and try again.");
@@ -61,6 +82,23 @@ export function RProfileScreen() {
   return (
     <Screen className="rform rprofile">
       <h1>Business info</h1>
+      <div className="rform__field">
+        <span>Restaurant photo</span>
+        <p className="rphoto__hint">Shown to customers on your card and profile — a logo, storefront, or signature dish.</p>
+        <div className="rphoto">
+          <div className="rphoto__preview">
+            {heroImageUrl
+              ? <img src={heroImageUrl} alt="Current restaurant photo" />
+              : <span className="rphoto__placeholder">No photo yet</span>}
+          </div>
+          <input ref={fileRef} type="file" accept="image/*" className="rphoto__input" onChange={(e) => void pickPhoto(e)} />
+          <button type="button" className="btn-retry rphoto__btn" disabled={photoBusy}
+            onClick={() => fileRef.current?.click()}>
+            {photoBusy ? "Processing…" : heroImageUrl ? "Change photo" : "Upload photo"}
+          </button>
+        </div>
+        {photoError && <span className="cart__error" role="alert">{photoError}</span>}
+      </div>
       <label className="rform__field"><span>Business name</span>
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
       <label className="rform__field"><span>Description</span>

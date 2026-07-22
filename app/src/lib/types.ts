@@ -64,7 +64,7 @@ export interface OrdersListResponse {
 
 export interface OwnerProfile {
   id: string; name: string; description: string; address: string; cuisines: string[];
-  opensAt: string; closesAt: string; isOnline: boolean;
+  opensAt: string; closesAt: string; isOnline: boolean; heroImageUrl: string;
   approvalStatus: "pending" | "approved" | "rejected";
   avgRating: number; ratingCount: number; estDeliveryMin: number;
 }

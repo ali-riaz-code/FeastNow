@@ -117,7 +117,7 @@ export function SearchScreen() {
       {results && results.restaurants.length > 0 && (
         <section className="search__group">
           <h2 className="serif">Restaurants</h2>
-          <Reveal className="grid">
+          <Reveal className="grid" inView={false}>
             {results.restaurants.map((r) => (
               <RevealItem key={r.id}>
                 <RestaurantCardView restaurant={r} />
@@ -130,7 +130,7 @@ export function SearchScreen() {
       {results && results.dishes.length > 0 && (
         <section className="search__group">
           <h2 className="serif">Dishes</h2>
-          <Reveal>
+          <Reveal inView={false}>
             {results.dishes.map((dish) => (
               <RevealItem key={dish.id}>
                 <Link

@@ -193,7 +193,7 @@ export function HomeScreen() {
               </div>
             ) : (
               <>
-                <Reveal className="grid">
+                <Reveal className="grid" inView={false}>
                   {gridItems.map((r) => (
                     <RevealItem key={r.id}>
                       <RestaurantCardView restaurant={r} />

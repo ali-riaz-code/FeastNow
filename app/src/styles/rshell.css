@@ -181,6 +181,24 @@
 .rform__actions { display: flex; justify-content: space-between; gap: var(--s-md); }
 .rform__actions .btn-primary { margin-left: auto; }
 
+/* --- Photo upload (restaurant hero + menu item) --- */
+.rphoto__hint { margin: 0; font-size: 0.8125rem; color: var(--brown); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.rphoto { display: flex; align-items: center; gap: var(--s-md); flex-wrap: wrap; }
+.rphoto__preview {
+  width: 96px; height: 96px; flex: none; border-radius: var(--r-sm); overflow: hidden;
+  background: var(--dough); border: 1px solid var(--beige);
+  display: flex; align-items: center; justify-content: center;
+}
+.rphoto__preview img { width: 100%; height: 100%; object-fit: cover; }
+.rphoto__placeholder { font-size: 0.75rem; color: var(--brown); text-align: center; padding: 0 6px; }
+.rphoto__input { display: none; }
+.rphoto__actions { display: flex; align-items: center; gap: var(--s-sm); flex-wrap: wrap; }
+.rphoto__btn { min-height: 40px; }
+.rphoto__remove {
+  background: none; border: none; color: var(--tomato); font: inherit; font-weight: 600;
+  min-height: 40px; padding: 0 var(--s-sm); cursor: pointer;
+}
+
 .rsearch { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md); }
 .rsearch h2 { margin: 0 0 var(--s-sm); font-size: 1rem; }
 .rsearch__chips { display: flex; gap: var(--s-sm); flex-wrap: wrap; }

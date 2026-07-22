@@ -55,7 +55,7 @@ export function createRestaurantsRouter(deps: RestaurantsRouterDeps): Router {
       avgRating: detail.avgRating, ratingCount: detail.ratingCount,
       estDeliveryMin: detail.estDeliveryMin, heroImageUrl: detail.heroImageUrl,
       opensAt: detail.opensAt, closesAt: detail.closesAt,
-      isOpenNow: isOpenNow(detail.opensAt, detail.closesAt),
+      isOpenNow: detail.isOnline && isOpenNow(detail.opensAt, detail.closesAt),
       menu: groupMenu(detail.menuItems),
       reviews: detail.recentRatings.map((rt) => ({
         id: rt.id, stars: rt.stars, reviewText: rt.reviewText,
