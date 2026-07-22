@@ -16,6 +16,10 @@
   background: var(--cream); border-top: 1px solid var(--dough);
   z-index: var(--z-nav);
   padding-bottom: env(safe-area-inset-bottom);
+  /* single shared stacking context for the whole bar so the sliding
+     layoutId pill competes with EVERY tab's label in one context and
+     always paints beneath them — regardless of which tab it slides over. */
+  isolation: isolate;
 }
 .tab-bar__tab {
   flex: 1 1 0; min-width: 0;
@@ -24,13 +28,16 @@
   transition: color var(--dur-fast) var(--ease-out-quart);
 }
 .tab-bar__tab--active { color: var(--navy); font-weight: 600; }
-/* isolate so the layoutId pill's motion-managed z-index stays contained
-   behind the icon/label (same fix as the admin sidebar indicator). */
-.tab-bar__tab { position: relative; isolation: isolate; }
+/* relative (no z-index) so the tab does NOT create its own stacking context;
+   the pill and this tab's icon/label participate in .tab-bar's shared context. */
+.tab-bar__tab { position: relative; }
 .tab-bar__pill {
   position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
   width: 44px; height: 34px; border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--gold) 22%, transparent); z-index: -1;
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  /* z-index:0 keeps it above the bar's cream background but below every
+     label/icon (z-index:1) in the shared context. */
+  z-index: 0;
 }
 .tab-bar__icon, .tab-bar__tab > span:last-child { position: relative; z-index: 1; }
 
