@@ -108,7 +108,7 @@ export function ROrdersScreen() {
         </div>
       )}
 
-      <Reveal className="rqueue__list">
+      <Reveal className="rqueue__list" inView={false}>
       <AnimatePresence>
       {data?.orders.map((o) => (
         <m.article key={o.id} className="rorder-card" layout
