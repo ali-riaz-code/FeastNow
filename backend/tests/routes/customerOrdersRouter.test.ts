@@ -4,18 +4,23 @@ import { describe, it, expect } from "vitest";
 import { createCustomerOrdersRouter } from "../../src/routes/customerOrdersRouter";
 import { createFakeRestaurantRepository, makeRestaurant, makeMenuItem } from "../test-helpers/fakeRestaurantRepository";
 import { createFakeOrderRepository, makeOrder } from "../test-helpers/fakeOrderRepository";
+import { createFakePromoRepository, makePromo } from "../test-helpers/fakePromoRepository";
 import { DELIVERY_FEE_CENTS } from "../../src/lib/orderPricing";
 import { signToken } from "../../src/lib/jwt";
 
 const JWT_SECRET = "test-secret";
 const auth = { Authorization: `Bearer ${signToken({ userId: "u1" }, JWT_SECRET)}` };
 
-function buildApp(restaurantData: Parameters<typeof createFakeRestaurantRepository>[0] = [], orders = createFakeOrderRepository()) {
+function buildApp(
+  restaurantData: Parameters<typeof createFakeRestaurantRepository>[0] = [],
+  orders = createFakeOrderRepository(),
+  promos = createFakePromoRepository(),
+) {
   const app = express();
   app.use(express.json());
   app.use("/api/customer/orders", createCustomerOrdersRouter({
     restaurantRepo: createFakeRestaurantRepository(restaurantData),
-    orderRepo: orders, jwtSecret: JWT_SECRET,
+    orderRepo: orders, promoRepo: promos, jwtSecret: JWT_SECRET,
   }));
   return app;
 }
@@ -117,6 +122,62 @@ describe("POST /api/customer/orders", () => {
       { restaurantId: r.id, items: [{ menuItemId: item.id, quantity: 1 }] },
     ]) {
       const res = await request(app).post("/api/customer/orders").set(auth).send(bad);
+      expect(res.status).toBe(400);
+    }
+  });
+
+  it("applies a valid promo: stores discount and subtracts it from the total", async () => {
+    const r = openRestaurant();
+    const item = makeMenuItem(r.id, { priceCents: 45000 });
+    const orders = createFakeOrderRepository();
+    const promos = createFakePromoRepository([makePromo({ code: "SAVE20", discountType: "percentage", discountValue: 20 })]);
+    const res = await request(buildApp([{ profile: r, menuItems: [item] }], orders, promos))
+      .post("/api/customer/orders").set(auth)
+      .send({ restaurantId: r.id, deliveryAddress: "x", items: [{ menuItemId: item.id, quantity: 2 }], promoCode: "save20" });
+    expect(res.status).toBe(201);
+    expect(res.body.order.subtotalCents).toBe(90000);
+    expect(res.body.order.discountCents).toBe(18000); // 20% of 90000
+    expect(res.body.order.totalCents).toBe(90000 - 18000 + DELIVERY_FEE_CENTS);
+    expect(orders.orders[0].promoCodeId).toBeTruthy();
+  });
+
+  it("409s promo_invalid when the code expired between apply and place", async () => {
+    const r = openRestaurant();
+    const item = makeMenuItem(r.id, { priceCents: 45000 });
+    const promos = createFakePromoRepository([makePromo({ code: "OLD", expiresAt: new Date(Date.now() - 1000) })]);
+    const res = await request(buildApp([{ profile: r, menuItems: [item] }], createFakeOrderRepository(), promos))
+      .post("/api/customer/orders").set(auth)
+      .send({ restaurantId: r.id, deliveryAddress: "x", items: [{ menuItemId: item.id, quantity: 1 }], promoCode: "OLD" });
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("promo_invalid");
+    expect(res.body.reason).toBe("expired");
+  });
+});
+
+describe("POST /api/customer/orders/promo/validate", () => {
+  it("returns the computed discount for a valid code", async () => {
+    const promos = createFakePromoRepository([makePromo({ code: "SAVE20", discountType: "percentage", discountValue: 20 })]);
+    const res = await request(buildApp([], createFakeOrderRepository(), promos))
+      .post("/api/customer/orders/promo/validate").set(auth)
+      .send({ code: "save20", subtotalCents: 90000 });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ code: "SAVE20", discountType: "percentage", discountValue: 20, discountCents: 18000 });
+  });
+
+  it("404s an unknown code and 409s an inactive one", async () => {
+    const promos = createFakePromoRepository([makePromo({ code: "DEAD", active: false })]);
+    const app = buildApp([], createFakeOrderRepository(), promos);
+    const missing = await request(app).post("/api/customer/orders/promo/validate").set(auth).send({ code: "NOPE", subtotalCents: 1000 });
+    expect(missing.status).toBe(404);
+    const inactive = await request(app).post("/api/customer/orders/promo/validate").set(auth).send({ code: "DEAD", subtotalCents: 1000 });
+    expect(inactive.status).toBe(409);
+    expect(inactive.body.reason).toBe("inactive");
+  });
+
+  it("400s a missing code or bad subtotal", async () => {
+    const app = buildApp();
+    for (const bad of [{ subtotalCents: 1000 }, { code: "X", subtotalCents: -1 }, { code: "X" }]) {
+      const res = await request(app).post("/api/customer/orders/promo/validate").set(auth).send(bad);
       expect(res.status).toBe(400);
     }
   });

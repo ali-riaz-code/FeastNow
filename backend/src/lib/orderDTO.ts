@@ -8,7 +8,8 @@ export interface OrderItemDTO {
 export interface OrderDTO {
   id: string; orderNumber: number; status: OrderStatus;
   rejectionReason: string | null; note: string; deliveryAddress: string;
-  subtotalCents: number; deliveryFeeCents: number; totalCents: number;
+  subtotalCents: number; deliveryFeeCents: number; discountCents: number; totalCents: number;
+  promoCode: string | null;
   placedAt: string; acceptedAt: string | null; preparingAt: string | null;
   readyAt: string | null; closedAt: string | null; expiresAt: string;
   assignedAt: string | null; outForDeliveryAt: string | null; deliveredAt: string | null;
@@ -23,7 +24,8 @@ export function toOrderDTO(o: OrderWithItems): OrderDTO {
   return {
     id: o.id, orderNumber: o.orderNumber, status: o.status,
     rejectionReason: o.rejectionReason, note: o.note, deliveryAddress: o.deliveryAddress,
-    subtotalCents: o.subtotalCents, deliveryFeeCents: o.deliveryFeeCents, totalCents: o.totalCents,
+    subtotalCents: o.subtotalCents, deliveryFeeCents: o.deliveryFeeCents,
+    discountCents: o.discountCents, totalCents: o.totalCents, promoCode: o.promoCode?.code ?? null,
     placedAt: o.createdAt.toISOString(), acceptedAt: iso(o.acceptedAt),
     preparingAt: iso(o.preparingAt), readyAt: iso(o.readyAt), closedAt: iso(o.closedAt),
     expiresAt: o.expiresAt.toISOString(),

@@ -38,4 +38,13 @@ describe("toOrderDTO", () => {
     expect(dto.payoutCents).toBe(null);
     expect(dto.deliveryPartnerName).toBe(null);
   });
+
+  it("exposes discount and promo code", () => {
+    const plain = toOrderDTO(makeOrder());
+    expect(plain.discountCents).toBe(0);
+    expect(plain.promoCode).toBe(null);
+    const discounted = toOrderDTO(makeOrder({ discountCents: 5000, promoCode: { code: "SAVE20" } }));
+    expect(discounted.discountCents).toBe(5000);
+    expect(discounted.promoCode).toBe("SAVE20");
+  });
 });

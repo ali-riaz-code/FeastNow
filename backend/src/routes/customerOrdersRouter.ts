@@ -1,18 +1,28 @@
 import { Router } from "express";
 import type { RestaurantRepository } from "../repositories/restaurantRepository";
 import type { OrderRepository } from "../repositories/orderRepository";
+import type { PromoRepository } from "../repositories/promoRepository";
 import { createRequireAuth, type AuthenticatedRequest } from "../middleware/requireAuth";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { canTransition, ORDER_EXPIRY_MS } from "../lib/orderStateMachine";
 import { computeOrderTotals } from "../lib/orderPricing";
+import { computeDiscountCents, promoInvalidReason } from "../lib/promo";
 import { toOrderDTO } from "../lib/orderDTO";
 import { isOpenNow } from "../lib/openHours";
 
 export interface CustomerOrdersRouterDeps {
   restaurantRepo: RestaurantRepository;
   orderRepo: OrderRepository;
+  promoRepo: PromoRepository;
   jwtSecret: string;
 }
+
+const MAX_CODE = 40;
+const PROMO_INVALID_MESSAGE: Record<string, string> = {
+  not_found: "That promo code isn't valid.",
+  inactive: "That promo code is no longer active.",
+  expired: "That promo code has expired.",
+};
 
 const PAGE_SIZE = 20;
 const MAX_ITEMS = 50;
@@ -25,7 +35,7 @@ export function createCustomerOrdersRouter(deps: CustomerOrdersRouterDeps): Rout
   const requireAuth = createRequireAuth(deps.jwtSecret);
 
   router.post("/", requireAuth, asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const { restaurantId, items, note, deliveryAddress, deliveryLat, deliveryLng } = req.body ?? {};
+    const { restaurantId, items, note, deliveryAddress, deliveryLat, deliveryLng, promoCode } = req.body ?? {};
     const validItems = Array.isArray(items) && items.length > 0 && items.length <= MAX_ITEMS &&
       items.every((i) => i && typeof i.menuItemId === "string" &&
         Number.isInteger(i.quantity) && i.quantity >= 1 && i.quantity <= MAX_QTY);
@@ -37,7 +47,8 @@ export function createCustomerOrdersRouter(deps: CustomerOrdersRouterDeps): Rout
     if (
       typeof restaurantId !== "string" || !validItems || !validCoords ||
       typeof deliveryAddress !== "string" || !deliveryAddress.trim() || deliveryAddress.length > MAX_ADDRESS ||
-      (note !== undefined && (typeof note !== "string" || note.length > MAX_NOTE))
+      (note !== undefined && (typeof note !== "string" || note.length > MAX_NOTE)) ||
+      (promoCode !== undefined && promoCode !== null && (typeof promoCode !== "string" || promoCode.length > MAX_CODE))
     ) {
       return res.status(400).json({ error: "Missing or invalid order details." });
     }
@@ -64,16 +75,60 @@ export function createCustomerOrdersRouter(deps: CustomerOrdersRouterDeps): Rout
       const m = menuById.get(i.menuItemId)!;
       return { menuItemId: m.id, nameSnapshot: m.name, priceAtOrderCents: m.priceCents, quantity: i.quantity };
     });
-    const totals = computeOrderTotals(lines.map((l) => ({ priceCents: l.priceAtOrderCents, quantity: l.quantity })));
+    const subtotalCents = lines.reduce((sum, l) => sum + l.priceAtOrderCents * l.quantity, 0);
+
+    // Re-validate the promo against server-authoritative pricing. A code that went
+    // bad between "Apply" and "Place" is rejected so the cart can drop it and retry.
+    let promoCodeId: string | null = null;
+    let discountCents = 0;
+    const trimmedCode = typeof promoCode === "string" ? promoCode.trim().toUpperCase() : "";
+    if (trimmedCode) {
+      const promo = await deps.promoRepo.findByCode(trimmedCode);
+      const reason = promoInvalidReason(promo, new Date());
+      if (reason) {
+        return res.status(409).json({ error: "promo_invalid", reason, message: PROMO_INVALID_MESSAGE[reason] });
+      }
+      promoCodeId = promo!.id;
+      discountCents = computeDiscountCents(promo!, subtotalCents);
+    }
+
+    const totals = computeOrderTotals(
+      lines.map((l) => ({ priceCents: l.priceAtOrderCents, quantity: l.quantity })),
+      discountCents,
+    );
 
     const order = await deps.orderRepo.create({
       customerId: req.userId!, restaurantId,
       note: (note ?? "").trim(), deliveryAddress: deliveryAddress.trim(),
       deliveryLat: hasLat ? deliveryLat : null, deliveryLng: hasLng ? deliveryLng : null,
-      ...totals, expiresAt: new Date(Date.now() + ORDER_EXPIRY_MS), isDemo: detail.isDemo,
+      ...totals, promoCodeId, expiresAt: new Date(Date.now() + ORDER_EXPIRY_MS), isDemo: detail.isDemo,
       items: lines,
     });
     return res.status(201).json({ order: toOrderDTO(order) });
+  }));
+
+  // Live promo preview for the cart. The discount is computed from the client's
+  // current subtotal for display only; order creation recomputes it authoritatively.
+  router.post("/promo/validate", requireAuth, asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const { code, subtotalCents } = req.body ?? {};
+    if (
+      typeof code !== "string" || !code.trim() || code.length > MAX_CODE ||
+      !Number.isInteger(subtotalCents) || subtotalCents < 0
+    ) {
+      return res.status(400).json({ error: "Enter a promo code." });
+    }
+    const promo = await deps.promoRepo.findByCode(code.trim().toUpperCase());
+    const reason = promoInvalidReason(promo, new Date());
+    if (reason) {
+      return res.status(reason === "not_found" ? 404 : 409)
+        .json({ error: "promo_invalid", reason, message: PROMO_INVALID_MESSAGE[reason] });
+    }
+    return res.status(200).json({
+      code: promo!.code,
+      discountType: promo!.discountType,
+      discountValue: promo!.discountValue,
+      discountCents: computeDiscountCents(promo!, subtotalCents),
+    });
   }));
 
   router.get("/", requireAuth, asyncHandler(async (req: AuthenticatedRequest, res) => {

@@ -5,13 +5,26 @@ import { apiSend, ApiError, NetworkError } from "../lib/api";
 import { cartSubtotal, DELIVERY_FEE_CENTS, loadCart, saveCart, setLineQuantity, useCart } from "../lib/cart";
 import { formatPrice } from "../lib/format";
 import { staggerChild } from "../lib/motion";
-import type { OrderDTO } from "../lib/types";
+import type { OrderDTO, PromoValidationDTO } from "../lib/types";
 import { AppHeader } from "../components/AppHeader";
 import { Screen } from "../components/Screen";
 
 const ADDRESS_KEY = "feastnow_address";
 
 interface PlaceErrorBody { error?: string; message?: string; itemIds?: string[]; }
+
+/**
+ * Display-only discount for the current subtotal, using the validated promo's
+ * terms. The server recomputes this authoritatively when the order is placed;
+ * recomputing locally just keeps the total responsive as quantities change.
+ */
+function previewDiscount(promo: PromoValidationDTO, subtotalCents: number): number {
+  if (subtotalCents <= 0) return 0;
+  const raw = promo.discountType === "percentage"
+    ? Math.floor((subtotalCents * promo.discountValue) / 100)
+    : promo.discountValue;
+  return Math.max(0, Math.min(raw, subtotalCents));
+}
 
 export function CartScreen() {
   const cart = useCart();
@@ -24,6 +37,10 @@ export function CartScreen() {
   const [placing, setPlacing] = useState(false);
   const [serverError, setServerError] = useState("");
   const [unavailableIds, setUnavailableIds] = useState<string[]>([]);
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<PromoValidationDTO | null>(null);
+  const [promoError, setPromoError] = useState("");
+  const [checkingPromo, setCheckingPromo] = useState(false);
 
   if (!cart) {
     return (
@@ -57,6 +74,38 @@ export function CartScreen() {
     setServerError("");
   };
 
+  const applyPromo = async () => {
+    const code = promoInput.trim();
+    if (!code) return;
+    setPromoError("");
+    setCheckingPromo(true);
+    try {
+      const promo = await apiSend<PromoValidationDTO>("POST", "/api/customer/orders/promo/validate", {
+        code, subtotalCents: cartSubtotal(cart),
+      });
+      setAppliedPromo(promo);
+      setPromoInput(promo.code);
+    } catch (err) {
+      setAppliedPromo(null);
+      if (err instanceof ApiError) {
+        const body = (err.body ?? {}) as PlaceErrorBody;
+        setPromoError(body.message ?? "That promo code isn't valid.");
+      } else if (err instanceof NetworkError) {
+        setPromoError(err.message);
+      } else {
+        setPromoError("Couldn't check that code. Try again.");
+      }
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
+  const removePromo = () => {
+    setAppliedPromo(null);
+    setPromoInput("");
+    setPromoError("");
+  };
+
   const placeOrder = async () => {
     setAddressError("");
     setServerError("");
@@ -72,6 +121,7 @@ export function CartScreen() {
         items: cart.lines.map((l) => ({ menuItemId: l.menuItemId, quantity: l.quantity })),
         note: note.trim(),
         deliveryAddress: address.trim(),
+        promoCode: appliedPromo?.code ?? undefined,
       });
       saveCart(null);
       navigate(`/orders/${order.id}`, { replace: true });
@@ -81,6 +131,10 @@ export function CartScreen() {
         if (body.error === "items_unavailable") {
           setUnavailableIds(body.itemIds ?? []);
           setServerError(body.message ?? "Some items are no longer available.");
+        } else if (body.error === "promo_invalid") {
+          removePromo();
+          setPromoError(body.message ?? "That promo code is no longer valid.");
+          setServerError("Your promo code expired — remove it or try another, then place your order.");
         } else {
           setServerError(body.message ?? "This restaurant isn't taking orders right now.");
         }
@@ -95,7 +149,8 @@ export function CartScreen() {
   };
 
   const subtotal = cartSubtotal(cart);
-  const total = subtotal + DELIVERY_FEE_CENTS;
+  const discount = appliedPromo ? previewDiscount(appliedPromo, subtotal) : 0;
+  const total = subtotal + DELIVERY_FEE_CENTS - discount;
   return (
     <Screen className="cart">
       <AppHeader title="Your cart" />
@@ -141,9 +196,47 @@ export function CartScreen() {
           onChange={(e) => setNote(e.target.value)} placeholder="e.g. extra spicy, ring the bell" />
       </label>
 
+      <section className="cart__promo" aria-label="Promo code">
+        {appliedPromo ? (
+          <div className="cart__promo-applied">
+            <div className="cart__promo-tag">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                <path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1-.6-1.4V4a1 1 0 0 1 1-1h8a2 2 0 0 1 1.4.6l7.4 7.4a2 2 0 0 1 0 2.8Z" />
+                <circle cx="7.5" cy="7.5" r="1.2" fill="currentColor" />
+              </svg>
+              <span><strong>{appliedPromo.code}</strong> applied</span>
+            </div>
+            <button type="button" className="cart__promo-remove" onClick={removePromo}>Remove</button>
+          </div>
+        ) : (
+          <div className="cart__promo-entry">
+            <input
+              type="text" value={promoInput} autoCapitalize="characters" autoComplete="off"
+              onChange={(e) => { setPromoInput(e.target.value); setPromoError(""); }}
+              placeholder="Promo code"
+              aria-label="Promo code"
+            />
+            <button
+              type="button" className="cart__promo-apply"
+              disabled={checkingPromo || !promoInput.trim()}
+              onClick={() => void applyPromo()}
+            >
+              {checkingPromo ? "Checking…" : "Apply"}
+            </button>
+          </div>
+        )}
+        {promoError && <span className="cart__error" role="alert">{promoError}</span>}
+      </section>
+
       <section className="cart__totals" aria-label="Price breakdown">
         <div><span>Subtotal</span><span className="mono">{formatPrice(subtotal)}</span></div>
         <div><span>Delivery fee</span><span className="mono">{formatPrice(DELIVERY_FEE_CENTS)}</span></div>
+        {discount > 0 && (
+          <div className="cart__totals-discount">
+            <span>Discount ({appliedPromo!.code})</span>
+            <span className="mono">−{formatPrice(discount)}</span>
+          </div>
+        )}
         <div className="cart__totals-total">
           <span>Total (cash)</span>
           <m.span key={total} className="mono" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>

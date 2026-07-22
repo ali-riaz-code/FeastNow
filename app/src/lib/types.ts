@@ -48,13 +48,18 @@ export interface OrderItemDTO {
 export interface OrderDTO {
   id: string; orderNumber: number; status: OrderStatus;
   rejectionReason: string | null; note: string; deliveryAddress: string;
-  subtotalCents: number; deliveryFeeCents: number; totalCents: number;
+  subtotalCents: number; deliveryFeeCents: number; discountCents: number; totalCents: number;
+  promoCode: string | null;
   placedAt: string; acceptedAt: string | null; preparingAt: string | null;
   readyAt: string | null; closedAt: string | null; expiresAt: string;
   assignedAt: string | null; outForDeliveryAt: string | null; deliveredAt: string | null;
   payoutCents: number | null; deliveryPartnerName: string | null;
   restaurantName: string; customerName: string; customerPhone: string;
   items: OrderItemDTO[];
+}
+
+export interface PromoValidationDTO {
+  code: string; discountType: DiscountType; discountValue: number; discountCents: number;
 }
 
 export interface OrdersListResponse {

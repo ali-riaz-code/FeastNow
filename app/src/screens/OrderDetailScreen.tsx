@@ -92,6 +92,9 @@ export function OrderDetailScreen() {
         ))}
         <div className="receipt__line receipt__line--sub"><span /><span className="receipt__name">Subtotal</span><span className="mono">{formatPrice(order.subtotalCents)}</span></div>
         <div className="receipt__line receipt__line--sub"><span /><span className="receipt__name">Delivery fee</span><span className="mono">{formatPrice(order.deliveryFeeCents)}</span></div>
+        {order.discountCents > 0 && (
+          <div className="receipt__line receipt__line--discount"><span /><span className="receipt__name">Discount{order.promoCode ? ` (${order.promoCode})` : ""}</span><span className="mono">−{formatPrice(order.discountCents)}</span></div>
+        )}
         <div className="receipt__line receipt__line--total"><span /><span className="receipt__name">Total (cash)</span><span className="mono">{formatPrice(order.totalCents)}</span></div>
       </section>
 

@@ -154,7 +154,10 @@ model Order {
   deliveryAddress   String
   subtotalCents     Int
   deliveryFeeCents  Int
+  discountCents     Int               @default(0)
   totalCents        Int
+  promoCodeId       String?
+  promoCode         PromoCode?        @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
   createdAt         DateTime          @default(now())
   acceptedAt        DateTime?
   preparingAt       DateTime?
@@ -233,6 +236,7 @@ model PromoCode {
   active        Boolean      @default(true)
   expiresAt     DateTime?
   createdAt     DateTime     @default(now())
+  orders        Order[]
 
   @@index([active])
 }

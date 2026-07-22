@@ -4,7 +4,8 @@ import { timestampFieldFor, EXPIRY_REJECTION_REASON } from "../lib/orderStateMac
 export interface PlaceOrderInput {
   customerId: string; restaurantId: string; note: string; deliveryAddress: string;
   deliveryLat?: number | null; deliveryLng?: number | null;
-  subtotalCents: number; deliveryFeeCents: number; totalCents: number;
+  subtotalCents: number; deliveryFeeCents: number; discountCents: number; totalCents: number;
+  promoCodeId?: string | null;
   expiresAt: Date; isDemo: boolean;
   items: { menuItemId: string; nameSnapshot: string; priceAtOrderCents: number; quantity: number }[];
 }
@@ -14,6 +15,7 @@ export type OrderWithItems = Order & {
   customer: { name: string; phone: string };
   restaurant: { name: string };
   deliveryPartner: { name: string } | null;
+  promoCode: { code: string } | null;
 };
 
 export interface OrderRepository {
@@ -33,6 +35,7 @@ const INCLUDE = {
   customer: { select: { name: true, phone: true } },
   restaurant: { select: { name: true } },
   deliveryPartner: { select: { name: true } },
+  promoCode: { select: { code: true } },
 } satisfies Prisma.OrderInclude;
 
 export function createOrderRepository(prisma: PrismaClient): OrderRepository {
