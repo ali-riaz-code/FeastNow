@@ -35,18 +35,20 @@ export function BootIntro() {
           initial={{ y: 0 }} exit={{ y: "-112%" }}
           transition={{ duration: 0.9, ease: EASE_EXPO_INOUT, delay: 0.55 }}>
           <div className="boot-intro__inner">
-            <m.svg className="boot-intro__hat" viewBox="0 0 64 64"
+            <m.div className="boot-intro__hat-wrap"
               initial={{ y: -34, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.55, ease: EASE_OUT }}>
-              <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
-                fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
-              <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
-                fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
-              <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
-                fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-              <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
-                fill="var(--gold)" />
-            </m.svg>
+              <svg className="boot-intro__hat" viewBox="0 0 64 64" aria-hidden="true">
+                <path d="M18 38 Q7 38 8 28 Q3 21 12 18 Q12 10 21 12 Q24 6 32 8 Q40 6 43 12 Q52 10 52 18 Q61 21 56 28 Q57 38 46 38 Z"
+                  fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
+                <path d="M18 38 L46 38 L46 47 Q46 50 43 50 L21 50 Q18 50 18 47 Z"
+                  fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
+                <path d="M24.5 40 L24.5 48 M39.5 40 L39.5 48"
+                  fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M32 39.8 L32.99 42.64 L35.99 42.70 L33.60 44.52 L34.47 47.40 L32 45.68 L29.53 47.40 L30.40 44.52 L28.01 42.70 L31.01 42.64 Z"
+                  fill="var(--gold)" />
+              </svg>
+            </m.div>
             <p className="boot-intro__word serif">
               {WORD.map((ch, i) => (
                 <m.span key={i} className="boot-intro__letter"
