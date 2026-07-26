@@ -223,14 +223,21 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
 @media (max-width: 860px) {
   .authsplit { grid-template-columns: minmax(0, 480px); gap: var(--s-lg); }
   .authsplit__art {
-    order: -1; max-width: 100%; padding: clamp(1.5rem, 4vw, 2rem);
+    order: -1; max-width: 100%;
+    padding: 1rem var(--s-sm) var(--s-sm);
+    box-shadow: none; animation: none;
+    border: 1px solid var(--dough);
   }
-  .statchip { font-size: .7rem; padding: .3rem .7rem; }
+  .statchip { font-size: .65rem; padding: .15rem .55rem; }
+  .statchip .num { font-size: .9em; }
   .authsplit__art .statchip--gold,
   .authsplit__art .statchip--navy { display: none; }
   .authsplit__art .statchip--basil {
-    top: auto; bottom: 6%; left: 6%; rotate: 0deg;
+    position: static; display: inline-flex;
+    margin-top: .5rem; rotate: 0deg; animation: none;
   }
+  .authsplit__cart { max-width: 180px; margin: 0 auto; }
+  .authsplit__art svg { max-width: 100%; }
 }
 
 .authsplit__form {
