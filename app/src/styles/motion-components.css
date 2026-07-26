@@ -43,16 +43,21 @@
 .boot-intro {
   position: fixed; inset: 0; z-index: var(--z-intro);
   background: var(--navy); color: var(--cream);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  border-radius: 0 0 40% 40% / 0 0 12% 12%;
+  display: grid; place-items: center;
+  padding: var(--s-lg);
+  border-radius: 0 0 40% 40% / 0 0 8% 8%;
 }
-.boot-intro__hat { width: clamp(64px, 20vw, 88px); height: auto; color: var(--cream); }
+.boot-intro__inner {
+  display: grid; justify-items: center; gap: var(--s-sm);
+  text-align: center; width: 100%; max-width: 340px;
+}
+.boot-intro__hat { width: clamp(52px, 12vw, 80px); height: auto; color: var(--cream); display: block; }
 .boot-intro__word {
-  margin: 0; font-size: clamp(3rem, 16vw, 4.5rem); font-weight: 700;
+  margin: 0; font-size: clamp(2.25rem, 11vw, 4.5rem); font-weight: 700;
   color: var(--cream); letter-spacing: -0.03em; line-height: 1;
 }
 .boot-intro__letter { display: inline-block; }
 .boot-intro__script {
-  margin: 0; font-size: clamp(1.4rem, 6vw, 1.9rem); color: var(--gold);
+  margin: 0; font-size: clamp(1.1rem, 4.5vw, 1.9rem); color: var(--gold);
 }
 .script { font-family: var(--font-script); }
