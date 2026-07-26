@@ -83,7 +83,7 @@
 .search-bar {
   display: flex; align-items: center; gap: 8px;
   background: var(--off-white); border: 1px solid var(--beige);
-  border-radius: var(--r-pill); padding: 10px 14px; color: var(--brown);
+  border-radius: var(--r-pill); padding: 12px var(--s-md); color: var(--brown);
   position: relative; z-index: 1;
 }
 /* Warm ambient glow — appears on active state */
@@ -119,8 +119,11 @@
   display: flex; align-items: center; justify-content: center;
   width: 24px; height: 24px; border-radius: 50%; border: none;
   background: var(--dough); color: var(--brown);
-  cursor: pointer; flex-shrink: 0; padding: 0;
+  cursor: pointer; flex-shrink: 0; padding: 0; position: relative;
   transition: background var(--dur-fast), color var(--dur-fast);
+}
+.search-bar__clear::before {
+  content: ''; position: absolute; inset: -10px; border-radius: inherit;
 }
 .search-bar__clear:hover { background: var(--beige); color: var(--ink); }
 
