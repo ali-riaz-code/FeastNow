@@ -60,13 +60,69 @@
   background: none; border: none; padding: 4px 0; cursor: pointer;
 }
 .inline-back:hover { color: var(--gold); }
-.profile { display: flex; flex-direction: column; align-items: center; }
-.profile__avatar {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: var(--navy); color: var(--cream);
-  display: flex; align-items: center; justify-content: center; font-size: 26px;
+
+/* ---- Profile layout (shared across roles) ---- */
+.profile {
+  display: flex; flex-direction: column; gap: var(--s-lg);
+  padding: var(--s-md); padding-bottom: calc(64px + var(--s-md));
 }
-.profile h1 { margin: var(--s-md) 0 var(--s-lg); color: var(--navy); }
-.profile__details { width: 100%; max-width: 320px; margin: 0; }
-.profile__details dt { font-size: 12px; color: var(--brown); margin-top: var(--s-md); }
-.profile__details dd { margin: 2px 0 0; }
+.profile__heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  color: var(--navy); margin: 0;
+}
+.profile__hero {
+  display: flex; align-items: center; gap: var(--s-md);
+  padding: var(--s-lg); background: var(--off-white);
+  border-radius: var(--r-lg);
+}
+.profile__hero-info { display: flex; flex-direction: column; gap: 2px; }
+.profile__hero-name {
+  font-family: var(--font-display);
+  font-size: 22px; color: var(--navy); margin: 0;
+}
+.profile__hero-meta { font-size: 13px; color: var(--brown); margin: 0; }
+.profile__hero-mono { font-size: 13px; color: var(--brown); margin: 0; }
+.profile__section { display: flex; flex-direction: column; gap: var(--s-xs); }
+.profile__section-title {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--brown); margin: 0; padding-left: var(--s-xs);
+}
+.profile__card {
+  background: var(--off-white);
+  border-radius: var(--r-md); padding: var(--s-md);
+  display: flex; flex-direction: column;
+}
+.profile__row {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: var(--s-sm) 0;
+}
+.profile__row + .profile__row { border-top: 1px solid var(--dough); }
+.profile__row-label { font-size: 13px; color: var(--brown); }
+.profile__row-value { font-size: 15px; font-weight: 500; color: var(--navy); }
+.profile__photo-row {
+  display: flex; align-items: center; gap: var(--s-md); flex-wrap: wrap;
+  padding-top: var(--s-xs);
+}
+.profile__actions { display: flex; flex-direction: column; gap: var(--s-sm); margin-top: var(--s-sm); }
+.profile__row-input {
+  font: inherit; font-size: 15px; font-weight: 500;
+  color: var(--navy); background: var(--dough);
+  border: none; border-radius: var(--r-sm); padding: 6px var(--s-sm);
+  min-width: 0; width: auto; text-align: right;
+}
+.profile__row-input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+.profile__row-select {
+  font: inherit; font-size: 15px; font-weight: 500;
+  color: var(--navy); background: var(--dough);
+  border: none; border-radius: var(--r-sm); padding: 6px var(--s-sm);
+  cursor: pointer;
+}
+.profile__hint {
+  color: var(--brown); font-size: 0.8125rem;
+  margin: 0; padding-left: var(--s-xs);
+}

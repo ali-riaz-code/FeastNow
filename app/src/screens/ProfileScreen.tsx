@@ -33,22 +33,44 @@ export function ProfileScreen() {
 
   return (
     <Screen className="profile">
-      <AvatarUpload value={avatarUrl} name={me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
+      <h1 className="profile__heading">Profile</h1>
+
+      <div className="profile__hero">
+        <AvatarUpload value={avatarUrl} name={me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
+        <div className="profile__hero-info">
+          <h2 className="profile__hero-name">{me.name}</h2>
+          <p className="profile__hero-meta">{me.role.replace("_", " ")}</p>
+        </div>
+      </div>
+
       {error && <p className="cart__error" role="alert">{error}</p>}
       {saved && <p className="rprofile__saved" role="status">Saved.</p>}
+
       {dirty && (
         <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={saving} onClick={() => void save()}>
           {saving ? "Saving…" : "Save photo"}
         </m.button>
       )}
-      <h1 className="serif">{me.name}</h1>
-      <dl className="profile__details">
-        <dt>Email</dt><dd>{me.email}</dd>
-        <dt>Phone</dt><dd className="mono">{me.phone}</dd>
-      </dl>
-      <m.button className="btn-logout" onClick={() => { clearToken(); redirectToLogin(); }} whileTap={{ scale: 0.97 }}>
-        Log out
-      </m.button>
+
+      <section className="profile__section">
+        <h3 className="profile__section-title">Contact</h3>
+        <div className="profile__card">
+          <div className="profile__row">
+            <span className="profile__row-label">Email</span>
+            <span className="profile__row-value">{me.email}</span>
+          </div>
+          <div className="profile__row">
+            <span className="profile__row-label">Phone</span>
+            <span className="profile__row-value mono">{me.phone}</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="profile__actions">
+        <m.button className="btn-logout" onClick={() => { clearToken(); redirectToLogin(); }} whileTap={{ scale: 0.97 }}>
+          Log out
+        </m.button>
+      </div>
     </Screen>
   );
 }

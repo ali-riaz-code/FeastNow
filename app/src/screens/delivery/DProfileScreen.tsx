@@ -54,20 +54,55 @@ export function DProfileScreen() {
   };
 
   return (
-    <Screen className="rform dprofile">
-      <h1>Rider profile</h1>
-      <AvatarUpload value={avatarUrl} name={name || me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
-      <label className="rform__field"><span>Full name</span>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
-      <label className="rform__field"><span>Phone</span>
-        <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} /></label>
-      <label className="rform__field"><span>Vehicle type</span>
-        <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value as VehicleType)}>
-          {VEHICLES.map((v) => <option key={v.value} value={v.value}>{v.label}</option>)}
-        </select></label>
+    <Screen className="profile">
+      <h1 className="profile__heading">Rider Profile</h1>
 
-      <label className="rform__field"><span>ID document</span>
-        <p className="dprofile__readonly">On file · contact support to change.</p></label>
+      <div className="profile__hero">
+        <AvatarUpload value={avatarUrl} name={name || me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
+        <div className="profile__hero-info">
+          <h2 className="profile__hero-name">{profile.name}</h2>
+          <p className="profile__hero-mono mono">{profile.availabilityStatus === "online" ? "Online" : "Offline"}</p>
+        </div>
+      </div>
+
+      <form className="profile__section" onSubmit={(e) => e.preventDefault()}>
+        <h3 className="profile__section-title">Personal</h3>
+        <div className="profile__card">
+          <label className="profile__row">
+            <span className="profile__row-label">Name</span>
+            <input className="profile__row-input" type="text" value={name}
+              onChange={(e) => setName(e.target.value)} />
+          </label>
+          <label className="profile__row">
+            <span className="profile__row-label">Phone</span>
+            <input className="profile__row-input mono" type="tel" value={phone}
+              onChange={(e) => setPhone(e.target.value)} />
+          </label>
+        </div>
+      </form>
+
+      <section className="profile__section">
+        <h3 className="profile__section-title">Vehicle</h3>
+        <div className="profile__card">
+          <label className="profile__row">
+            <span className="profile__row-label">Type</span>
+            <select className="profile__row-select" value={vehicleType}
+              onChange={(e) => setVehicleType(e.target.value as VehicleType)}>
+              {VEHICLES.map((v) => <option key={v.value} value={v.value}>{v.label}</option>)}
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section className="profile__section">
+        <h3 className="profile__section-title">Documents</h3>
+        <div className="profile__card">
+          <div className="profile__row">
+            <span className="profile__row-label">ID document</span>
+            <span className="dprofile__readonly">On file</span>
+          </div>
+        </div>
+      </section>
 
       {error && <p className="cart__error" role="alert">{error}</p>}
       {saved && <p className="rprofile__saved" role="status">Saved.</p>}
@@ -75,7 +110,9 @@ export function DProfileScreen() {
         {saving ? "Saving…" : "Save changes"}
       </m.button>
 
-      <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
+      <div className="profile__actions">
+        <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
+      </div>
     </Screen>
   );
 }

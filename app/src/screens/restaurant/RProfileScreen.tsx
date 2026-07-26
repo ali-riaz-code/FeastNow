@@ -17,7 +17,7 @@ export function RProfileScreen() {
   const [cuisines, setCuisines] = useState(profile.cuisines.join(", "));
   const [opensAt, setOpensAt] = useState(profile.opensAt);
   const [closesAt, setClosesAt] = useState(profile.closesAt);
-  const [heroImageUrl, setHeroImageUrl] = useState(profile.heroImageUrl);
+  const [heroImageUrl, setHeroImageUrl] = useState<string | null>(profile.heroImageUrl);
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoError, setPhotoError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -80,71 +80,100 @@ export function RProfileScreen() {
   const maxCount = Math.max(1, ...starCounts.map((c) => c.n));
 
   return (
-    <Screen className="rform rprofile">
-      <h1>Business info</h1>
-      <div className="rform__field">
-        <span>Restaurant photo</span>
-        <p className="rphoto__hint">Shown to customers on your card and profile — a logo, storefront, or signature dish.</p>
-        <div className="rphoto">
-          <div className="rphoto__preview">
-            {heroImageUrl
-              ? <img src={heroImageUrl} alt="Current restaurant photo" />
-              : <span className="rphoto__placeholder">No photo yet</span>}
+    <Screen className="profile rform rprofile">
+      <h1 className="profile__heading">Business Profile</h1>
+
+      <section className="profile__section">
+        <h2 className="profile__section-title">Info</h2>
+        <div className="profile__card">
+          <div className="rform__field">
+            <span>Restaurant photo</span>
+            <p className="rphoto__hint">A logo, storefront, or signature dish.</p>
+            <div className="rphoto">
+              <div className="rphoto__preview rphoto__preview--lg">
+                {heroImageUrl
+                  ? <img src={heroImageUrl} alt="Current restaurant photo" />
+                  : <span className="rphoto__placeholder">No photo yet</span>}
+              </div>
+              <input ref={fileRef} type="file" accept="image/*" className="rphoto__input" onChange={(e) => void pickPhoto(e)} />
+              <div className="rphoto__actions">
+                <button type="button" className="btn-retry rphoto__btn" disabled={photoBusy}
+                  onClick={() => fileRef.current?.click()}>
+                  {photoBusy ? "Processing…" : heroImageUrl ? "Change photo" : "Upload photo"}
+                </button>
+                {heroImageUrl && (
+                  <button type="button" className="rphoto__remove" disabled={photoBusy}
+                    onClick={() => { setPhotoError(""); setHeroImageUrl(null); }}>
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+            {photoError && <span className="cart__error" role="alert">{photoError}</span>}
           </div>
-          <input ref={fileRef} type="file" accept="image/*" className="rphoto__input" onChange={(e) => void pickPhoto(e)} />
-          <button type="button" className="btn-retry rphoto__btn" disabled={photoBusy}
-            onClick={() => fileRef.current?.click()}>
-            {photoBusy ? "Processing…" : heroImageUrl ? "Change photo" : "Upload photo"}
-          </button>
+          <label className="rform__field"><span>Business name</span>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
+          <label className="rform__field"><span>Description</span>
+            <textarea value={description} rows={2} onChange={(e) => setDescription(e.target.value)} /></label>
+          <label className="rform__field"><span>Address</span>
+            <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} /></label>
+          <label className="rform__field"><span>Cuisines</span>
+            <input type="text" value={cuisines} onChange={(e) => setCuisines(e.target.value)} placeholder="Italian, Pizza, Pasta" /></label>
+          <div className="rprofile__hours">
+            <label className="rform__field"><span>Opens</span>
+              <input type="time" value={opensAt} onChange={(e) => setOpensAt(e.target.value)} /></label>
+            <label className="rform__field"><span>Closes</span>
+              <input type="time" value={closesAt} onChange={(e) => setClosesAt(e.target.value)} /></label>
+          </div>
+          {error && <p className="cart__error" role="alert">{error}</p>}
+          {saved && <p className="rprofile__saved" role="status">Saved.</p>}
+          <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={saving} onClick={() => void save()}>
+            {saving ? "Saving…" : "Save changes"}
+          </m.button>
         </div>
-        {photoError && <span className="cart__error" role="alert">{photoError}</span>}
-      </div>
-      <label className="rform__field"><span>Business name</span>
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
-      <label className="rform__field"><span>Description</span>
-        <textarea value={description} rows={2} onChange={(e) => setDescription(e.target.value)} /></label>
-      <label className="rform__field"><span>Address</span>
-        <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} /></label>
-      <label className="rform__field"><span>Cuisines (comma-separated)</span>
-        <input type="text" value={cuisines} onChange={(e) => setCuisines(e.target.value)} /></label>
-      <div className="rprofile__hours">
-        <label className="rform__field"><span>Opens</span>
-          <input type="time" value={opensAt} onChange={(e) => setOpensAt(e.target.value)} /></label>
-        <label className="rform__field"><span>Closes</span>
-          <input type="time" value={closesAt} onChange={(e) => setClosesAt(e.target.value)} /></label>
-      </div>
-      {error && <p className="cart__error" role="alert">{error}</p>}
-      {saved && <p className="rprofile__saved" role="status">Saved.</p>}
-      <m.button type="button" className="btn-primary" whileTap={{ scale: 0.97 }} disabled={saving} onClick={() => void save()}>
-        {saving ? "Saving…" : "Save changes"}
-      </m.button>
+      </section>
 
-      <h1>Ratings &amp; reviews</h1>
-      <p className="rprofile__avg">
-        <span className="mono rprofile__avg-num">{formatRating(profile.avgRating)}</span> · {profile.ratingCount} ratings
-      </p>
-      <div className="rprofile__bars" aria-label="Ratings breakdown (recent reviews)">
-        {starCounts.map(({ s, n }) => (
-          <div key={s} className="rprofile__bar-row">
-            <span className="mono">{s}★</span>
-            <span className="rprofile__bar"><span style={{ width: `${(n / maxCount) * 100}%` }} /></span>
-            <span className="mono">{n}</span>
+      <section className="profile__section">
+        <h2 className="profile__section-title">Ratings</h2>
+        <div className="profile__card">
+          <p className="rprofile__avg">
+            <span className="mono rprofile__avg-num">{formatRating(profile.avgRating)}</span> · {profile.ratingCount} ratings
+          </p>
+          <div className="rprofile__bars" aria-label="Ratings breakdown">
+            {starCounts.map(({ s, n }) => (
+              <div key={s} className="rprofile__bar-row">
+                <span className="mono">{s}★</span>
+                <span className="rprofile__bar"><span style={{ width: `${(n / maxCount) * 100}%` }} /></span>
+                <span className="mono">{n}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <Reveal>
-        {reviews.slice(0, 5).map((r) => (
-          <RevealItem key={r.id}>
-            <article className="rprofile__review">
-              <p className="rprofile__review-head"><span className="mono">{r.stars}★</span> {r.authorName}</p>
-              <p>{r.reviewText}</p>
-            </article>
-          </RevealItem>
-        ))}
-      </Reveal>
-      {reviews.length === 0 && <p className="rsearch__hint">Reviews from customers will appear here.</p>}
+        </div>
+      </section>
 
-      <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
+      <section className="profile__section">
+        <h2 className="profile__section-title">Recent reviews</h2>
+        {reviews.length === 0 ? (
+          <p className="profile__hint">Reviews from customers will appear here.</p>
+        ) : (
+          <div className="profile__card">
+            <Reveal>
+              {reviews.slice(0, 5).map((r) => (
+                <RevealItem key={r.id}>
+                  <article className="rprofile__review">
+                    <p className="rprofile__review-head"><span className="mono">{r.stars}★</span> {r.authorName}</p>
+                    <p>{r.reviewText}</p>
+                  </article>
+                </RevealItem>
+              ))}
+            </Reveal>
+          </div>
+        )}
+      </section>
+
+      <div className="profile__actions">
+        <button type="button" className="btn-danger rprofile__logout" onClick={logout}>Log out</button>
+      </div>
     </Screen>
   );
 }

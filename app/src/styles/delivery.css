@@ -138,12 +138,9 @@
 
 /* ---- Profile ---- */
 .dprofile__readonly {
-  margin: 0;
-  padding: 10px;
-  border-radius: var(--r-md, 12px);
-  background: var(--dough);
-  color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 13px;
+  color: var(--brown);
+  font-weight: 500;
 }
 
 /* ---- Pending approval (dormant this phase) ---- */
