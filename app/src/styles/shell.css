@@ -98,6 +98,8 @@
   font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--gold-deep);
 }
+.profile__hero--navy .avatar-upload__btn { border-color: var(--cream); color: var(--cream); }
+.profile__hero--navy .avatar-upload__remove { color: rgba(255,252,240,0.8); }
 .profile__hero--navy .profile__role-badge { color: var(--gold); }
 .profile__hero--navy .profile__role-badge svg { stroke: var(--gold); }
 .profile__hero-seal {
@@ -126,8 +128,9 @@
   flex-shrink: 0; width: 16px; height: 16px;
   color: var(--gold-deep); display: inline-flex; align-items: center;
 }
-.profile__row-label { font-size: 13px; color: var(--brown); }
-.profile__row-value { font-size: 15px; font-weight: 500; color: var(--navy); }
+.profile__row-left { display: flex; align-items: center; gap: var(--s-sm); min-width: 0; }
+.profile__row-label { font-size: 13px; color: var(--brown); white-space: nowrap; }
+.profile__row-value { margin-left: auto; font-size: 15px; font-weight: 500; color: var(--navy); text-align: right; min-width: 0; }
 .profile__photo-row {
   display: flex; align-items: center; gap: var(--s-md); flex-wrap: wrap;
   padding-top: var(--s-xs);
