@@ -1,3 +1,5 @@
+.search { padding-top: 0; }
+
 /* .search__back now sits in the AppHeader's leading slot, on the navy
    "awning" surface — ink flips to cream/gold for AA contrast there. */
 .search__back {

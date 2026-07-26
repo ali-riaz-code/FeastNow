@@ -7,6 +7,7 @@
 /* --- AppHeader (awning) --- */
 .appbar {
   background: var(--awning-grad); color: var(--awning-ink);
+  margin-inline: calc(-1 * var(--s-md));
   padding: calc(env(safe-area-inset-top) + var(--s-md)) 0 var(--s-md);
   box-shadow: var(--sh-header); position: relative; z-index: var(--z-sticky);
 }
