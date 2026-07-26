@@ -54,6 +54,12 @@
 .orders-empty h1 { margin: var(--s-sm) 0 0; color: var(--navy); }
 .orders-empty p { margin: 0 0 var(--s-md); color: var(--brown); }
 
+.inline-back {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: inherit; font-size: 13px; color: var(--gold-deep);
+  background: none; border: none; padding: 4px 0; cursor: pointer;
+}
+.inline-back:hover { color: var(--gold); }
 .profile { display: flex; flex-direction: column; align-items: center; }
 .profile__avatar {
   width: 72px; height: 72px; border-radius: 50%;

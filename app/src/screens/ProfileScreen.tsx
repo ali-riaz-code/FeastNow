@@ -5,7 +5,6 @@ import { apiSend } from "../lib/api";
 import { clearToken, redirectToLogin } from "../lib/session";
 import type { Me } from "../lib/types";
 import { Screen } from "../components/Screen";
-import { AppHeader } from "../components/AppHeader";
 import { AvatarUpload } from "../components/AvatarUpload";
 
 export function ProfileScreen() {
@@ -34,7 +33,6 @@ export function ProfileScreen() {
 
   return (
     <Screen className="profile">
-      <AppHeader title="Profile" />
       <AvatarUpload value={avatarUrl} name={me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
       {error && <p className="cart__error" role="alert">{error}</p>}
       {saved && <p className="rprofile__saved" role="status">Saved.</p>}

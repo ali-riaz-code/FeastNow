@@ -6,7 +6,6 @@ import type { OrderDTO } from "../lib/types";
 import { usePolling } from "../hooks/usePolling";
 import { StatusTimeline } from "../components/OrderStatus";
 import { Screen } from "../components/Screen";
-import { AppHeader } from "../components/AppHeader";
 
 const POLL_MS = 5000;
 
@@ -52,14 +51,6 @@ export function OrderDetailScreen() {
   if (!order) {
     return (
       <Screen className="orders">
-        <AppHeader
-          title="Order"
-          leading={
-            <button className="appbar__back" aria-label="Go back" onClick={() => navigate(-1)}>
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-            </button>
-          }
-        />
         <div className="restaurant__hero-skeleton" role="status" aria-label="Loading" />
       </Screen>
     );
@@ -67,15 +58,11 @@ export function OrderDetailScreen() {
 
   return (
     <Screen className="order-detail">
-      <AppHeader
-        title="Order"
-        leading={
-          <button className="appbar__back" aria-label="Go back" onClick={() => navigate(-1)}>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
-          </button>
-        }
-      />
       <header className="order-detail__head">
+        <button className="inline-back" aria-label="Go back" onClick={() => navigate(-1)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+          Back
+        </button>
         <h1 className="serif">{order.restaurantName}</h1>
         <p className="mono">{formatOrderNumber(order.orderNumber)} · placed {formatClock(order.placedAt)}</p>
       </header>

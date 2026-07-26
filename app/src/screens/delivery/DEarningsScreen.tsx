@@ -4,7 +4,6 @@ import { apiGet, NetworkError } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { EarningsDTO } from "../../lib/types";
 import { Screen } from "../../components/Screen";
-import { AppHeader } from "../../components/AppHeader";
 import { staggerParent, staggerChild } from "../../lib/motion";
 
 function formatDeliveredAt(iso: string): string {
@@ -37,7 +36,6 @@ export function DEarningsScreen() {
   if (error) {
     return (
       <Screen>
-        <AppHeader title="Earnings" />
         <section className="dearn"><p className="davail__error" role="alert">{error}</p></section>
       </Screen>
     );
@@ -45,7 +43,6 @@ export function DEarningsScreen() {
   if (!data) {
     return (
       <Screen>
-        <AppHeader title="Earnings" />
         <section className="dearn"><p className="dactive__muted">Loading…</p></section>
       </Screen>
     );
@@ -53,7 +50,6 @@ export function DEarningsScreen() {
 
   return (
     <Screen>
-      <AppHeader title="Earnings" />
       <section className="dearn">
         <div className="dearn__cards">
           <div className="dearn__card">

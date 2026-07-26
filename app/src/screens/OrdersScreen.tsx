@@ -6,7 +6,6 @@ import type { OrderDTO, OrdersListResponse } from "../lib/types";
 import { usePolling } from "../hooks/usePolling";
 import { StatusBadge, StatusTimeline } from "../components/OrderStatus";
 import { Screen } from "../components/Screen";
-import { AppHeader } from "../components/AppHeader";
 import { Reveal, RevealItem } from "../components/Reveal";
 
 const POLL_MS = 5000;
@@ -24,7 +23,6 @@ export function OrdersScreen() {
   if (orders === null) {
     return (
       <Screen className="orders">
-        <AppHeader title="Orders" />
         <div className="restaurant__hero-skeleton" role="status" aria-label="Loading" />
       </Screen>
     );
@@ -32,7 +30,6 @@ export function OrdersScreen() {
   if (orders.length === 0) {
     return (
       <Screen className="orders-empty">
-        <AppHeader title="Orders" />
         <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--brown)" strokeWidth="1.2" aria-hidden="true">
           <path d="M6 2h12v20l-3-2-3 2-3-2-3 2Z" /><path d="M9 7h6M9 11h6" />
         </svg>
@@ -47,7 +44,6 @@ export function OrdersScreen() {
   const past = orders.filter((o) => !ACTIVE.has(o.status));
   return (
     <Screen className="orders">
-      <AppHeader title="Orders" />
       {active.length > 0 && <h1 className="serif">Happening now</h1>}
       <Reveal>
         {active.map((o) => (

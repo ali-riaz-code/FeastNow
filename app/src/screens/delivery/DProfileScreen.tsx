@@ -6,7 +6,6 @@ import type { PartnerProfile, VehicleType } from "../../lib/types";
 import { usePartner } from "../../PartnerContext";
 import { useMe, useSetMe } from "../../AuthGate";
 import { Screen } from "../../components/Screen";
-import { AppHeader } from "../../components/AppHeader";
 import { AvatarUpload } from "../../components/AvatarUpload";
 
 const VEHICLES: { value: VehicleType; label: string }[] = [
@@ -56,7 +55,6 @@ export function DProfileScreen() {
 
   return (
     <Screen className="rform dprofile">
-      <AppHeader title="Profile" />
       <h1>Rider profile</h1>
       <AvatarUpload value={avatarUrl} name={name || me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
       <label className="rform__field"><span>Full name</span>
