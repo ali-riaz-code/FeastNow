@@ -75,38 +75,18 @@
 }
 .profile__hero {
   display: flex; align-items: center; gap: var(--s-md);
-  padding: var(--s-lg); background: var(--off-white);
-  border-radius: var(--r-lg);
+  padding: var(--s-lg); background: var(--cream);
+  border-radius: var(--r-lg); position: relative;
 }
-.profile__hero--navy {
-  background: var(--navy); color: var(--cream);
-  margin: calc(-1 * var(--s-md)) calc(-1 * var(--s-md)) 0;
-  border-radius: 0 0 var(--r-lg) var(--r-lg);
-  padding: var(--s-xl) var(--s-lg) var(--s-lg) var(--s-lg);
-  position: relative;
-  background-image: radial-gradient(ellipse 70% 50% at 30% 40%, rgba(227,175,4,.12) 0%, transparent 65%);
-  gap: var(--s-md);
-}
-.profile__hero--navy .profile__hero-info { gap: var(--s-xs); }
-.profile__hero-info { display: flex; flex-direction: column; gap: 2px; }
-.profile__hero-name { margin: 0; }
-.profile__hero--navy .profile__hero-name { font-family: var(--font-script); font-size: 26px; font-weight: 400; color: var(--cream); }
+.profile__hero-info { display: flex; flex-direction: column; gap: var(--s-xs); }
+.profile__hero-name { margin: 0; font-family: var(--font-script); font-size: 24px; font-weight: 400; color: var(--navy); }
 .profile__hero-meta { font-size: 13px; color: var(--brown); margin: 0; }
 .profile__hero-mono { font-size: 13px; color: var(--brown); margin: 0; }
 .profile__role-badge {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--gold-deep);
+  color: var(--gold);
 }
-.profile__hero--navy .avatar-upload__btn { border-color: var(--cream); color: var(--cream); }
-.profile__hero--navy .avatar-upload__remove { color: rgba(255,252,240,0.8); }
-.profile__hero--navy .profile__role-badge { color: var(--gold); }
-.profile__hero--navy .profile__role-badge svg { stroke: var(--gold); }
-.profile__hero-seal {
-  position: absolute; top: var(--s-sm); right: var(--s-sm);
-  font-size: 22px; opacity: 0.45; pointer-events: none;
-}
-.profile__hero--navy .profile__hero-seal { color: var(--cream); opacity: 0.2; }
 .profile__section { display: flex; flex-direction: column; gap: var(--s-xs); }
 .profile__section-title {
   font-size: 11px; font-weight: 700;
@@ -160,7 +140,7 @@
 /* Seam ribbon — dotted divider like the landing page section cap */
 .profile__seam {
   height: 14px;
-  background-color: var(--navy);
+  background-color: var(--gold);
   margin: 0 calc(-1 * var(--s-md));
   background-image:
     repeating-linear-gradient(90deg, var(--cream) 0 32px, transparent 32px 80px),

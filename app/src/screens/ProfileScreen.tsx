@@ -34,12 +34,12 @@ export function ProfileScreen() {
 
   return (
     <Screen className="profile">
-      <m.div className="profile__hero profile__hero--navy"
+      <m.div className="profile__hero"
         initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: easeExpo }}>
         <AvatarUpload value={avatarUrl} name={me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
         <div className="profile__hero-info">
-          <h2 className="profile__hero-name script">{me.name}</h2>
+          <h2 className="profile__hero-name">{me.name}</h2>
           <span className="profile__role-badge">
             <svg viewBox="0 0 64 64" width="14" height="14" fill="none" stroke="currentColor"
               strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" aria-hidden="true">
@@ -50,7 +50,6 @@ export function ProfileScreen() {
             {me.role.replace("_", " ")}
           </span>
         </div>
-        <span className="profile__hero-seal" aria-hidden="true">★</span>
       </m.div>
 
       {error && <p className="cart__error" role="alert">{error}</p>}
