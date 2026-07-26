@@ -4,6 +4,7 @@
   gap: var(--s-md); padding: var(--s-2xl) var(--s-lg); text-align: center; color: var(--brown);
 }
 .restaurant__hero { position: relative; aspect-ratio: 16 / 9; background: var(--dough); overflow: hidden; }
+.restaurant__info-band { background: var(--butter); margin: 0 calc(-1 * var(--s-md)); padding: var(--s-md) var(--s-md) var(--s-lg); }
 .restaurant__hero img { width: 100%; height: 100%; object-fit: cover; }
 .restaurant__hero-skeleton {
   aspect-ratio: 16 / 9;

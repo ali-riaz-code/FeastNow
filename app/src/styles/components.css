@@ -34,11 +34,17 @@
 
 /* --- Chip --- */
 .chip {
-  border: 1px solid var(--beige); background: var(--dough); color: var(--ink);
+  border: 1px solid var(--beige); background: var(--cream); color: var(--brown);
   border-radius: var(--r-pill); padding: 7px 14px; font-size: 13px; white-space: nowrap;
   transition: background var(--dur-fast) var(--ease-out-quart), color var(--dur-fast) var(--ease-out-quart);
 }
 .chip--selected { background: var(--navy); border-color: var(--navy); color: var(--cream); font-weight: 600; }
+.chip--gold { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--gold-deep); }
+.chip--tomato { border-color: var(--tomato); background: color-mix(in srgb, var(--tomato) 10%, transparent); color: var(--tomato); }
+.chip--basil { border-color: var(--basil); background: color-mix(in srgb, var(--basil) 10%, transparent); color: var(--basil-deep); }
+.chip--brown { border-color: var(--brown); background: color-mix(in srgb, var(--brown) 10%, transparent); color: var(--brown); }
+.chip--sky { border-color: var(--sky); background: color-mix(in srgb, var(--sky) 30%, transparent); color: var(--navy); }
+.chip--cream { border-color: var(--beige); background: var(--cream); color: var(--navy); }
 
 /* --- SectionRow --- */
 .section-row { margin-top: var(--s-lg); }

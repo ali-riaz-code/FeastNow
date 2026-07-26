@@ -1,6 +1,32 @@
 .shell { display: flex; flex-direction: column; min-height: 100dvh; }
 .screen { flex: 1; padding: var(--s-md); padding-bottom: calc(64px + var(--s-md)); }
 
+/* Section theme bands — warm palette like the landing page */
+.section-warm { background: var(--butter); margin-inline: calc(-1 * var(--s-md)); padding: var(--s-lg) var(--s-md); }
+.section-dough { background: var(--dough); margin-inline: calc(-1 * var(--s-md)); padding: var(--s-lg) var(--s-md); }
+.section-sky { background: var(--sky); margin-inline: calc(-1 * var(--s-md)); padding: var(--s-lg) var(--s-md); }
+.section-cream { background: var(--cream); margin-inline: calc(-1 * var(--s-md)); padding: var(--s-lg) var(--s-md); }
+.section-off-white { background: var(--off-white); margin-inline: calc(-1 * var(--s-md)); padding: var(--s-lg) var(--s-md); }
+
+/* Landing-page seam ribbon dividers */
+.seam {
+  height: 16px; margin-bottom: var(--s-lg);
+  background-color: var(--seam-base, var(--navy));
+  background-image:
+    repeating-linear-gradient(90deg, var(--seam-dash, var(--cream)) 0 32px, transparent 32px 80px),
+    repeating-linear-gradient(90deg, var(--seam-dash, var(--cream)) 0 32px, transparent 32px 80px);
+  background-size: 100% 4px, 100% 4px;
+  background-position: 0 2px, 36px 8px;
+  background-repeat: repeat-x, repeat-x;
+  mask: linear-gradient(to right, transparent 12px, #000 40px calc(100% - 40px), transparent calc(100% - 12px));
+  -webkit-mask: linear-gradient(to right, transparent 12px, #000 40px calc(100% - 40px), transparent calc(100% - 12px));
+}
+.seam--gold { --seam-base: var(--gold); --seam-dash: var(--navy); }
+.seam--tomato { --seam-base: var(--tomato); --seam-dash: var(--cream); }
+.seam--brown { --seam-base: var(--brown); --seam-dash: var(--cream); }
+.seam--navy { --seam-base: var(--navy); --seam-dash: var(--cream); }
+.seam--cream { --seam-base: var(--cream); --seam-dash: var(--navy); }
+
 .boot-screen {
   min-height: 100dvh; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: var(--s-md);
