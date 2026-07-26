@@ -5,6 +5,7 @@ import { apiGet, apiSend } from "../../lib/api";
 import { formatPrice } from "../../lib/format";
 import type { OwnerMenuItem } from "../../lib/types";
 import { Screen } from "../../components/Screen";
+import { SearchBar } from "../../components/SearchBar";
 import { Reveal } from "../../components/Reveal";
 import { staggerChild } from "../../lib/motion";
 
@@ -57,8 +58,7 @@ export function RMenuScreen() {
 
   return (
     <Screen className="rmenu">
-      <input className="rmenu__search" type="search" value={q} placeholder="Search your menu"
-        aria-label="Search your menu" onChange={(e) => setQ(e.target.value)} />
+      <SearchBar value={q} onChange={setQ} placeholder="Search your menu" />
       {filtered.length === 0 && <div className="rqueue__empty"><p>No items match “{q}”.</p></div>}
       <Reveal>
         {[...groups.entries()].map(([category, list]) => (

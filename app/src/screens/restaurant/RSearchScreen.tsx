@@ -4,6 +4,7 @@ import { apiGet } from "../../lib/api";
 import { formatOrderNumber, formatPrice } from "../../lib/format";
 import type { OrderDTO, OrdersListResponse, OwnerMenuItem } from "../../lib/types";
 import { StatusBadge } from "../../components/OrderStatus";
+import { SearchBar } from "../../components/SearchBar";
 import { Screen } from "../../components/Screen";
 import { Reveal, RevealItem } from "../../components/Reveal";
 
@@ -56,9 +57,7 @@ export function RSearchScreen() {
 
   return (
     <Screen className="rsearch">
-      <input className="rmenu__search" type="search" value={q} autoFocus
-        placeholder="Order # or customer name" aria-label="Search orders and menu"
-        onChange={(e) => setQ(e.target.value)} />
+      <SearchBar value={q} onChange={setQ} placeholder="Order # or customer name" autoFocus />
       <div className="rsearch__chips" role="tablist" aria-label="Order status filter">
         {CHIPS.map((c) => (
           <button key={c.key} type="button" role="tab" aria-selected={chip === c.key}

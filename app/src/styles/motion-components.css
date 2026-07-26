@@ -29,7 +29,15 @@
 .appbar__extra .search-bar { background: rgba(255,252,240,0.14); border-color: transparent; color: var(--awning-ink); }
 .appbar__extra .search-bar input { color: var(--awning-ink); }
 .appbar__extra .search-bar input::placeholder { color: var(--awning-ink-dim); opacity: 1; }
-.appbar__extra .search-bar:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227,175,4,0.35); }
+.appbar__extra .search-bar:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(227,175,4,0.4); }
+.appbar__extra .search-bar::after {
+  background: radial-gradient(ellipse at 30% 50%, rgba(255, 252, 240, 0.1), transparent 65%);
+}
+.appbar__extra .search-bar:focus-within::before {
+  box-shadow: 0 0 0 0 rgba(227, 175, 4, 0.5); /* pulse color adapts to the dark surface */
+}
+.appbar__extra .search-bar__clear { background: rgba(255,252,240,0.18); color: var(--awning-ink-dim); }
+.appbar__extra .search-bar__clear:hover { background: rgba(255,252,240,0.3); color: var(--awning-ink); }
 
 /* --- Boot intro curtain — faithful echo of the landing intro --- */
 .boot-intro {

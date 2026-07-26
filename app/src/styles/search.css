@@ -9,14 +9,26 @@
 
 .recent__head { display: flex; justify-content: space-between; align-items: center; }
 .recent__head h2 { font-size: 16px; color: var(--navy); margin: var(--s-md) 0 var(--s-sm); }
-.recent__clear { border: none; background: none; color: var(--tomato); font-size: 13px; font-weight: 600; }
+.recent__clear { border: none; background: none; color: var(--tomato); font-size: 13px; font-weight: 600; cursor: pointer; }
+.recent__list { display: flex; flex-direction: column; }
 .recent__item {
   display: flex; align-items: center; gap: var(--s-sm); width: 100%;
   border: none; background: none; text-align: left;
-  padding: 10px 2px; color: var(--ink); font-size: 14px;
-  border-bottom: 1px solid var(--dough);
+  padding: 10px 2px; color: var(--ink); font-size: 14px; cursor: pointer;
+  border-bottom: 1px solid var(--dough); transition: color var(--dur-fast);
 }
-.recent__item svg { color: var(--brown); }
+.recent__item:hover { color: var(--gold-deep); }
+.recent__item:last-child { border-bottom: none; }
+.recent__item svg { color: var(--brown); flex-shrink: 0; }
+
+.search__skeleton { padding: var(--s-md) 0; }
+
+.search__empty {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s-sm);
+  padding: var(--s-2xl) var(--s-lg); text-align: center;
+}
+.search__empty-text { color: var(--brown); margin: 0; }
+.search__empty-hint { color: var(--brown); font-size: 0.875rem; margin: 0; }
 
 .search__group h2 { font-size: 17px; color: var(--navy); margin: var(--s-lg) 0 var(--s-sm); }
 .dish-hit {

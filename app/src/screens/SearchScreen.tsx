@@ -93,25 +93,35 @@ export function SearchScreen() {
               setRecent([]);
             }}>Clear</button>
           </div>
-          {recent.map((term) => (
-            <button key={term} className="recent__item" onClick={() => setQuery(term)}>
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
-              </svg>
-              {term}
-            </button>
-          ))}
+          <div className="recent__list">
+            {recent.map((term) => (
+              <button key={term} className="recent__item" onClick={() => setQuery(term)}>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+                </svg>
+                <span>{term}</span>
+              </button>
+            ))}
+          </div>
         </m.div>
       )}
 
-      {searching && <p className="search__status mono" role="status">Searching…</p>}
+      {searching && (
+        <div className="search__skeleton" role="status" aria-label="Searching">
+          <div className="skeleton-card" />
+        </div>
+      )}
       {searchError && !searching && (
         <p className="search__status" role="status">Search isn't working right now. Check your connection and try again.</p>
       )}
       {noMatches && (
-        <m.p className="search__status" variants={revealUp} initial="hidden" animate="show">
-          No matches for "{query.trim()}".
-        </m.p>
+        <m.div className="search__empty" variants={revealUp} initial="hidden" animate="show">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="var(--brown)" strokeWidth="1.2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+          </svg>
+          <p className="search__empty-text">No matches for <strong>"{query.trim()}"</strong></p>
+          <p className="search__empty-hint">Try a different spelling or browse cuisines.</p>
+        </m.div>
       )}
 
       {results && results.restaurants.length > 0 && (

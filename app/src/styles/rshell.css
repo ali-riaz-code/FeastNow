@@ -135,10 +135,7 @@
 }
 
 .rmenu { display: flex; flex-direction: column; gap: var(--s-md); padding: var(--s-md) var(--s-md) 96px; }
-.rmenu__search {
-  font: inherit; min-height: 44px; padding: 0 var(--s-md);
-  border: 1px solid var(--beige); border-radius: var(--r-pill); background: var(--dough); color: var(--ink);
-}
+
 .rmenu__group h2 { margin: 0 0 var(--s-sm); font-size: 1.125rem; }
 .rmenu-row {
   display: flex; align-items: center; gap: var(--s-md);
