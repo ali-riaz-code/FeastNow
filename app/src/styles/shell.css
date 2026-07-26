@@ -76,19 +76,36 @@
   padding: var(--s-lg); background: var(--off-white);
   border-radius: var(--r-lg);
 }
+.profile__hero--warm {
+  background: var(--butter);
+  position: relative;
+  background-image: radial-gradient(ellipse 70% 50% at 30% 40%, rgba(227,175,4,.07) 0%, transparent 70%);
+}
 .profile__hero-info { display: flex; flex-direction: column; gap: 2px; }
 .profile__hero-name {
   font-family: var(--font-display);
   font-size: 22px; color: var(--navy); margin: 0;
 }
+.profile__hero--warm .profile__hero-name { font-family: var(--font-script); font-size: 26px; font-weight: 400; color: var(--navy); }
 .profile__hero-meta { font-size: 13px; color: var(--brown); margin: 0; }
 .profile__hero-mono { font-size: 13px; color: var(--brown); margin: 0; }
+.profile__role-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.profile__hero-seal {
+  position: absolute; top: var(--s-sm); right: var(--s-sm);
+  font-size: 20px; color: var(--gold); opacity: 0.45;
+  pointer-events: none;
+}
 .profile__section { display: flex; flex-direction: column; gap: var(--s-xs); }
 .profile__section-title {
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--brown); margin: 0; padding-left: var(--s-xs);
 }
+.profile__section-title--gold { color: var(--gold-deep); }
 .profile__card {
   background: var(--off-white);
   border-radius: var(--r-md); padding: var(--s-md);
@@ -99,6 +116,10 @@
   align-items: center; padding: var(--s-sm) 0;
 }
 .profile__row + .profile__row { border-top: 1px solid var(--dough); }
+.profile__row-icon {
+  flex-shrink: 0; width: 16px; height: 16px;
+  color: var(--gold-deep); display: inline-flex; align-items: center;
+}
 .profile__row-label { font-size: 13px; color: var(--brown); }
 .profile__row-value { font-size: 15px; font-weight: 500; color: var(--navy); }
 .profile__photo-row {
