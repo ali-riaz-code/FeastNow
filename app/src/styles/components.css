@@ -102,9 +102,10 @@
 .search-bar input::placeholder { color: var(--brown); opacity: 0.7; }
 .search-bar__clear {
   display: flex; align-items: center; justify-content: center;
-  width: 22px; height: 22px; border-radius: 50%; border: none;
+  width: 24px; height: 24px; border-radius: 50%; border: none;
   background: var(--dough); color: var(--brown);
   cursor: pointer; flex-shrink: 0; padding: 0;
+  transition: background var(--dur-fast), color var(--dur-fast);
 }
 .search-bar__clear:hover { background: var(--beige); color: var(--ink); }
 
