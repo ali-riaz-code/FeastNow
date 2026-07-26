@@ -61,18 +61,24 @@ export function OrdersScreen() {
       </Reveal>
       {past.length > 0 && <h2 className="serif">Past orders</h2>}
       <Reveal>
-        {past.map((o) => (
-          <RevealItem key={o.id}>
-            <Link to={`/orders/${o.id}`} className="order-card">
-              <header>
-                <span className="order-card__name">{o.restaurantName}</span>
-                <span className="mono">{formatOrderNumber(o.orderNumber)}</span>
-              </header>
-              <StatusBadge status={o.status} />
-              <footer><span className="mono">{formatPrice(o.totalCents)}</span></footer>
-            </Link>
-          </RevealItem>
-        ))}
+        {past.map((o) => {
+          const tint = o.status === "delivered" ? "order-card--basil"
+            : o.status === "rejected" || o.status === "cancelled" ? "order-card--tomato"
+            : o.status === "placed" ? "order-card--gold"
+            : "";
+          return (
+            <RevealItem key={o.id}>
+              <Link to={`/orders/${o.id}`} className={`order-card${tint ? ` ${tint}` : ""}`}>
+                <header>
+                  <span className="order-card__name">{o.restaurantName}</span>
+                  <span className="mono">{formatOrderNumber(o.orderNumber)}</span>
+                </header>
+                <StatusBadge status={o.status} />
+                <footer><span className="mono">{formatPrice(o.totalCents)}</span></footer>
+              </Link>
+            </RevealItem>
+          );
+        })}
       </Reveal>
     </Screen>
   );

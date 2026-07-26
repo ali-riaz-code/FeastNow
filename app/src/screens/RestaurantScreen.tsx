@@ -102,29 +102,31 @@ export function RestaurantScreen() {
         </button>
       </div>
 
-      <header className="restaurant__head">
-        <h1 className="serif">{r.name}</h1>
-        <p className="restaurant__cuisines">{r.cuisines.join(" · ")}</p>
-        <p className="restaurant__meta mono">
-          <span className="restaurant__rating">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
-              <path d="m12 2 3 6.6 7 .9-5.2 4.9 1.4 7-6.2-3.6L5.8 21.4l1.4-7L2 9.5l7-.9Z" />
-            </svg>
-            {formatRating(r.avgRating)}
-          </span>
-          {" "}({r.ratingCount} reviews) · {r.estDeliveryMin} min
-        </p>
-        <p className="restaurant__address">{r.address}</p>
-        <p className="restaurant__hours mono">Open {r.opensAt} – {r.closesAt}</p>
-        {!r.isOpenNow && (
-          <p className="restaurant__closed-banner" role="status">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
-            </svg>
-            Closed now — you can browse the menu
+      <div className="restaurant__info-band">
+        <header className="restaurant__head">
+          <h1 className="serif">{r.name}</h1>
+          <p className="restaurant__cuisines">{r.cuisines.join(" · ")}</p>
+          <p className="restaurant__meta mono">
+            <span className="restaurant__rating">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+                <path d="m12 2 3 6.6 7 .9-5.2 4.9 1.4 7-6.2-3.6L5.8 21.4l1.4-7L2 9.5l7-.9Z" />
+              </svg>
+              {formatRating(r.avgRating)}
+            </span>
+            {" "}({r.ratingCount} reviews) · {r.estDeliveryMin} min
           </p>
-        )}
-      </header>
+          <p className="restaurant__address">{r.address}</p>
+          <p className="restaurant__hours mono">Open {r.opensAt} – {r.closesAt}</p>
+          {!r.isOpenNow && (
+            <p className="restaurant__closed-banner" role="status">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+              </svg>
+              Closed now — you can browse the menu
+            </p>
+          )}
+        </header>
+      </div>
 
       <nav className="category-tabs" aria-label="Menu categories">
         {r.menu.map((group) => (

@@ -168,10 +168,12 @@ export function HomeScreen() {
                 {Array.from({ length: 4 }, (_, i) => <SkeletonCard key={i} />)}
               </SectionRow>
             ) : (
-              feed.home.sections.map((section) => (
-                <SectionRow key={section.key} title={section.title}>
-                  {section.restaurants.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
-                </SectionRow>
+              feed.home.sections.map((section, i) => (
+                <div key={section.key} className={i % 2 === 0 ? "section-warm" : "section-dough"}>
+                  <SectionRow title={section.title}>
+                    {section.restaurants.map((r) => <RestaurantCardView key={r.id} restaurant={r} />)}
+                  </SectionRow>
+                </div>
               ))
             )
           )}
