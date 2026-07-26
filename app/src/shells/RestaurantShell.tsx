@@ -94,9 +94,10 @@ function OfflineBanner() {
 
 function RestaurantRoutes() {
   const location = useLocation();
+  const hideBar = location.pathname === "/" || location.pathname.startsWith("/orders/");
   return (
     <>
-      <RTopBar />
+      {!hideBar && <RTopBar />}
       <OfflineBanner />
       <NewOrderWatcher />
       <AnimatePresence mode="wait">
