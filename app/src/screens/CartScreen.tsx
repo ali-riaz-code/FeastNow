@@ -6,7 +6,6 @@ import { cartSubtotal, DELIVERY_FEE_CENTS, loadCart, saveCart, setLineQuantity, 
 import { formatPrice } from "../lib/format";
 import { staggerChild } from "../lib/motion";
 import type { OrderDTO, PromoValidationDTO } from "../lib/types";
-import { AppHeader } from "../components/AppHeader";
 import { Screen } from "../components/Screen";
 
 const ADDRESS_KEY = "feastnow_address";
@@ -45,7 +44,6 @@ export function CartScreen() {
   if (!cart) {
     return (
       <Screen className="orders-empty">
-        <AppHeader title="Your cart" />
         <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--brown)" strokeWidth="1.2" aria-hidden="true">
           <path d="M5 7h14l-1.5 12h-11Z" /><path d="M9 7a3 3 0 0 1 6 0" />
         </svg>
@@ -153,7 +151,6 @@ export function CartScreen() {
   const total = subtotal + DELIVERY_FEE_CENTS - discount;
   return (
     <Screen className="cart">
-      <AppHeader title="Your cart" />
       <h1 className="serif">Your basket</h1>
       <p className="cart__from">from <Link to={`/restaurant/${cart.restaurantId}`}>{cart.restaurantName}</Link></p>
 
