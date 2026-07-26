@@ -225,6 +225,7 @@ body.page-fade-out { animation: pageFadeOut var(--dur) var(--ease-out-quart) for
   .authsplit__art {
     order: -1; max-width: 100%; padding: clamp(1.5rem, 4vw, 2rem);
   }
+  .statchip { font-size: .7rem; padding: .3rem .7rem; }
   .authsplit__art .statchip--gold,
   .authsplit__art .statchip--navy { display: none; }
   .authsplit__art .statchip--basil {
