@@ -34,13 +34,9 @@ export function ProfileScreen() {
 
   return (
     <Screen className="profile">
-      <m.h1 className="profile__heading"
-        initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: easeOutExpo }}>Profile</m.h1>
-
-      <m.div className="profile__hero profile__hero--warm"
-        initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: easeOutExpo, delay: 0.05 }}>
+      <m.div className="profile__hero profile__hero--navy"
+        initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: easeExpo }}>
         <AvatarUpload value={avatarUrl} name={me.name} onChange={(next) => { setAvatarUrl(next); setSaved(false); }} />
         <div className="profile__hero-info">
           <h2 className="profile__hero-name script">{me.name}</h2>
@@ -68,7 +64,8 @@ export function ProfileScreen() {
 
       <m.section className="profile__section"
         initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: easeOutExpo, delay: 0.1 }}>
+        transition={{ duration: 0.4, ease: easeExpo, delay: 0.08 }}>
+        <div className="profile__seam" aria-hidden="true" />
         <h3 className="profile__section-title profile__section-title--gold">Contact</h3>
         <div className="profile__card">
           <div className="profile__row">
@@ -91,6 +88,10 @@ export function ProfileScreen() {
           </div>
         </div>
       </m.section>
+
+      <m.p className="profile__signature script"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: easeExpo, delay: 0.15 }}>grazie</m.p>
 
       <div className="profile__actions">
         <m.button className="btn-logout" onClick={() => { clearToken(); redirectToLogin(); }} whileTap={{ scale: 0.97 }}>
